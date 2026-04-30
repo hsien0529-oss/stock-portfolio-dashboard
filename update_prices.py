@@ -23,7 +23,7 @@ LOGS_DIR   = BASE_DIR / "logs"
 TAIPEI_TZ  = timezone(timedelta(hours=8))
 
 STOCK_TICKERS = [
-    "0050.TW", "00878.TW", "00881.TW", "00646.TW",
+    "0050.TW", "00878.TW", "00881.TW", "00981A.TW", "00646.TW",
     "1301.TW", "2034.TW", "2308.TW", "2317.TW", "2330.TW",
     "2382.TW", "2618.TW", "2880.TW", "2881.TW", "2882.TW",
     "2884.TW", "2885.TW", "2886.TW", "2887.TW",

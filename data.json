@@ -132,6 +132,12 @@
       "prev_close": 23.15,
       "year_high": 24.87,
       "year_low": 22.55
+    },
+    "00981A": {
+      "price": 28.28,
+      "prev_close": 27.74,
+      "year_high": 28.77,
+      "year_low": 9.88
     }
   },
   "fundamentals": {
@@ -222,6 +228,10 @@
     "5880": {
       "trailingPE": 16.875,
       "dividendYield": 3.02
+    },
+    "00981A": {
+      "trailingPE": 58.82275,
+      "dividendYield": null
     }
   },
   "indices": [
