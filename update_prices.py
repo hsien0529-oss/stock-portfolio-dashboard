@@ -3,32 +3,25 @@
 update_prices.py — 廖家投資看板每日自動更新
 用法: python3 update_prices.py
 建議在台股收盤後執行 (13:30 CST 之後)
+
+只更新 data.json + history.json，不再改寫 index.html。
+持股清單從 portfolios.json 讀取（修改持股不需碰此 .py）。
 """
 
 import yfinance as yf
 import json
-import re
 import sys
-import os
 import subprocess
 import logging
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
-BASE_DIR   = Path(__file__).parent
-HTML_PATH  = BASE_DIR / "index.html"
-DATA_PATH  = BASE_DIR / "data.json"
-HIST_PATH  = BASE_DIR / "history.json"
-LOGS_DIR   = BASE_DIR / "logs"
-TAIPEI_TZ  = timezone(timedelta(hours=8))
-
-STOCK_TICKERS = [
-    "0050.TW", "00878.TW", "00881.TW", "00981A.TW", "00646.TW",
-    "1301.TW", "2034.TW", "2308.TW", "2317.TW", "2330.TW",
-    "2382.TW", "2618.TW", "2880.TW", "2881.TW", "2882.TW",
-    "2884.TW", "2885.TW", "2886.TW", "2887.TW",
-    "3008.TW", "3045.TW", "3703.TW", "5880.TW"
-]
+BASE_DIR     = Path(__file__).parent
+PORTF_PATH   = BASE_DIR / "portfolios.json"
+DATA_PATH    = BASE_DIR / "data.json"
+HIST_PATH    = BASE_DIR / "history.json"
+LOGS_DIR     = BASE_DIR / "logs"
+TAIPEI_TZ    = timezone(timedelta(hours=8))
 
 INDEX_TICKERS = {
     "加權指數": "^TWII",
@@ -41,38 +34,24 @@ INDEX_TICKERS = {
     "香　港":   "^HSI",
 }
 
-PORTFOLIOS = {
-    "👨 爸爸": [
-        {"code":"0050.TW","shares":12150},{"code":"00878.TW","shares":9000},
-        {"code":"00881.TW","shares":11000},{"code":"2308.TW","shares":749},
-        {"code":"2317.TW","shares":16000},{"code":"2330.TW","shares":2020},
-        {"code":"2382.TW","shares":500},  {"code":"2618.TW","shares":4000},
-        {"code":"2034.TW","shares":55},   {"code":"2880.TW","shares":2163},
-        {"code":"2881.TW","shares":3796}, {"code":"2882.TW","shares":4526},
-        {"code":"2884.TW","shares":7369}, {"code":"2885.TW","shares":2060},
-        {"code":"2886.TW","shares":4374}, {"code":"2887.TW","shares":235},
-        {"code":"3008.TW","shares":310},  {"code":"5880.TW","shares":4702},
-    ],
-    "👩 太太": [
-        {"code":"0050.TW","shares":6400}, {"code":"00646.TW","shares":1000},
-        {"code":"00878.TW","shares":6000},{"code":"2317.TW","shares":2300},
-        {"code":"2330.TW","shares":160},  {"code":"2882.TW","shares":200},
-        {"code":"3045.TW","shares":1000},
-    ],
-    "👦 兒子 (大)": [
-        {"code":"0050.TW","shares":5300}, {"code":"00646.TW","shares":2000},
-        {"code":"2308.TW","shares":1000}, {"code":"2317.TW","shares":4253},
-        {"code":"2330.TW","shares":520},  {"code":"2618.TW","shares":1000},
-        {"code":"2884.TW","shares":1659}, {"code":"2886.TW","shares":2172},
-        {"code":"3703.TW","shares":1000},
-    ],
-    "👦 兒子 (小)": [
-        {"code":"0050.TW","shares":5700}, {"code":"00646.TW","shares":1000},
-        {"code":"1301.TW","shares":600},  {"code":"2317.TW","shares":1000},
-        {"code":"2330.TW","shares":1410}, {"code":"2618.TW","shares":1000},
-        {"code":"2882.TW","shares":1118},
-    ],
-}
+
+# ── Portfolios loader ──────────────────────────────────────
+def load_portfolios(log: logging.Logger) -> dict:
+    """從 portfolios.json 讀持股；自動去掉 _ 開頭的 metadata key。"""
+    if not PORTF_PATH.exists():
+        log.error(f"❌ 找不到持股檔: {PORTF_PATH}")
+        sys.exit(1)
+    raw = json.loads(PORTF_PATH.read_text(encoding="utf-8"))
+    return {k: v for k, v in raw.items() if not k.startswith("_")}
+
+
+def derive_tickers(portfolios: dict) -> list[str]:
+    """從持股清單推導出所有需要抓的 ticker（含 .TW 後綴）。"""
+    codes = set()
+    for holdings in portfolios.values():
+        for h in holdings:
+            codes.add(h["code"])
+    return sorted(f"{c}.TW" for c in codes)
 
 
 # ── Logging ────────────────────────────────────────────────
@@ -91,7 +70,6 @@ def setup_logging():
 
 
 def notify_mac(title: str, msg: str):
-    """Send macOS notification."""
     subprocess.run(
         ["osascript", "-e", f'display notification "{msg}" with title "{title}"'],
         capture_output=True,
@@ -100,15 +78,11 @@ def notify_mac(title: str, msg: str):
 
 # ── Fetch prices + fundamentals ────────────────────────────
 def fetch_prices(tickers: list[str], log: logging.Logger) -> dict:
-    """用 yf.download 一次抓取所有股票的價格與 52 週區間"""
     log.info(f"📡 下載 {len(tickers)} 檔股票歷史資料 (1 年)...")
     try:
         df = yf.download(" ".join(tickers), period="1y", interval="1d",
                          auto_adjust=True, progress=False)
         close = df["Close"]
-    except KeyError:
-        log.error("⚠ 無法取得 Close 資料")
-        return {}
     except Exception as e:
         log.error(f"批次下載失敗: {e}")
         return {}
@@ -124,18 +98,28 @@ def fetch_prices(tickers: list[str], log: logging.Logger) -> dict:
             else:
                 log.warning(f"  ⚠ {code}: 不在下載結果中")
                 continue
-
             if len(series) < 2:
                 continue
 
+            price      = round(float(series.iloc[-1]), 2)
+            prev_close = round(float(series.iloc[-2]), 2)
+
+            # 資料驗證：拒絕零或單日 ±30% 異常
+            if price <= 0 or prev_close <= 0:
+                log.warning(f"  ⚠ {code}: 價格異常 (price={price}, prev={prev_close})，跳過")
+                continue
+            pct_change = abs(price - prev_close) / prev_close * 100
+            if pct_change > 30:
+                log.warning(f"  ⚠ {code}: 單日變動 {pct_change:.1f}% 過大，可能是錯誤資料，跳過")
+                continue
+
             prices[code] = {
-                "price":      round(float(series.iloc[-1]), 2),
-                "prev_close": round(float(series.iloc[-2]), 2),
+                "price":      price,
+                "prev_close": prev_close,
                 "year_high":  round(float(series.max()), 2),
                 "year_low":   round(float(series.min()), 2),
             }
-            log.info(f"  ✔ {code:8s}  現價 {prices[code]['price']:>10.2f}  "
-                  f"漲跌 {prices[code]['price'] - prices[code]['prev_close']:+.2f}")
+            log.info(f"  ✔ {code:8s}  現價 {price:>10.2f}  漲跌 {price - prev_close:+.2f}")
         except Exception as e:
             log.warning(f"  ⚠ {code}: {e}")
 
@@ -143,7 +127,6 @@ def fetch_prices(tickers: list[str], log: logging.Logger) -> dict:
 
 
 def fetch_fundamentals(tickers: list[str], log: logging.Logger) -> dict:
-    """用 yf.Ticker.info 抓取本益比、殖利率"""
     log.info("📡 抓取基本面資料 (trailingPE, dividendYield)...")
     fundamentals = {}
     for ticker in tickers:
@@ -152,12 +135,12 @@ def fetch_fundamentals(tickers: list[str], log: logging.Logger) -> dict:
             t = yf.Ticker(ticker)
             info = t.info
             fundamentals[code] = {
-                "trailingPE":       info.get("trailingPE") or None,
-                "dividendYield":    info.get("dividendYield") or None,
+                "trailingPE":    info.get("trailingPE") or None,
+                "dividendYield": info.get("dividendYield") or None,
             }
-            log.info(f"  ✔ {code}: PE={fundamentals[code]['trailingPE']}, DIV={fundamentals[code]['dividendYield']}")
         except Exception as e:
             log.warning(f"  ⚠ {code} fundamentals: {e}")
+    log.info(f"  ✅ {len(fundamentals)} 檔基本面更新完成")
     return fundamentals
 
 
@@ -187,7 +170,7 @@ def fetch_indices(index_map: dict, log: logging.Logger) -> list:
             chg  = round(p - prev, 2)
             pct  = round((chg / prev * 100) if prev else 0, 2)
             results.append({"sym": name, "ticker": sym,
-                             "price": p, "change": chg, "changePct": pct})
+                            "price": p, "change": chg, "changePct": pct})
             log.info(f"  ✔ {sym:10s}  {p:>12,.2f}  {chg:+.2f} ({pct:+.2f}%)")
         except Exception as e:
             log.warning(f"  ⚠ {sym}: {e}")
@@ -195,11 +178,11 @@ def fetch_indices(index_map: dict, log: logging.Logger) -> list:
 
 
 # ── Calculate totals ───────────────────────────────────────
-def calc_totals(prices: dict) -> dict:
+def calc_totals(prices: dict, portfolios: dict) -> dict:
     totals: dict = {}
-    for member, holdings in PORTFOLIOS.items():
+    for member, holdings in portfolios.items():
         mv = sum(
-            h["shares"] * prices.get(h["code"].removesuffix(".TW"), {}).get("price", 0)
+            h["shares"] * prices.get(h["code"], {}).get("price", 0)
             for h in holdings
         )
         totals[member] = round(mv)
@@ -218,73 +201,12 @@ def load_history() -> dict:
 
 
 def save_history(history: dict, today: str, totals: dict, log: logging.Logger):
-    """寫入 history.json（若今日已有則跳過）"""
     if today in history:
         log.info(f"今日 {today} 歷史已存在，跳過")
         return
     history[today] = totals
     HIST_PATH.write_text(json.dumps(history, ensure_ascii=False, indent=2), encoding="utf-8")
     log.info(f"✅ 寫入 history.json: {today}")
-
-
-# ── HTML updater ───────────────────────────────────────────
-def replace_block(content: str, start_marker: str, end_char: str, new_block: str) -> str:
-    """找到 start_marker 開頭的區塊並整段替換，end_char 為 '}' 或 ']'"""
-    idx = content.find(start_marker)
-    if idx == -1:
-        return content
-    closing = f"\n{end_char};"
-    end_idx = content.find(closing, idx)
-    if end_idx == -1:
-        return content
-    return content[:idx] + new_block + content[end_idx + len(closing):]
-
-
-def update_html(prices: dict, fundamentals: dict, indices: list, today: str, log: logging.Logger):
-    content = HTML_PATH.read_text(encoding="utf-8")
-
-    # ── 1. 更新 PRICE_DATA ──────────────────────────────────────
-    lines = [
-        f'  "{code}":  {{"price":{d["price"]},  '
-        f'"year_high":{d["year_high"]},  '
-        f'"year_low":{d["year_low"]},   '
-        f'"prev_close":{d["prev_close"]}}}'
-        for code, d in prices.items()
-    ]
-    new_price_block = "let PRICE_DATA = {\n" + ",\n".join(lines) + "\n}"
-    content = replace_block(content, "let PRICE_DATA = {", "}", new_price_block)
-
-    # ── 2. 更新 MARKET_INDICES ───────────────────────────────────
-    if indices:
-        idx_lines = [
-            f'  {{sym:"{i["sym"]}", ticker:"{i["ticker"]}",  '
-            f'price:{i["price"]},  change:{i["change"]},   changePct:{i["changePct"]}}}'
-            for i in indices
-        ]
-        new_idx_block = "let MARKET_INDICES = [\n" + ",\n".join(idx_lines) + "\n]"
-        content = replace_block(content, "let MARKET_INDICES = [", "]", new_idx_block)
-
-    # ── 3. 更新 FUNDAMENTALS ──────────────────────────────────────
-    if fundamentals:
-        fund_lines = []
-        for code, f in fundamentals.items():
-            pe = round(f["trailingPE"], 2) if f.get("trailingPE") else "null"
-            div = round(f["dividendYield"], 2) if f.get("dividendYield") else "null"
-            fund_lines.append(f'  "{code}":{{trailingPE:{pe},dividendYield:{div}}}')
-        new_fund_block = "let FUNDAMENTALS = {\n" + ",\n".join(fund_lines) + "\n}"
-        content = replace_block(content, "let FUNDAMENTALS = {", "}", new_fund_block)
-        log.info(f"  ✅ FUNDAMENTALS block updated ({len(fund_lines)} entries)")
-
-    # ── 3. 更新時間戳記 ─────────────────────────────────────────
-    now_str = datetime.now(TAIPEI_TZ).strftime("%Y-%m-%d %H:%M:%S")
-    content = re.sub(
-        r'// PRICE DATA — Updated [^\n]*',
-        f'// PRICE DATA — Updated {now_str} (auto-updated by update_prices.py)',
-        content
-    )
-
-    HTML_PATH.write_text(content, encoding="utf-8")
-    log.info(f"✅ HTML 更新完成: {today}")
 
 
 # ── Main ───────────────────────────────────────────────────
@@ -296,32 +218,33 @@ def main():
     log.info(f"{'='*50}")
 
     try:
-        prices  = fetch_prices(STOCK_TICKERS, log)
+        portfolios = load_portfolios(log)
+        tickers    = derive_tickers(portfolios)
+        log.info(f"📋 持股清單: {len(portfolios)} 位成員，{len(tickers)} 檔個股")
+
+        prices = fetch_prices(tickers, log)
         if not prices:
             log.error("❌ 無法取得股價資料，中止更新")
             notify_mac("股票看板", "❌ 更新失敗：無法取得股價資料")
             sys.exit(1)
 
-        fundamentals = fetch_fundamentals(STOCK_TICKERS, log)
-        indices = fetch_indices(INDEX_TICKERS, log)
-        totals  = calc_totals(prices)
+        fundamentals = fetch_fundamentals(tickers, log)
+        indices      = fetch_indices(INDEX_TICKERS, log)
+        totals       = calc_totals(prices, portfolios)
 
-        # ── 寫入 data.json ──────────────────────────────────────
+        # ── 寫入 data.json ──
         data = {
-            "updated": datetime.now(TAIPEI_TZ).isoformat(),
-            "prices":  prices,
+            "updated":      datetime.now(TAIPEI_TZ).isoformat(),
+            "prices":       prices,
             "fundamentals": fundamentals,
-            "indices": indices,
+            "indices":      indices,
         }
         DATA_PATH.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
-        log.info(f"✅ 寫入 data.json")
+        log.info("✅ 寫入 data.json")
 
-        # ── 寫入 history.json ───────────────────────────────────
+        # ── 寫入 history.json ──
         history = load_history()
         save_history(history, today, totals, log)
-
-        # ── 更新 HTML ───────────────────────────────────────────
-        update_html(prices, fundamentals, indices, today, log)
 
         log.info(f"\n{'='*50}")
         log.info(f"   總市值: ${totals['Total']:>16,}")

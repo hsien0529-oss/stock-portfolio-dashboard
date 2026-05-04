@@ -1,0 +1,52 @@
+{
+  "_comment": "持股清單 - 編輯這個檔案後執行 update_prices.py 即可生效。code 不含 .TW",
+  "👨 爸爸": [
+    {"code": "0050",  "shares": 12150},
+    {"code": "00878", "shares": 9000},
+    {"code": "00881", "shares": 11000},
+    {"code": "2308",  "shares": 749},
+    {"code": "2317",  "shares": 16000},
+    {"code": "2330",  "shares": 2020},
+    {"code": "2382",  "shares": 500},
+    {"code": "2618",  "shares": 4000},
+    {"code": "2034",  "shares": 55},
+    {"code": "2880",  "shares": 2163},
+    {"code": "2881",  "shares": 3796},
+    {"code": "2882",  "shares": 4526},
+    {"code": "2884",  "shares": 7369},
+    {"code": "2885",  "shares": 2060},
+    {"code": "2886",  "shares": 4374},
+    {"code": "2887",  "shares": 235},
+    {"code": "3008",  "shares": 310},
+    {"code": "5880",  "shares": 4702}
+  ],
+  "👩 太太": [
+    {"code": "0050",  "shares": 6400},
+    {"code": "00646", "shares": 1000},
+    {"code": "00878", "shares": 6000},
+    {"code": "2317",  "shares": 2300},
+    {"code": "2330",  "shares": 160},
+    {"code": "2882",  "shares": 200},
+    {"code": "3045",  "shares": 1000}
+  ],
+  "👦 兒子 (大)": [
+    {"code": "0050",  "shares": 5300},
+    {"code": "00646", "shares": 2000},
+    {"code": "2308",  "shares": 1000},
+    {"code": "2317",  "shares": 4253},
+    {"code": "2330",  "shares": 520},
+    {"code": "2618",  "shares": 1000},
+    {"code": "2884",  "shares": 1659},
+    {"code": "2886",  "shares": 2172},
+    {"code": "3703",  "shares": 1000}
+  ],
+  "👦 兒子 (小)": [
+    {"code": "0050",  "shares": 5700},
+    {"code": "00646", "shares": 1000},
+    {"code": "1301",  "shares": 600},
+    {"code": "2317",  "shares": 1000},
+    {"code": "2330",  "shares": 1410},
+    {"code": "2618",  "shares": 1000},
+    {"code": "2882",  "shares": 1118}
+  ]
+}
