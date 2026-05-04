@@ -240,7 +240,7 @@ def replace_block(content: str, start_marker: str, end_char: str, new_block: str
     return content[:idx] + new_block + content[end_idx + len(closing):]
 
 
-def update_html(prices: dict, indices: list, today: str, log: logging.Logger):
+def update_html(prices: dict, fundamentals: dict, indices: list, today: str, log: logging.Logger):
     content = HTML_PATH.read_text(encoding="utf-8")
 
     # ── 1. 更新 PRICE_DATA ──────────────────────────────────────
@@ -251,8 +251,8 @@ def update_html(prices: dict, indices: list, today: str, log: logging.Logger):
         f'"prev_close":{d["prev_close"]}}}'
         for code, d in prices.items()
     ]
-    new_price_block = "const PRICE_DATA = {\n" + ",\n".join(lines) + "\n}"
-    content = replace_block(content, "const PRICE_DATA = {", "}", new_price_block)
+    new_price_block = "let PRICE_DATA = {\n" + ",\n".join(lines) + "\n}"
+    content = replace_block(content, "let PRICE_DATA = {", "}", new_price_block)
 
     # ── 2. 更新 MARKET_INDICES ───────────────────────────────────
     if indices:
@@ -261,8 +261,19 @@ def update_html(prices: dict, indices: list, today: str, log: logging.Logger):
             f'price:{i["price"]},  change:{i["change"]},   changePct:{i["changePct"]}}}'
             for i in indices
         ]
-        new_idx_block = "const MARKET_INDICES = [\n" + ",\n".join(idx_lines) + "\n]"
-        content = replace_block(content, "const MARKET_INDICES = [", "]", new_idx_block)
+        new_idx_block = "let MARKET_INDICES = [\n" + ",\n".join(idx_lines) + "\n]"
+        content = replace_block(content, "let MARKET_INDICES = [", "]", new_idx_block)
+
+    # ── 3. 更新 FUNDAMENTALS ──────────────────────────────────────
+    if fundamentals:
+        fund_lines = []
+        for code, f in fundamentals.items():
+            pe = round(f["trailingPE"], 2) if f.get("trailingPE") else "null"
+            div = round(f["dividendYield"], 2) if f.get("dividendYield") else "null"
+            fund_lines.append(f'  "{code}":{{trailingPE:{pe},dividendYield:{div}}}')
+        new_fund_block = "let FUNDAMENTALS = {\n" + ",\n".join(fund_lines) + "\n}"
+        content = replace_block(content, "let FUNDAMENTALS = {", "}", new_fund_block)
+        log.info(f"  ✅ FUNDAMENTALS block updated ({len(fund_lines)} entries)")
 
     # ── 3. 更新時間戳記 ─────────────────────────────────────────
     now_str = datetime.now(TAIPEI_TZ).strftime("%Y-%m-%d %H:%M:%S")
@@ -310,7 +321,7 @@ def main():
         save_history(history, today, totals, log)
 
         # ── 更新 HTML ───────────────────────────────────────────
-        update_html(prices, indices, today, log)
+        update_html(prices, fundamentals, indices, today, log)
 
         log.info(f"\n{'='*50}")
         log.info(f"   總市值: ${totals['Total']:>16,}")
