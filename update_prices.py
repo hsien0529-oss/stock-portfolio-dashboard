@@ -71,10 +71,16 @@ def setup_logging():
 
 
 def notify_mac(title: str, msg: str):
-    subprocess.run(
-        ["osascript", "-e", f'display notification "{msg}" with title "{title}"'],
-        capture_output=True,
-    )
+    """macOS 通知；非 Mac 環境（如 GitHub Actions Linux）靜默跳過。"""
+    if sys.platform != "darwin":
+        return
+    try:
+        subprocess.run(
+            ["osascript", "-e", f'display notification "{msg}" with title "{title}"'],
+            capture_output=True,
+        )
+    except FileNotFoundError:
+        pass
 
 
 # ── Fetch prices + fundamentals ────────────────────────────
@@ -233,7 +239,9 @@ def update_data_js(log: logging.Logger):
             pass
 
     # 從 price_cache.json（Google Drive 版本）讀取準確的 year_high/low
+    # 只在本機（macOS）跑時才會有；GitHub Actions 上跳過
     import os
+    cache = {}
     gdrive_dir = os.path.expanduser("~/Library/CloudStorage/GoogleDrive-hsien0529@gmail.com/我的雲端硬碟")
     price_cache_path = Path(gdrive_dir) / "price_cache.json"
     if price_cache_path.exists():
