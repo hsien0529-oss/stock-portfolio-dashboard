@@ -2159,6 +2159,17 @@ const PORTFOLIOS = {
 };
 
 // ============================================================
+// 家庭成員索引（給 updateFamilyCards / 歷史圖表等用）
+// ============================================================
+const FAMILY_KEYS = Object.keys(PORTFOLIOS);
+const FAMILY_CLASS = {
+  '👨 爸爸':      'family-dad',
+  '👩 太太':      'family-mom',
+  '👦 兒子 (大)': 'family-son1',
+  '👦 兒子 (小)': 'family-son2'
+};
+
+// ============================================================
 // data.js provides PRICE_DATA, HISTORY_DATA, MARKET_INDICES, NEWS_DATA
 // via external script — no duplicate definitions needed
 
