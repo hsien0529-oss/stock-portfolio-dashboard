@@ -2335,7 +2335,7 @@ function buildPortfolioAlertBanner(){
 
   if(localIsNewHigh){
     title.textContent='🎉 歷史新高';
-    text.textContent=`總市值突破 NT$${Math.round(today/10000)*(10000).toLocaleString('zh-TW')}萬！`;
+    text.textContent=`總市值突破 NT$${Math.round(today/10000).toLocaleString('zh-TW')}萬！`;
     banner.style.background='linear-gradient(90deg,rgba(255,176,32,0.12),rgba(255,176,32,0.04))';
     banner.style.borderBottom='1px solid rgba(255,176,32,0.2)';
     title.style.color='var(--amber)';
