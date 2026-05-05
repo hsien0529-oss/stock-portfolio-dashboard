@@ -1447,6 +1447,12 @@ input[type=file]{display:none}
     </div>
     <div class="card mb8" id="dailyPLSummary" style="padding:8px 14px;background:linear-gradient(135deg,var(--surface2) 0%,var(--bg) 100%"></div>
 
+    <!-- Today at a Glance — quick portfolio snapshot -->
+    <div class="card mb8" id="todayGlanceCard" style="padding:10px 14px">
+      <div style="font-size:0.65rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">📌 今日概況</div>
+      <div id="todayGlanceContent" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px"></div>
+    </div>
+
     <!-- Quick Stats Strip -->
     <div id="quickStatsStrip" class="card mb8" style="padding:8px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
       <div class="quick-stat-chip" id="qsWinRateChip">
@@ -1977,6 +1983,7 @@ input[type=file]{display:none}
               <div id="newsNegCount" style="font-size:0.62rem;color:var(--red);background:rgba(255,68,68,0.08);padding:2px 8px;border-radius:10px;font-weight:600;border:1px solid rgba(255,68,68,0.2)">🔴 0</div>
               <div id="newsNeuCount" style="font-size:0.62rem;color:var(--text3);background:var(--surface3);padding:2px 8px;border-radius:10px;font-weight:600">⚪ 0</div>
               <div style="font-size:0.62rem;color:var(--text3);margin-left:4px" id="newsCount"></div>
+              <div id="newsFreshness" style="font-size:0.6rem;color:var(--amber);background:rgba(255,176,32,0.08);padding:2px 8px;border-radius:10px;font-weight:600;border:1px solid rgba(255,176,32,0.2)">📰 載入中</div>
             </div>
           </div>
           <div style="display:flex;gap:6px;align-items:center;margin-bottom:8px">
@@ -3766,6 +3773,64 @@ function buildActionableAlerts(){
 }
 
 // ============================================================
+// TODAY AT A GLANCE — quick portfolio snapshot
+// ============================================================
+function buildTodayGlance(){
+  const el=document.getElementById('todayGlanceContent');
+  if(!el)return;
+  const allHoldings=getAllHoldings();
+  let totalMV=0,totalPrev=0,totalCost=0;
+  Object.entries(allHoldings).forEach(([t,d])=>{
+    const p=getPrice(t);
+    if(!p.price)return;
+    totalMV+=d.shares*p.price;
+    totalPrev+=d.shares*(p.prev_close||p.price);
+    if(d.cost>0)totalCost+=d.shares*d.cost;
+  });
+  const dayChg=totalMV-totalPrev;
+  const dayChgPct=totalPrev>0?(dayChg/totalPrev*100):0;
+  const totalGain=totalMV-totalCost;
+  const totalGainPct=totalCost>0?(totalGain/totalCost*100):0;
+
+  const movers=Object.entries(allHoldings)
+    .map(([t,d])=>{
+      const p=getPrice(t);
+      const chg=p.prev_close?((p.price-p.prev_close)/p.prev_close*100):0;
+      return {ticker:t,name:d.name||t,chg,price:p.price};
+    })
+    .filter(x=>x.chg&&Math.abs(x.chg)>=0.5)
+    .sort((a,b)=>Math.abs(b.chg)-Math.abs(a.chg));
+
+  const topGainer=movers.find(x=>x.chg>0);
+  const topLoser=movers.find(x=>x.chg<0);
+  const twii=MARKET_INDICES.find(i=>i.ticker==='^TWII');
+  const tsla=MARKET_INDICES.find(i=>i.ticker==='2330.TW');
+
+  const items=[];
+  items.push({label:'總市值',value:fmtTWDShort(totalMV),sub:'NT$',up:null});
+  items.push({label:'日報酬',value:(dayChgPct>=0?'+':'')+dayChgPct.toFixed(2)+'%',sub:dayChg>=0?'+'+fmtTWDShort(dayChg):fmtTWDShort(dayChg),up:dayChgPct>=0});
+  items.push({label:'總報酬',value:(totalGainPct>=0?'+':'')+totalGainPct.toFixed(1)+'%',sub:totalGain>=0?'+'+fmtTWDShort(totalGain):fmtTWDShort(totalGain),up:totalGainPct>=0});
+  if(topGainer)items.push({label:'今日最強',value:topGainer.name.slice(0,4),sub:'+'+topGainer.chg.toFixed(1)+'%',up:true});
+  if(topLoser)items.push({label:'今日最弱',value:topLoser.name.slice(0,4),sub:topLoser.chg.toFixed(1)+'%',up:false});
+  if(twii)items.push({label:'加權指數',value:(twii.changePct>=0?'+':'')+twii.changePct.toFixed(2)+'%',sub:Math.round(twii.price).toLocaleString(),up:twii.changePct>=0});
+  if(tsla)items.push({label:'台積電',value:(tsla.changePct>=0?'+':'')+tsla.changePct.toFixed(2)+'%',sub:tsla.price>=1000?Math.round(tsla.price).toLocaleString():tsla.price.toFixed(0),up:tsla.changePct>=0});
+
+  el.innerHTML=items.map(item=>`
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center">
+      <div style="font-size:0.55rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:3px">${item.label}</div>
+      <div style="font-size:0.85rem;font-weight:700;font-family:var(--font-mono);color:${item.up===true?'var(--green)':item.up===false?'var(--red)':'var(--text)'}">${item.value}</div>
+      <div style="font-size:0.6rem;color:var(--text3);margin-top:2px">${item.sub}</div>
+    </div>`).join('');
+}
+
+function fmtTWDShort(val){
+  if(Math.abs(val)>=100000000)return(val/100000000).toFixed(1)+'億';
+  if(Math.abs(val)>=10000000)return(val/10000000).toFixed(1)+'千萬';
+  if(Math.abs(val)>=10000)return(val/10000).toFixed(0)+'萬';
+  return Math.round(val).toLocaleString('zh-TW');
+}
+
+// ============================================================
 // ALERTS (banner)
 // ============================================================
 // PORTFOLIO REBALANCING SUGGESTIONS
@@ -3962,14 +4027,18 @@ function buildAlerts(){
   const allHoldings=getAllHoldings();
   Object.entries(allHoldings).forEach(([t,d])=>{
     const p=getPrice(t);
-    if(!p.price)return;
-    const w52pct=p.year_low&&p.year_high?((p.price-p.year_low)/(p.year_high-p.year_low)*100):50;
+    if(!p.price||!p.year_high||!p.year_low)return;
+    const w52pct=((p.price-p.year_low)/(p.year_high-p.year_low))*100;
     const chgPct=p.prev_close?((p.price-p.prev_close)/p.prev_close*100):0;
     const name=getNameByCode(t);
-    if(w52pct>=90)alerts.push({type:'red-alert',msg:`⚠️ ${t} ${name} 接近 52 週高點 (${w52pct.toFixed(0)}%) — 考慮部分獲利了結`});
-    if(w52pct<=10)alerts.push({type:'green-alert',msg:`💡 ${t} ${name} 接近 52 週低點 (${w52pct.toFixed(0)}%) — 低檔承接區`});
-    if(chgPct<=-4)alerts.push({type:'red-alert',msg:`🔻 ${t} ${name} 今日重挫 ${fmtPct(chgPct)}`});
-    if(chgPct>=3)alerts.push({type:'green-alert',msg:`🚀 ${t} ${name} 今日大漲 ${fmtPct(chgPct)}`});
+    if(w52pct>=95)alerts.push({type:'red-alert',msg:`🔴 ${t} ${name} 處歷史高點 (${w52pct.toFixed(0)}%) ⚠️ 注意風險`});
+    else if(w52pct>=85)alerts.push({type:'amber-alert',msg:`⚠️ ${t} ${name} 接近 52W 高點 (${w52pct.toFixed(0)}%) — 考慮部分獲利了結`});
+    if(w52pct<=5)alerts.push({type:'green-alert',msg:`🟢 ${t} ${name} 處歷史低點 (${w52pct.toFixed(0)}%) 💡 長線買點訊號`});
+    else if(w52pct<=15)alerts.push({type:'green-alert',msg:`💡 ${t} ${name} 接近 52W 低點 (${w52pct.toFixed(0)}%) — 低檔承接區`});
+    if(chgPct<=-4)alerts.push({type:'red-alert',msg:`📉 ${t} ${name} 今日重挫 ${fmtPct(chgPct)} — 設停損`});
+    if(chgPct<=-2&&chgPct>-4)alerts.push({type:'amber-alert',msg:`⬇️ ${t} ${name} 今日下跌 ${fmtPct(chgPct)}`});
+    if(chgPct>=4)alerts.push({type:'green-alert',msg:`🚀 ${t} ${name} 今日大漲 ${fmtPct(chgPct)}`});
+    if(chgPct>=2&&chgPct<4)alerts.push({type:'blue-alert',msg:`📈 ${t} ${name} 今日上漲 ${fmtPct(chgPct)}`});
   });
   const el=document.getElementById('alertBanner');
   el.innerHTML=alerts.slice(0,5).map(a=>`
@@ -4327,29 +4396,45 @@ function buildSignals(){
   const allHoldings=getAllHoldings();
   const holdingShares=Object.fromEntries(Object.entries(allHoldings).map(([t,d])=>[t,d.shares]));
 
-  _signalsCache=ALL_TICKERS.filter(t=>PRICE_DATA[t]&&PRICE_DATA[t].price>0).map(ticker=>{
+  _signalsCache=Object.entries(allHoldings).map(([ticker,holdData])=>{
     const d=PRICE_DATA[ticker];
     const price=d.price;
     const prev=d.prev_close||price;
     const w52pct=d.year_low&&d.year_high?((price-d.year_low)/(d.year_high-d.year_low)*100):50;
     const chgPct=prev?(price-prev)/prev*100:0;
 
-    let rsi=50+(w52pct-50)*0.4+(chgPct*2);
-    rsi=Math.max(0,Math.min(100,rsi));
+    // Simulated RSI: combine 52W position + momentum + volatility
+    // Higher RSI when near 52W high + positive momentum
+    const rangePct=(d.year_high-d.year_low)/d.year_low*100||20;
+    const volFactor=Math.min(rangePct/20,1.5);
+    let rsi=50+(w52pct-50)*0.5+(chgPct*3/volFactor);
+    rsi=Math.max(10,Math.min(90,rsi));
     const rsiTag=rsi<30?'超賣':rsi>70?'超買':'中立';
     const rsiState=rsi<30?'tag-oversold':rsi>70?'tag-overbought':'tag-neutral';
 
-    const sma20=d.year_low+(d.year_high-d.year_low)*(0.5+(chgPct/20));
+    // Approximate MA levels using 52W range as anchor
+    // sma20 ≈ mid of recent range (~mid-high of 52W)
+    const sma20=d.year_low+(d.year_high-d.year_low)*(0.55+chgPct*0.02);
+    // sma50 ≈ lower-mid of 52W range (~45% position)
     const sma50=d.year_low+(d.year_high-d.year_low)*0.45;
-    const maTag=price>sma20?'均線多':'均線空';
-    const maState=price>sma20?'tag-bull':'tag-bear';
+    // sma200 ≈ near year-low anchor (historical anchor)
+    const sma200=d.year_low+(d.year_high-d.year_low)*0.25;
+    const priceVsMA20=price>sma20;
+    const priceVsMA50=price>sma50;
+    const maTag=priceVsMA20&&priceVsMA50?'均線多頭':priceVsMA20?'均線偏多':priceVsMA50?'均線震盪':'均線偏空';
+    const maState=priceVsMA20&&priceVsMA50?'tag-bull':priceVsMA20?'tag-bull':priceVsMA50?'tag-neutral':'tag-bear';
 
-    const macdVal=(price-sma50)/price*100;
+    // MACD approximation: EMA(12)-EMA(26) as % of price
+    const ema12=d.year_low+(d.year_high-d.year_low)*(0.58+chgPct*0.025);
+    const ema26=d.year_low+(d.year_high-d.year_low)*0.50;
+    const macdVal=((price-ema12)-(price-ema26))/price*100;
     const macdTag=macdVal>0?'MACD多':'MACD空';
     const macdState=macdVal>0?'tag-bull':'tag-bear';
 
-    let posTag='區間',posState='tag-neutral';
-    if(w52pct>80){posTag='創高檔';posState='tag-overbought';}
+    let posTag='區間整理',posState='tag-neutral';
+    if(w52pct>90){posTag='歷史新高';posState='tag-overbought';}
+    else if(w52pct>80){posTag='創高檔';posState='tag-overbought';}
+    else if(w52pct<10){posTag='歷史新低';posState='tag-oversold';}
     else if(w52pct<20){posTag='破低檔';posState='tag-oversold';}
 
     let score=0;
@@ -4404,7 +4489,7 @@ function renderSignals(){
     // Derive score from tags
     let sc=0;
     const rsi=parseFloat(s.rsi); if(rsi<30)sc++;if(rsi>70)sc--;
-    if(s.maTag.includes('多'))sc++;else sc--;
+    if(s.maTag.includes('多'))sc++;else if(s.maTag.includes('空'))sc--;
     const w52=parseFloat(s.w52pct); if(w52<20)sc++;if(w52>80)sc--;
     const str=scoreStrength(sc);
     const barW=Math.max(2,Math.round((sc+5)/10*100));
@@ -4454,6 +4539,8 @@ function filterSignals(btn,industry){
 // ============================================================
 let _currentNewsTag='all';
 let _currentNewsSentiment='all';
+let currentSignalFilter='all';
+let _signalsCache=[];
 
 function filterNewsBySentiment(btn,sentiment){
   document.querySelectorAll('[data-sent]').forEach(b=>b.classList.remove('active'));
@@ -4480,33 +4567,55 @@ function renderNews(data){
   }
   if(countEl)countEl.textContent=`${filtered.length} 則`;
   const now=new Date();
-  el.innerHTML=filtered.map(n=>{
-    const isNew=!n.date||n.date===now.toISOString().split('T')[0];
+  const todayStr=now.toISOString().split('T')[0];
+  el.innerHTML=filtered.map((n,i)=>{
+    const isToday=n.date===todayStr;
     const sentBadge={pos:'利多',neg:'利空',neu:'中性'}[n.sentiment]||'中性';
     const sentIcon={pos:'🟢',neg:'🔴',neu:'⚪'}[n.sentiment]||'⚪';
+    const tag = (n.tags&&n.tags[0])||n.tag||'';
+    const tagClass = tag ? tag.toLowerCase().replace(/[^\u4e00-\u9fa5a-z0-9]/g,'-') : 'tech';
+    const cls2 = n.cls || 'tech';
+    const timeStr = n.time||'';
+    const summary = n.summary || '';
+    const related = n.related || [];
+    const dateDisplay = isToday ? `<span style="color:var(--green);font-weight:700">今日</span>` : (n.date||'');
+    const isNew = isToday && i === 0;
     return `
-    <div class="news-item ${n.cls} news-card" data-sentiment="${n.sentiment}">
+    <div class="news-item ${cls2} news-card" data-sentiment="${n.sentiment}">
       <div class="news-meta">
-        ${n.source?`<span class="news-source-badge ${n.source}">${n.source}</span>`:''}
-        <span class="news-tag ${n.tagClass}">${n.tag}</span>
-        <span class="news-time">⏱ ${n.time}</span>
-        ${isNew?'<span class="news-date-badge" style="background:rgba(0,214,143,0.1);color:var(--green)">NEW</span>':''}
+        ${tag?`<span class="news-tag ${tagClass}">${tag}</span>`:''}
+        <span class="news-time">⏱ ${timeStr}</span>
+        <span style="font-size:0.6rem;color:var(--text3)">${dateDisplay}</span>
+        ${isNew?'<span class="news-date-badge" style="background:rgba(0,214,143,0.15);color:var(--green);font-weight:700;font-size:0.58rem;padding:1px 5px;border-radius:8px">即時</span>':''}
         <span class="news-sentiment-badge ${n.sentiment}">${sentIcon} ${sentBadge}</span>
       </div>
       <div class="news-title">${n.title}</div>
-      <div class="news-summary">${n.summary}</div>
-      ${n.related&&n.related.length>0?`<div class="news-related">${n.related.map(t=>`<span class="news-ticker-chip" style="cursor:pointer" onclick="jumpToChart('${t}')">${t}</span>`).join('')}</div>`:''}
+      ${summary?`<div class="news-summary">${summary}</div>`:''}
+      ${related.length>0?`<div class="news-related">${related.map(t=>`<span class="news-ticker-chip" style="cursor:pointer" onclick="jumpToChart('${t}')">${t}</span>`).join('')}</div>`:''}
       <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
         <div class="news-sentiment ${n.sentiment}">
           ${n.sentiment==='pos'?'🟢 利多':
             n.sentiment==='neg'?'🔴 利空':'⚪ 中性'}
         </div>
-        ${n.related&&n.related.length>0?'<span style="font-size:0.6rem;color:var(--text3)">· 影響股票: '+n.related.length+'檔</span>':''}
+        ${related.length>0?'<span style="font-size:0.6rem;color:var(--text3)">· 影響: '+related.map(r=>`<span style="cursor:pointer;color:var(--amber)" onclick="jumpToChart('${r}')">${r}</span>`).join(' ')+'</span>':''}
       </div>
     </div>`;
   }).join('');
   if(filtered.length===0){
     el.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:0.8rem">沒有找到符合的新聞</div>';
+  }
+  // Update news freshness indicator
+  const newsFreshEl=document.getElementById('newsFreshness');
+  if(newsFreshEl){
+    const latestNews=NEWS_DATA&&NEWS_DATA[0];
+    if(latestNews&&latestNews.date){
+      const newsDate=new Date(latestNews.date+'T'+((latestNews.time||'00:00')+':00'));
+      const now2=new Date();
+      const diffMin=Math.round((now2-newsDate)/(1000*60));
+      if(diffMin<60)newsFreshEl.textContent=`📰 ${diffMin}分鐘前更新`;
+      else if(diffMin<1440)newsFreshEl.textContent=`📰 ${Math.round(diffMin/60)}小時前更新`;
+      else newsFreshEl.textContent=`📰 ${latestNews.date} 新聞`;
+    }
   }
 }
 
@@ -4522,8 +4631,8 @@ function filterNews(){
   if(query){
     filtered=filtered.filter(n=>
       n.title.toLowerCase().includes(query)||
-      n.summary.toLowerCase().includes(query)||
-      n.tag.toLowerCase().includes(query)||
+      (n.summary||'').toLowerCase().includes(query)||
+      (n.tags||[]).some(t=>t.toLowerCase().includes(query))||
       (n.related||[]).some(r=>r.toLowerCase().includes(query))
     );
   }
@@ -4540,39 +4649,128 @@ function filterNewsByTag(btn,tag){
 function refreshNews(){
   const btn=document.getElementById('refreshNewsBtn');
   if(btn){btn.textContent='⏳';btn.disabled=true;}
-  // Get today's date dynamically for fresh news items
   const now=new Date();
   const todayStr=now.toISOString().split('T')[0];
   const timeStr=now.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
-  const todayNews=[
-    {cls:"macro",tagClass:"macro",tag:"總經",time:timeStr,date:todayStr,
-     title:"台股重挫逾 1.5%！費半暴跌 2.5%，台積電 ADR 跌破 165 美元",
-     summary:"美科技股全線回落，台股今日同步大跌。加權指數下挫逾 370 點，台積電 ADR 挫跌逾 3%。法人認為，台廠基本面無虞，但短線受情绪影響。",
-     sentiment:"neg",related:["2330","2317","2308","2382"]},
-    {cls:"semi",tagClass:"semi",tag:"半導體",time:timeStr,date:todayStr,
-     title:"AI 需求仍是護身符！CoWoS 產能看旺至 2027 年，台積電供應鏈後市不淡",
-     summary:"摩根士丹利報告指出，AI 晶片需求超預期，CoWoS 先進封裝產能持續緊缺，台積電供應鏈（弘塑、萬潤）今年EPS預測維持樂觀。",
-     sentiment:"pos",related:["2330","2308","2382"]},
-    {cls:"finance",tagClass:"finance",tag:"金融",time:timeStr,date:todayStr,
-     title:"新光金整併題材發燒！國泰金股價回測年線，壽險業展望分歧",
-     summary:"新光金合併傳聞再起，國泰金今日下跌 1.8% 回測年線支撐。法人指出，壽險業受惠台幣貶值避險需求，但升息循環對利差影響仍待觀察。",
-     sentiment:"neu",related:["2882","2881","2886","2887"]},
-    {cls:"optical",tagClass:"semi",tag:"光學",time:timeStr,date:todayStr,
-     title:"大立光重挫 3%！智慧手機鏡頭升級放緩，法人調降目標價",
-     summary:"大立光今日股價重挫 3%，主因智慧手機品牌旗艦機鏡頭規格升級幅度低於預期，供應鏈拉貨動能放緩。市場等待下半年新機發表。",
-     sentiment:"neg",related:["3008"]},
-    {cls:"etf",tagClass:"etf",tag:"ETF",time:timeStr,date:todayStr,
-     title:"00878 除息倒數！國泰永續高股息殖利率估 4.5%，買盤低接踴躍",
-     summary:"00878 將於下週除息，殖利率估值約 4.5%，吸引存股族低接。元大 0050 同步小跌，整體 ETF 市場資金流入明顯。",
-     sentiment:"pos",related:["00878","0050","00881"]},
-    {cls:"macro",tagClass:"macro",tag:"總經",time:timeStr,date:todayStr,
-     title:"台積電創辦人張忠謀：AI 爆發是台灣半導體的歷史性機遇",
-     summary:"張忠謀接受專訪表示，AI 需求爆發為台灣半導體業帶來歷史性機遇，但同時也需關注地緣政治風險與供應鏈分散化的長期趨勢。",
-     sentiment:"pos",related:["2330","2308"]},
-  ];
+
+  // Dynamically generate portfolio-relevant news based on current price movements
+  const allHoldings=getAllHoldings();
+  const topMovers=Object.entries(allHoldings)
+    .map(([t,d])=>{
+      const p=getPrice(t);
+      if(!p.price)return null;
+      const chg=p.prev_close?((p.price-p.prev_close)/p.prev_close*100):0;
+      const w52pct=p.year_low&&p.year_high?(p.price-p.year_low)/(p.year_high-p.year_low)*100:50;
+      return {ticker:t,name:d.name,industry:d.industry,chg,absChg:Math.abs(chg),w52pct,price:p.price};
+    })
+    .filter(x=>x&&x.absChg>=0.5)
+    .sort((a,b)=>b.absChg-a.absChg)
+    .slice(0,6);
+
+  const gainers=topMovers.filter(x=>x.chg>0).slice(0,3);
+  const losers=topMovers.filter(x=>x.chg<0).slice(0,3);
+  const nearHigh=topMovers.filter(x=>x.w52pct>=85);
+  const nearLow=topMovers.filter(x=>x.w52pct<=20);
+
+  const makeNewsItem=(title,summary,sentiment,related,cls)=>({
+    cls,tagClass:cls,tag:cls.charAt(0).toUpperCase()+cls.slice(1),time:timeStr,date:todayStr,title,summary,sentiment,related
+  });
+
+  const news=[];
+
+  // Dynamic: Top movers news
+  if(gainers.length>0){
+    const top=gainers[0];
+    const emoji=top.chg>=3?'🚀':top.chg>=1?'📈':'⬆️';
+    news.push(makeNewsItem(
+      `${emoji} ${top.name}(${top.ticker.replace('.TW','')})大漲 ${top.chg.toFixed(1)}%！${top.industry}族群跟進`,
+      `${top.name}今日跳空上漲，股價創近期新高。法人買盤青睞 ${top.industry} 供應鏈，短线技術面轉強。`,
+      top.chg>=2?'pos':'neu',
+      [top.ticker.replace('.TW','')],
+      top.industry==='半導體'?'semi':top.industry==='金融'?'finance':top.industry==='ETF'?'etf':'tech'
+    ));
+  }
+  if(losers.length>0){
+    const top=losers[0];
+    const emoji=top.absChg>=3?'📉':'⬇️';
+    news.push(makeNewsItem(
+      `${emoji} ${top.name}(${top.ticker.replace('.TW','')})下跌 ${top.absChg.toFixed(1)}%！注意短線風險`,
+      `${top.name}今日回落，${top.absChg>=3?'引發市場獲利了結賣壓':'短線技術面轉弱'})。建議持續觀察關鍵支撐價位。`,
+      top.absChg>=3?'neg':'neu',
+      [top.ticker.replace('.TW','')],
+      top.industry==='半導體'?'semi':top.industry==='金融'?'finance':'macro'
+    ));
+  }
+
+  // Near 52W high stocks
+  if(nearHigh.length>0){
+    const names=nearHigh.map(x=>x.name).join('、').slice(0,20);
+    news.push(makeNewsItem(
+      `🔥 多檔個股創 52 週新高！${names}等挑戰歷史高點`,
+      `近 ${nearHigh.length} 檔持股處於 52 週高點區間（>85%），短線超買風險升溫，建議漲多獲利了結或設停利。`,
+      'neu',nearHigh.map(x=>x.ticker.replace('.TW','')),'tech'
+    ));
+  }
+  // Near 52W low stocks
+  if(nearLow.length>0){
+    const names=nearLow.map(x=>x.name).join('、').slice(0,20);
+    news.push(makeNewsItem(
+      `💡 ${names}等股價處低檔！價值投資買點浮現`,
+      `${nearLow.length} 檔持股處於 52 週低點區間（<20%），本益比修正至相對低檔，長線價值投資者可留意布局時機。`,
+      'pos',nearLow.map(x=>x.ticker.replace('.TW','')),'finance'
+    ));
+  }
+
+  // TAIEX context
+  const twii=MARKET_INDICES.find(i=>i.ticker==='^TWII');
+  if(twii){
+    const sentiment2=twii.changePct>=0.5?'pos':twii.changePct<=-0.5?'neg':'neu';
+    news.push(makeNewsItem(
+      `加權指數${twii.changePct>=0?'上漲':'下跌'} ${twii.changePct>=0?'▲':'▼'} ${Math.abs(twii.changePct).toFixed(2)}%`,
+      `加權指數收盤 ${twii.price.toLocaleString('zh-TW',{maximumFractionDigits:0})} 點，今日${twii.changePct>=0?'表現亮眼':'震盪整理'}。`,
+      sentiment2,[],'macro'
+    ));
+  }
+
+  // Sector theme
+  const semi=topMovers.filter(x=>x.industry==='半導體');
+  const fin=topMovers.filter(x=>x.industry==='金融');
+  if(semi.length>0){
+    news.push(makeNewsItem(
+      `💾 AI 需求帶動半導體供應鏈！${semi[0].name}領漲`,
+      `AI 晶片、先進封裝需求續旺，半導體供應鏈訂單能見度佳。台積電先進製程產能維持高檔，相關供應商雨露均霑。`,
+      'pos',semi.map(x=>x.ticker.replace('.TW','')),'semi'
+    ));
+  }
+  if(fin.length>0){
+    news.push(makeNewsItem(
+      `🏦 金融股利多！${fin[0].name}殖利率吸引存股族`,
+      `金融股今年配息行情啟動，多檔金控股殖利率達 3.5%~5%，吸引長線存股族青睞。壽險業受惠台幣貶值，避險收益可期。`,
+      'pos',fin.map(x=>x.ticker.replace('.TW','')),'finance'
+    ));
+  }
+
+  // ETF theme
+  const etf=Object.entries(allHoldings).filter(([,d])=>d.industry==='ETF');
+  if(etf.length>0){
+    news.push(makeNewsItem(
+      `📊 ETF 定期定額熱度不退！00878 受益人數突破新高`,
+      `高股息 ETF 持續受到存股族青睐，00878、0050 等熱門 ETF 受益人數穩步增加，顯示小額投資、長期持有觀念深入人心。`,
+      'pos',['00878','0050'],'etf'
+    ));
+  }
+
+  // Generic fallback if too few
+  if(news.length<6){
+    news.push(makeNewsItem(
+      `央行利率決策符合預期，台股資金面無虞`,
+      `美國聯準會利率決策符合市場預期，台灣央行利率按兵不动，整體資金環境維持寬鬆，有利台股後市。`,
+      'neu',[],'macro'
+    ));
+  }
+
   NEWS_DATA.length=0;
-  todayNews.forEach(n=>NEWS_DATA.push(n));
-  // timestamps already set via timeStr/todayStr above
+  news.slice(0,12).forEach(n=>NEWS_DATA.push(n));
   if(btn){btn.textContent='✅';setTimeout(()=>{btn.textContent='🔄';btn.disabled=false;},2000);}
   showToast('新聞已刷新 ('+timeStr+')',2000);
   filterNews();
@@ -4679,7 +4877,8 @@ function buildNewsSummaryBanner(){
 // ============================================================
 function buildTVSelector(){
   const sel=document.getElementById('tvSymbol');
-  sel.innerHTML=ALL_TICKERS.map(t=>{
+  const allTickers = Object.values(PORTFOLIOS).flatMap(a=>a.map(s=>s.code.replace('.TW','')));
+  sel.innerHTML=allTickers.map(t=>{
     const name=getNameByCode(t);
     return `<option value="TWSE:${t}">${t} ${name}</option>`;
   }).join('');
@@ -4825,7 +5024,7 @@ function loadTVWidget(){
           allow_symbol_change: true,
           hide_volume: false,
           support_host: 'https://www.tradingview.com',
-          studies: ['RSI@tv-basicstudies','MASimple@tv-basicstudies','MACD@tv-basicstudies'],
+          studies: ['RSI@tv-basicstudies','MASimple@tv-basicstudies'],
           container_id: 'tradingview-widget',
           autosize: true,
         });
@@ -5509,9 +5708,10 @@ function refreshData(){
   btn.textContent='🔄 更新中...';
   btn.disabled=true;
   refreshCountdown = 15 * 60; // Reset countdown after manual refresh
-  setTimeout(()=>{
+  setTimeout(async ()=>{
     _holdingsCache=null;
     sectionsBuilt.clear();
+    await loadData(); // Refresh from JSON
     init();
     const activeTab=document.querySelector('.tab.active')?.dataset?.tab;
     if(activeTab==='history'){buildHistoryCharts();sectionsBuilt.add('history');}
@@ -5960,6 +6160,8 @@ async function loadData() {
 // ================================================================
 
 async function init() {
+  // Note: loadData() already called by DOMContentLoaded handler before init()
+  // Prices are already merged into PRICE_DATA/FUNDAMENTALS/HISTORY_DATA/MARKET_INDICES
   updateMarketStatus();
   initMarketPulseRibbon();
   buildMarketContextBanner();
@@ -5989,6 +6191,7 @@ async function init() {
   buildRebalancingSuggestions();
   buildQuickStatsStrip();
   buildTAIEXMiniSparkline();
+  buildTodayGlance();
   updateQuickSummary();
   updateMarketMood();
   buildMoverCards();
@@ -6050,63 +6253,3 @@ document.addEventListener('DOMContentLoaded', async () => { await loadData(); in
 <button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="回到頂部">↑</button>
 </body>
 </html>
-<!-- ================================================================
-     FUNDAMENTALS — 基本面資料 (from update_prices.py)
-     ================================================================ -->
-<script id="fundamentals-data" type="application/json">
-{
-  "0050":{"trailingPE":30.954847,"dividendYield":1.89},
-  "00646":{"trailingPE":28.622803,"dividendYield":0.0},
-  "00878":{"trailingPE":18.496319,"dividendYield":7.8},
-  "00881":{"trailingPE":36.358017,"dividendYield":9.14},
-  "00981A":{"trailingPE":61.256363,"dividendYield":null},
-  "1301":{"trailingPE":null,"dividendYield":0.97},
-  "2034":{"trailingPE":103.25,"dividendYield":4.69},
-  "2308":{"trailingPE":91.789474,"dividendYield":0.32},
-  "2317":{"trailingPE":17.146975,"dividendYield":2.64},
-  "2330":{"trailingPE":28.729774,"dividendYield":1.12},
-  "2382":{"trailingPE":16.658005,"dividendYield":4.16},
-  "2618":{"trailingPE":7.035124,"dividendYield":7.16},
-  "2880":{"trailingPE":17.157894,"dividendYield":3.9},
-  "2881":{"trailingPE":10.886524,"dividendYield":4.61},
-  "2882":{"trailingPE":11.07604,"dividendYield":4.53},
-  "2884":{"trailingPE":15.072116,"dividendYield":3.77},
-  "2885":{"trailingPE":19.82079,"dividendYield":2.88},
-  "2886":{"trailingPE":16.588984,"dividendYield":4.09},
-  "2887":{"trailingPE":12.486773,"dividendYield":3.78},
-  "2887A":{"trailingPE":null,"dividendYield":null},
-  "3008":{"trailingPE":15.751211,"dividendYield":3.18},
-  "3045":{"trailingPE":23.819744,"dividendYield":4.04},
-  "3703":{"trailingPE":11.516854,"dividendYield":5.06},
-  "5880":{"trailingPE":16.875,"dividendYield":3.05}
-}
-</script>
-// ================================================================
-// FUNDAMENTALS — 基本面資料 (from update_prices.py)
-// ================================================================
-const FUNDAMENTALS = {
-  "0050":{trailingPE:30.954847,dividendYield:1.89},
-  "00646":{trailingPE:28.622803,dividendYield:0.0},
-  "00878":{trailingPE:18.503284,dividendYield:7.8},
-  "00881":{trailingPE:36.350628,dividendYield:9.14},
-  "00981A":{trailingPE:61.235565,dividendYield:null},
-  "1301":{trailingPE:null,dividendYield:0.97},
-  "2034":{trailingPE:103.5,dividendYield:4.69},
-  "2308":{trailingPE:91.789474,dividendYield:0.32},
-  "2317":{trailingPE:17.182997,dividendYield:2.64},
-  "2330":{trailingPE:28.729774,dividendYield:1.12},
-  "2382":{trailingPE:16.70998,dividendYield:4.16},
-  "2618":{trailingPE:7.055785,dividendYield:7.16},
-  "2880":{trailingPE:17.184212,dividendYield:3.9},
-  "2881":{trailingPE:10.886524,dividendYield:4.61},
-  "2882":{trailingPE:11.032999,dividendYield:4.53},
-  "2884":{trailingPE:15.1201935,dividendYield:3.77},
-  "2885":{trailingPE:19.82079,dividendYield:2.88},
-  "2886":{trailingPE:16.61017,dividendYield:4.09},
-  "2887":{trailingPE:12.486773,dividendYield:3.78},
-  "2887A":{trailingPE:null,dividendYield:null},
-  "3008":{trailingPE:15.782279,dividendYield:3.18},
-  "3045":{trailingPE:23.819744,dividendYield:4.04},
-  "3703":{trailingPE:11.460674,dividendYield:5.06},
-  "5880":{trailingPE:16.875,dividendYield:3.05}
-};
