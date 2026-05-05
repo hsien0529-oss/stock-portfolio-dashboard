@@ -2168,6 +2168,12 @@ const FAMILY_CLASS = {
   '👦 兒子 (大)': 'family-son1',
   '👦 兒子 (小)': 'family-son2'
 };
+const FAMILY_COLOR = {
+  '👨 爸爸':      '#4d9fff',
+  '👩 太太':      '#b066ff',
+  '👦 兒子 (大)': '#00d68f',
+  '👦 兒子 (小)': '#ffb020'
+};
 
 // ============================================================
 // data.js provides PRICE_DATA, HISTORY_DATA, MARKET_INDICES, NEWS_DATA
@@ -2197,6 +2203,15 @@ function getFundamental(code){
   const t=code.replace('.TW','');
   return FUNDAMENTALS[t]||{trailingPE:null,dividendYield:null};
 }
+
+const INDUSTRY_ICON = {
+  '半導體':'🔲','電子':'📱','金融':'🏦','ETF':'📊',
+  '航空':'✈️','光學':'📷','電信':'📡','化工':'⚗️',
+  '營建':'🏗️','鋼鐵':'🔩','汽車':'🚗','農業':'🌾',
+  '製藥':'💊','紡織':'🧵','食品':'🍎','航運':'🚢',
+  '油電':'⚡','水資源':'💧','再生能源':'🌱','其他':'📦'
+};
+function getIndustryIcon(industry){return INDUSTRY_ICON[industry]||INDUSTRY_ICON['其他'];}
 
 function getAllHoldings(){
   const result = {};
