@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>廖家投資看板 — Liao Family Portfolio</title>
+<title>廖家投資看板 — Liao Family Portfolio · <span id="docTitleDate"></span></title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 <!-- TradingView: preconnect for faster widget loading -->
@@ -58,7 +58,8 @@
 /* === NEWS IMPROVEMENTS === */
 .news-card:hover{transform:translateY(-1px);border-color:var(--border2);box-shadow:var(--shadow-md)}
 
-/* === SMOOTH SCROLL === */
+/* === SMOOTH SCROLL + SELECTION === */
+::selection{background:rgba(77,159,255,0.25);color:var(--text)}
 html{scroll-behavior:smooth}
 body{
   font-family:'Noto Sans TC','Inter',sans-serif;
@@ -70,15 +71,54 @@ body{
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 ::-webkit-scrollbar-thumb:hover{background:#555}
 
+/* === KEYBOARD SHORTCUT HINT === */
+.shortcut-hint{position:fixed;bottom:16px;right:16px;z-index:50;display:flex;gap:6px;align-items:center}
+.shortcut-badge{
+  background:var(--surface2);border:1px solid var(--border);border-radius:6px;
+  padding:4px 8px;font-size:0.62rem;color:var(--text3);font-family:var(--font-mono);
+  display:flex;align-items:center;gap:4px;transition:all 0.15s;
+}
+.shortcut-badge:hover{background:var(--surface3);color:var(--text2);border-color:var(--border2)}
+kbd{background:var(--surface4);border:1px solid var(--border2);border-radius:3px;padding:0 3px;font-size:0.6rem}
+
+/* === SECTOR MINI BADGE === */
+.sector-mini{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:12px;font-size:0.62rem;font-weight:600;background:var(--surface2);border:1px solid var(--border)}
+.sector-mini-dot{width:5px;height:5px;border-radius:50%}
+
+/* === BENCHMARK COMPARISON STRIP === */
+.benchmark-strip{display:flex;align-items:center;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.benchmark-item{flex:1;text-align:center;padding:8px 10px;border-right:1px solid var(--border)}
+.benchmark-item:last-child{border-right:none}
+.benchmark-label{font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:2px}
+.benchmark-value{font-family:var(--font-mono);font-size:0.88rem;font-weight:700}
+.benchmark-delta{font-family:var(--font-mono);font-size:0.7rem;font-weight:600;margin-top:1px}
+.benchmark-delta.up{color:var(--green)}.benchmark-delta.down{color:var(--red)}
+
+/* === TOAST === */
+.toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:8px 16px;font-size:0.78rem;font-weight:600;color:var(--text);z-index:9999;opacity:0;transition:opacity 0.25s;pointer-events:none;white-space:nowrap;box-shadow:var(--shadow-lg)}
+.toast.show{opacity:1}
+
+/* === SCROLL TO TOP === */
+.scroll-top-btn{position:fixed;bottom:70px;right:20px;width:36px;height:36px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-size:1rem;cursor:pointer;display:none;align-items:center;justify-content:center;z-index:50;transition:all 0.2s;box-shadow:var(--shadow-md)}
+.scroll-top-btn.visible{display:flex}.scroll-top-btn:hover{background:var(--surface3);color:var(--text);border-color:var(--border2)}
+
 /* === TICKER STRIP === */
 .ticker-strip{
   background:#000;border-bottom:1px solid var(--border);padding:0;
   display:flex;overflow:hidden;height:36px;align-items:center;
   box-shadow:0 1px 3px rgba(0,0,0,0.6);position:relative;
 }
+/* Smooth infinite ticker — wrapper clips overflow, content scrolls */
+.ticker-strip{position:relative;overflow:hidden}
+.ticker-strip::before,.ticker-strip::after{
+  content:'';position:absolute;top:0;bottom:0;width:50px;z-index:2;pointer-events:none;
+}
+.ticker-strip::before{left:0;background:linear-gradient(90deg,#000,transparent)}
+.ticker-strip::after{right:0;background:linear-gradient(-90deg,#000,transparent)}
 .ticker-wrapper{
   display:flex;width:max-content;
-  animation:ticker-scroll 35s linear infinite;
+  animation:ticker-scroll 50s linear infinite;
+  will-change:transform;
 }
 .ticker-wrapper:hover{animation-play-state:paused}
 @keyframes ticker-scroll{
@@ -86,10 +126,6 @@ body{
   100%{transform:translateX(-50%)}
 }
 .ticker-strip:hover{animation-play-state:paused}
-.ticker-strip::after{
-  content:'';position:absolute;right:0;top:0;bottom:0;width:60px;
-  background:linear-gradient(90deg,transparent,#000);pointer-events:none;z-index:2;
-}
 .ticker-item{
   display:flex;align-items:center;gap:6px;padding:0 18px;
   border-right:1px solid var(--border);white-space:nowrap;font-size:0.78rem;
@@ -339,6 +375,16 @@ tbody tr:hover{background:rgba(77,159,255,0.06) !important}
   position:relative;width:100%;height:calc(100% - 44px);
 }
 .tv-chart-wrap iframe{width:100%;height:100%;border:none;display:block}
+/* TV loading overlay */
+.tv-loading-overlay{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:10px;background:#0d0d0d;z-index:10;
+}
+@keyframes tv-spin{to{transform:rotate(360deg)}}
+.tv-spinner{
+  width:28px;height:28px;border:2px solid var(--border2);border-top-color:var(--green);
+  border-radius:50%;animation:tv-spin 0.8s linear infinite;
+}
 
 /* === TICKER STRIP ENHANCEMENT === */
 .ticker-item.near-high .ticker-price{color:var(--green);font-weight:700}
@@ -636,7 +682,9 @@ select:focus{outline:none;border-color:var(--blue)}
 .section{display:none}.section.active{display:block}
 
 /* === METRICS === */
-.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:900px){.metrics-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.metrics-grid{grid-template-columns:repeat(2,1fr)}}
 .metric-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
 .metric-label{font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px}
 .metric-value{font-family:var(--font-mono);font-size:1.2rem;font-weight:700;color:var(--text)}
@@ -1267,6 +1315,119 @@ input[type=file]{display:none}
 /* === TV FALLBACK CHART === */
 .tv-fallback-chart{position:relative;width:100%;height:300px;margin-top:8px}
 
+/* === PORTFOLIO NEWS DIGEST === */
+.portfolio-news-digest{
+  background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+  padding:10px 12px;margin-bottom:10px;
+}
+.portfolio-news-digest-title{
+  font-size:0.65rem;font-weight:700;color:var(--text3);text-transform:uppercase;
+  letter-spacing:0.06em;margin-bottom:8px;display:flex;align-items:center;gap:6px;
+}
+.portfolio-news-item{
+  display:flex;align-items:flex-start;gap:8px;padding:5px 0;
+  border-bottom:1px solid var(--border);font-size:0.72rem;
+}
+.portfolio-news-item:last-child{border-bottom:none}
+.portfolio-news-item:hover{background:rgba(77,159,255,0.04);margin:0 -4px;padding:5px 4px;border-radius:4px}
+.portfolio-news-sentiment{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.portfolio-news-sentiment.pos{background:var(--green)}
+.portfolio-news-sentiment.neg{background:var(--red)}
+.portfolio-news-sentiment.neu{background:var(--text3)}
+.portfolio-news-text{flex:1;line-height:1.4}
+.portfolio-news-ticker{font-family:var(--font-mono);font-weight:700;color:var(--blue);font-size:0.68rem}
+.portfolio-news-time{font-size:0.58rem;color:var(--text3);flex-shrink:0}
+
+/* === 52W POSITION BADGE === */
+.w52-badge{
+  font-size:0.6rem;padding:1px 5px;border-radius:8px;font-weight:700;
+  border:1px solid;font-family:var(--font-mono);white-space:nowrap;
+}
+.w52-badge.near-high{border-color:rgba(0,214,143,0.3);color:var(--green);background:rgba(0,214,143,0.08)}
+.w52-badge.near-low{border-color:rgba(255,68,68,0.3);color:var(--red);background:rgba(255,68,68,0.08)}
+.w52-badge.mid{border-color:var(--border);color:var(--text3);background:var(--surface3)}
+
+/* === STOCK DETAIL CARD === */
+.stock-detail-card{
+  background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+  padding:10px;margin-bottom:8px;
+}
+.stock-detail-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.stock-detail-ticker{font-family:var(--font-mono);font-weight:700;font-size:0.9rem;color:var(--blue)}
+.stock-detail-name{font-size:0.7rem;color:var(--text3)}
+.stock-detail-price{font-family:var(--font-mono);font-size:1.4rem;font-weight:800}
+.stock-detail-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.stock-detail-metric{text-align:center;padding:5px;background:var(--surface);border-radius:6px;border:1px solid var(--border)}
+.stock-detail-metric-label{font-size:0.55rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em}
+.stock-detail-metric-value{font-family:var(--font-mono);font-size:0.82rem;font-weight:700;margin-top:2px}
+
+/* === IMPROVED ALERT BADGE === */
+.alert-badge-new{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:2px 6px;border-radius:10px;font-size:0.62rem;font-weight:700;
+}
+.alert-badge-new.warn{background:rgba(255,176,32,0.1);color:var(--amber);border:1px solid rgba(255,176,32,0.2)}
+.alert-badge-new.danger{background:rgba(255,68,68,0.1);color:var(--red);border:1px solid rgba(255,68,68,0.2)}
+.alert-badge-new.info{background:rgba(77,159,255,0.1);color:var(--blue);border:1px solid rgba(77,159,255,0.2)}
+
+/* === NEWS TAB BADGE === */
+.news-badge-new{background:rgba(255,68,68,0.15);color:var(--red);padding:1px 5px;border-radius:8px;font-size:0.55rem;font-weight:700;margin-left:4px}
+
+/* === QUICK STATS STRIP === */
+.quick-kpi-strip{
+  display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:8px 14px;
+  background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+}
+@media(max-width:900px){.quick-kpi-strip{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.quick-kpi-strip{grid-template-columns:repeat(2,1fr)}}
+.kpi-item{text-align:center;padding:6px 4px}
+.kpi-label{font-size:0.55rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:3px}
+.kpi-value{font-family:var(--font-mono);font-size:0.92rem;font-weight:700;color:var(--text)}
+.kpi-value.up{color:var(--green)}.kpi-value.down{color:var(--red)}
+.kpi-sub{font-size:0.58rem;color:var(--text3);margin-top:2px}
+
+/* === SECTOR PERFORMANCE CHIP === */
+.sector-perf-chip{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:3px 8px;border-radius:12px;border:1px solid;font-size:0.65rem;font-weight:600;
+}
+.sector-perf-chip.up{border-color:rgba(0,214,143,0.3);color:var(--green);background:rgba(0,214,143,0.08)}
+.sector-perf-chip.down{border-color:rgba(255,68,68,0.3);color:var(--red);background:rgba(255,68,68,0.08)}
+.sector-perf-chip.neu{border-color:var(--border);color:var(--text3);background:var(--surface3)}
+
+/* === EARNINGS CALENDAR STRIP === */
+.earnings-strip{
+  display:flex;gap:6px;overflow-x:auto;padding:8px 14px;
+  background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;
+  scrollbar-width:thin;scrollbar-color:var(--surface3) transparent;
+}
+.earnings-chip{
+  flex-shrink:0;padding:5px 10px;border-radius:8px;
+  border:1px solid var(--border);font-size:0.68rem;
+  background:var(--surface);display:flex;flex-direction:column;align-items:center;min-width:60px;
+}
+.earnings-chip-name{font-weight:700;font-family:var(--font-mono);font-size:0.7rem;color:var(--blue)}
+.earnings-chip-date{font-size:0.58rem;color:var(--text3);margin-top:2px}
+
+/* === COMPARISON BARS === */
+.compare-bar-row{display:flex;align-items:center;gap:8px;padding:3px 0}
+.compare-bar-label{font-size:0.7rem;color:var(--text2);width:55px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
+.compare-bar-track{flex:1;height:5px;background:var(--surface3);border-radius:3px;overflow:hidden}
+.compare-bar-fill{height:100%;border-radius:3px;transition:width 0.5s}
+.compare-bar-value{font-family:var(--font-mono);font-size:0.65rem;font-weight:600;width:40px;text-align:right;flex-shrink:0}
+
+/* === INDEX CHIP (navbar) === */
+.index-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 8px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;font-size:0.72rem;cursor:default;
+}
+.index-label{font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.03em}
+.index-price{font-family:var(--font-mono);font-weight:700}
+.index-chg{font-family:var(--font-mono);font-size:0.68rem;font-weight:600}
+.index-chg.up{color:var(--green)}.index-chg.down{color:var(--red)}
+.navbar-market-indices{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+
 </style>
 </head>
 <body>
@@ -1582,22 +1743,33 @@ input[type=file]{display:none}
       </div>
     </div>
 
-        <!-- Market Pulse -->
-        <div class="card mb12">
-          <div class="card-header">
-            <div class="card-title">📋 市場快訊</div>
-            <div class="text-xs" id="pulseUpdateTime" style="color:var(--text3)"></div>
-          </div>
-          <div class="pulse-grid" id="marketPulse"></div>
-          <!-- Sector performance mini-bars -->
-          <div style="padding:0 14px 10px">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-              <span style="font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em">各產業今日表現</span>
-              <span style="font-size:0.6rem;color:var(--text3)" id="sectorTWIIPct">加權指數 ▼ 0.96%</span>
-            </div>
-            <div style="display:flex;gap:4px;flex-wrap:wrap" id="sectorPulseBars"></div>
-          </div>
+    <!-- Portfolio News Digest -->
+    <div class="card mb12">
+      <div class="card-header">
+        <div class="card-title">📰 持股相關新聞</div>
+        <div class="text-xs" style="color:var(--text3);font-size:0.62rem">🔢 與組合相關的市場資訊</div>
+      </div>
+      <div class="card-body">
+        <div id="portfolioNewsDigest"></div>
+      </div>
+    </div>
+
+    <!-- Market Pulse -->
+    <div class="card mb12">
+      <div class="card-header">
+        <div class="card-title">📋 市場快訊</div>
+        <div class="text-xs" id="pulseUpdateTime" style="color:var(--text3)"></div>
+      </div>
+      <div class="pulse-grid" id="marketPulse"></div>
+      <!-- Sector performance mini-bars -->
+      <div style="padding:0 14px 10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+          <span style="font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em">各產業今日表現</span>
+          <span style="font-size:0.6rem;color:var(--text3)" id="sectorTWIIPct">加權指數 ▼ 0.96%</span>
         </div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap" id="sectorPulseBars"></div>
+      </div>
+    </div>
 
     <div class="main-grid">
       <!-- LEFT -->
@@ -1637,6 +1809,44 @@ input[type=file]{display:none}
               <div class="gs-value" id="gsHoldingDays" style="font-size:0.85rem">--</div>
             </div>
           </div>
+
+          <!-- Benchmark Comparison Strip -->
+          <div class="benchmark-strip" id="benchmarkStrip" style="margin-top:10px">
+            <div class="benchmark-item">
+              <div class="benchmark-label">加權指數</div>
+              <div class="benchmark-value" id="bmTWII">--</div>
+              <div class="benchmark-delta" id="bmTWIIChg">--</div>
+            </div>
+            <div class="benchmark-item">
+              <div class="benchmark-label">NASDAQ</div>
+              <div class="benchmark-value" id="bmNASDAQ">--</div>
+              <div class="benchmark-delta" id="bmNASDAQChg">--</div>
+            </div>
+            <div class="benchmark-item">
+              <div class="benchmark-label">S&amp;P 500</div>
+              <div class="benchmark-value" id="bmSPX">--</div>
+              <div class="benchmark-delta" id="bmSPXChg">--</div>
+            </div>
+            <div class="benchmark-item">
+              <div class="benchmark-label">台積電</div>
+              <div class="benchmark-value" id="bmTSMC">--</div>
+              <div class="benchmark-delta" id="bmTSMCChg">--</div>
+            </div>
+            <div class="benchmark-item">
+              <div class="benchmark-label">鴻海</div>
+              <div class="benchmark-value" id="bmHNH">--</div>
+              <div class="benchmark-delta" id="bmHNHChg">--</div>
+            </div>
+          </div>
+
+          <!-- Sector Allocation Mini View -->
+          <div id="sectorAllocationMini" style="margin-top:10px;display:none">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+              <div style="font-size:0.6rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;font-weight:700">產業配置</div>
+              <div id="sectorCountMini" style="font-size:0.58rem;color:var(--text3)"></div>
+            </div>
+            <div id="sectorBarsMini" style="display:flex;flex-direction:column;gap:5px"></div>
+          </div>
         </div>
 
         <!-- Portfolio Health Bar -->
@@ -1652,14 +1862,6 @@ input[type=file]{display:none}
               <div id="quickStatsContent" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center"></div>
             </div>
             <div class="portfolio-health" id="portfolioHealth"></div>
-            <!-- Portfolio sparkline mini chart -->
-            <div style="margin-bottom:10px">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
-                <span style="font-size:0.62rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em">近30日組合走勢</span>
-                <span style="font-size:0.62rem;color:var(--text3)" id="sparklinePeriod"></span>
-              </div>
-              <canvas id="sparklineChart" style="width:100%;height:60px;border-radius:4px;background:var(--surface2)"></canvas>
-            </div>
             <div id="benchmarkComparison"></div>
           </div>
         </div>
@@ -1881,13 +2083,18 @@ input[type=file]{display:none}
             <a id="tvExternalLink" href="#" target="_blank" class="btn btn-sm" style="text-decoration:none;padding:2px 8px" title="在 TradingView 開啟">🌐</a>
             <a id="tvYhooLink" href="#" target="_blank" class="btn btn-sm" style="text-decoration:none;padding:2px 8px" title="Yahoo 股市">📈</a>
             <a id="tvGoodinfoLink" href="#" target="_blank" class="btn btn-sm" style="text-decoration:none;padding:2px 8px" title="GoodInfo">📊</a>
+            <a id="tvNewsLink" href="#" target="_blank" class="btn btn-sm" style="text-decoration:none;padding:2px 8px" title="最新新聞">📰</a>
           </span>
         </div>
         <!-- Loading overlay -->
         <div class="tv-loading" id="tvLoading">
           <div class="tv-loading-spinner"></div>
           <div style="color:var(--text2);font-size:0.78rem;margin-top:4px">載入 TradingView K線圖...</div>
-          <div style="font-size:0.62rem;color:var(--text3);margin-top:2px" id="tvLoadingHint">若無法載入將自動切換至本地圖表</div>
+          <div style="font-size:0.62rem;color:var(--text3);margin-top:2px" id="tvLoadingHint">若無法載入，15秒後自動切換本地圖表</div>
+          <div style="margin-top:8px;display:flex;gap:6px;justify-content:center">
+            <a href="https://www.tradingview.com/chart/?symbol=TWSE:2330" target="_blank" class="btn btn-sm" style="text-decoration:none;opacity:0.7" title="備用連結">🌐 直接開啟</a>
+            <button class="btn btn-sm" onclick="loadTVFallback(document.getElementById('tvSymbol')?.value?.replace('TWSE:','')||'2330')" style="opacity:0.7">📊 跳過等待</button>
+          </div>
         </div>
         <!-- Chart widget container -->
         <div id="tradingview-widget" style="width:100%;flex:1;min-height:360px;position:relative"></div>
@@ -2176,8 +2383,11 @@ const FAMILY_COLOR = {
 };
 
 // ============================================================
-// data.js provides PRICE_DATA, HISTORY_DATA, MARKET_INDICES, NEWS_DATA
-// via external script — no duplicate definitions needed
+// DATA — loaded from data.js (external script tag)
+// NEWS_DATA declared here so code that references it works even
+// before data.js is parsed (data.js overwrites it on load)
+// ============================================================
+const NEWS_DATA = [];
 
 
 // ============================================================
@@ -2185,11 +2395,11 @@ const FAMILY_COLOR = {
 // ============================================================
 function fmt(n){if(n>=1e6)return(n/1e6).toFixed(2)+'M';if(n>=1e3)return(n/1e3).toFixed(1)+'K';return n>0?Math.round(n).toLocaleString('zh-TW'):'0';}
 function fmtTWD(n){return 'NT$'+Math.round(n).toLocaleString('zh-TW');}
-function fmtTWDShort(n){
-  if(n>=100000000)return(n/100000000).toFixed(1)+'億';
-  if(n>=10000000)return(n/10000000).toFixed(1)+'千萬';
-  if(n>=10000)return(n/10000).toFixed(0)+'萬';
-  return Math.round(n).toLocaleString('zh-TW');
+function fmtTWDShort(val){
+  if(Math.abs(val)>=100000000)return(val/100000000).toFixed(1)+'億';
+  if(Math.abs(val)>=10000000)return(val/10000000).toFixed(1)+'千萬';
+  if(Math.abs(val)>=10000)return(val/10000).toFixed(0)+'萬';
+  return Math.round(val).toLocaleString('zh-TW');
 }
 function fmtPct(n){return(n>=0?'+':'')+parseFloat(n).toFixed(2)+'%';}
 function fmtPrice(n){return n>=1000?Math.round(n).toLocaleString('zh-TW'):parseFloat(n).toFixed(2);}
@@ -2258,15 +2468,10 @@ function animateChange(el){
 }
 
 // Animated counter for total portfolio value
-function animateTotalValueCounter(){
+function animateTotalValueCounter(totalMV, totalPrevMV){
   const el=document.getElementById('totalValue');
   if(!el) return;
-  const dates=Object.keys(HISTORY_DATA).sort();
-  const todayKey=dates[dates.length-1];
-  const totalMV=HISTORY_DATA[todayKey]?.Total||0;
-  const prevKey=dates.length>=2?dates[dates.length-2]:todayKey;
-  const prevMV=HISTORY_DATA[prevKey]?.Total||totalMV;
-  const startVal=Math.max(0,totalMV-(totalMV-prevMV)*0.5); // Start at midpoint
+  const startVal=Math.max(0,totalMV-(totalMV-totalPrevMV)*0.5); // Start at midpoint
   const duration=1200;
   const startTime=performance.now();
   function tick(now){
@@ -2463,12 +2668,13 @@ function updateMarketStatus(){
 
   const isWeekend=day===0||day===6;
   const isWeekday=day>=1&&day<=5;
+  const isLateAfter=isWeekday&&timeInMins>=960; // After 16:00
   const marketOpen=isWeekday&&timeInMins>=540&&timeInMins<930; // 9:00-15:30
   const isPre=isWeekday&&timeInMins>=510&&timeInMins<540; // 8:30-9:00
   const isAfter=isWeekday&&timeInMins>=930&&timeInMins<960; // 15:30-16:00
 
   const nextDate=new Date(taipeiDate);
-  nextDate.setDate(nextDate.getDate()+(day===6?2:1));
+  nextDate.setDate(nextDate.getDate()+(day===6?2:day===0?1:1));
   const nextStr=nextDate.toLocaleDateString('zh-TW',{timeZone:'Asia/Taipei',month:'numeric',day:'numeric',weekday:'short'});
 
   if(isWeekend){
@@ -2483,9 +2689,9 @@ function updateMarketStatus(){
     banner.className='status-banner upcoming';
     status.textContent='台股即將開盤';
     dateEl.textContent=dateStr+' · 盤前 8:30';
-  }else if(isAfter){
+  }else if(isAfter || isLateAfter){
     banner.className='status-banner closed';
-    status.textContent='台股盤後揭示中';
+    status.textContent='台股盤後報價中';
     dateEl.textContent=dateStr;
   }else{
     banner.className='status-banner closed';
@@ -2509,22 +2715,25 @@ function updateMarketStatus(){
 // HEADER UPDATE
 // ============================================================
 function updateHeader(){
-  const dates=Object.keys(HISTORY_DATA).sort();
-  const todayKey=dates[dates.length-1];
-  const yesterdayKey=dates.length>=2?dates[dates.length-2]:todayKey;
-  const today=HISTORY_DATA[todayKey];
-  if(!today)return;
-  const total=today.Total;
-  const yesterday=HISTORY_DATA[yesterdayKey]?.Total||total;
-  const chg=total-yesterday;
-  const chgPct=(chg/yesterday)*100;
+  // Use LIVE calculation (same as updateGlobalSummary) instead of HISTORY_DATA snapshot
+  const allHoldings = getAllHoldings();
+  let totalMV = 0, totalPrevMV = 0;
+  Object.entries(allHoldings).forEach(([t, d]) => {
+    const p = getPrice(t);
+    if (p.price > 0) {
+      totalMV += d.shares * p.price;
+      totalPrevMV += d.shares * (p.prev_close || p.price);
+    }
+  });
+  const chg = totalMV - totalPrevMV;
+  const chgPct = totalPrevMV > 0 ? (chg / totalPrevMV) * 100 : 0;
 
   // Animated counter on first load
   const el=document.getElementById('totalValue');
   if(el&&el.textContent==='--'){
-    animateTotalValueCounter();
+    animateTotalValueCounter(totalMV, totalPrevMV);
   } else {
-    el.textContent=fmtTWD(total);
+    el.textContent=fmtTWD(totalMV);
   }
 
   const chgEl=document.getElementById('totalChange');
@@ -2670,6 +2879,80 @@ function updateGlobalSummary(){
     const elDays=document.getElementById('gsHoldingDays');
     elDays.textContent=`${diffDays}天 (${yrs}年)`;
   }
+}
+
+// ============================================================
+// BENCHMARK COMPARISON STRIP
+// ============================================================
+function buildBenchmarkStrip(){
+  const map={
+    'bmTWII': {ticker:'^TWII', fmt: v => v>=10000 ? v.toLocaleString('zh-TW',{maximumFractionDigits:0}) : v.toFixed(2)},
+    'bmNASDAQ': {ticker:'^IXIC', fmt: v => v>=10000 ? v.toLocaleString('zh-TW',{maximumFractionDigits:0}) : v.toFixed(2)},
+    'bmSPX': {ticker:'^GSPC', fmt: v => v.toFixed(2)},
+    'bmTSMC': {ticker:'2330.TW', fmt: v => v>=1000 ? v.toLocaleString('zh-TW',{maximumFractionDigits:0}) : v.toFixed(2)},
+    'bmHNH': {ticker:'2317.TW', fmt: v => v>=1000 ? v.toLocaleString('zh-TW',{maximumFractionDigits:0}) : v.toFixed(2)},
+  };
+
+  Object.entries(map).forEach(([id, cfg]) => {
+    const idx = MARKET_INDICES.find(i => i.ticker === cfg.ticker);
+    const el = document.getElementById(id);
+    const chgEl = document.getElementById(id + 'Chg');
+    if (!el || !idx) return;
+    el.textContent = cfg.fmt(idx.price);
+    if (chgEl) {
+      const pct = idx.changePct;
+      chgEl.textContent = (pct >= 0 ? '▲ ' : '▼ ') + Math.abs(pct).toFixed(2) + '%';
+      chgEl.className = 'benchmark-delta ' + (pct >= 0 ? 'up' : 'down');
+    }
+  });
+}
+
+// ============================================================
+// SECTOR ALLOCATION MINI VIEW
+// ============================================================
+function buildSectorAllocationMini(){
+  const allHoldings = getAllHoldings();
+  const sectorMV = {};
+  let totalMV = 0;
+  Object.entries(allHoldings).forEach(([t, d]) => {
+    const p = getPrice(t);
+    if (!p.price) return;
+    const mv = d.shares * p.price;
+    totalMV += mv;
+    const sec = d.industry || '其他';
+    if (!sectorMV[sec]) sectorMV[sec] = 0;
+    sectorMV[sec] += mv;
+  });
+
+  const sorted = Object.entries(sectorMV).sort((a, b) => b[1] - a[1]);
+  const count = sorted.length;
+
+  const container = document.getElementById('sectorAllocationMini');
+  const barsEl = document.getElementById('sectorBarsMini');
+  const countEl = document.getElementById('sectorCountMini');
+  if (!container || !barsEl) return;
+
+  if (count === 0) { container.style.display = 'none'; return; }
+  container.style.display = 'block';
+  if (countEl) countEl.textContent = `${count} 個產業`;
+
+  const colors = {
+    '半導體': '#4d9fff', '金融': '#00d68f', '電子': '#b066ff',
+    'AI/科技': '#e040fb', 'ETF': '#00c9d4', '其他': '#9a9a9a',
+    '製造業': '#ffb020', '電腦/光學': '#60a5fa', '通信': '#f472b6',
+  };
+
+  barsEl.innerHTML = sorted.slice(0, 6).map(([sec, mv]) => {
+    const pct = totalMV > 0 ? (mv / totalMV * 100) : 0;
+    const color = colors[sec] || '#9a9a9a';
+    return `<div style="display:flex;align-items:center;gap:8px">
+      <div style="font-size:0.65rem;color:var(--text2);width:52px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${sec}</div>
+      <div style="flex:1;height:5px;background:var(--surface3);border-radius:3px;overflow:hidden">
+        <div style="width:${pct.toFixed(1)}%;height:100%;background:${color};border-radius:3px;transition:width 0.6s"></div>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:0.62rem;font-weight:700;color:${color};min-width:32px;text-align:right">${pct.toFixed(0)}%</div>
+    </div>`;
+  }).join('');
 }
 
 // ============================================================
@@ -2883,6 +3166,7 @@ function buildTopMovers(){
 // ============================================================
 // PIE CHART
 // ============================================================
+let pieChartInstance = null;
 function buildPie(){
   const allHoldings=getAllHoldings();
   const sorted=Object.entries(allHoldings)
@@ -3082,23 +3366,31 @@ function buildConcentrationRisk() {
 
 // SECTOR ALLOCATION
 // ============================================================
+const SECTOR_COLORS = {
+  '半導體':'#4d9fff','電子':'#00d68f','金融':'#b066ff',
+  'ETF':'#ffb020','航空':'#00c9d4','光學':'#ff8c00',
+  '電信':'#ff4444','化工':'#9966ff','營建':'#66cc99',
+  '鋼鐵':'#999999','其他':'#666666'
+};
+
 function buildSectorList(){
   const sectors={};
   const allHoldings=getAllHoldings();
   Object.entries(allHoldings).forEach(([t,d])=>{const p=getPrice(t); const mv=d.shares*(p.price||0); if(mv<=0)return; if(!sectors[d.industry])sectors[d.industry]=0; sectors[d.industry]+=mv; });
   const total=Object.values(sectors).reduce((a,b)=>a+b,0);
   const sorted=Object.entries(sectors).sort((a,b)=>b[1]-a[1]);
-  const sectorColors={'半導體':'#4d9fff','電子':'#00d68f','金融':'#b066ff','ETF':'#ffb020','航空':'#00c9d4','光學':'#ff8c00','電信':'#ff4444','化工':'#9966ff','營建':'#66cc99','鋼鐵':'#999999','其他':'#666666'};
   const el=document.getElementById('sectorList');
   el.innerHTML=sorted.map(([sec,mv])=>{
     const pct=total>0?(mv/total*100):0;
-    const color=sectorColors[sec]||'#666666';
-    return `<div class="sector-item">
-      <div class="sector-name">${sec}</div>
+    const color=SECTOR_COLORS[sec]||'#666666';
+    const isHigh=pct>=40;
+    const riskLabel=isHigh?'⚠️ 集中':'💡';
+    return `<div class="sector-item" title="${sec}: ${fmtTWDShort(mv)}">
+      <div class="sector-name">${riskLabel} ${sec}</div>
       <div class="sector-bar-wrap">
         <div class="sector-bar" style="width:${pct.toFixed(1)}%;background:${color}"></div>
       </div>
-      <div class="sector-pct">${pct.toFixed(1)}%</div>
+      <div class="sector-pct" style="color:${color}">${pct.toFixed(1)}%</div>
     </div>`;
   }).join('');
 }
@@ -3108,17 +3400,43 @@ function buildSectorList(){
 // ============================================================
 function buildPortfolioMetrics(){
   const allHoldings=getAllHoldings();
-  let totalCost=0,totalMV=0,winning=0,total=0;
-  Object.entries(allHoldings).forEach(([t,d])=>{const p=getPrice(t); if(p.price<=0)return; totalMV+=d.shares*p.price; if(d.cost>0){totalCost+=d.cost; total++; if(d.shares*p.price>d.cost)winning++;} });
+  let totalCost=0,totalMV=0,winning=0,total=0,totalGain=0,totalLoss=0;
+  Object.entries(allHoldings).forEach(([t,d])=>{
+    const p=getPrice(t); if(p.price<=0)return;
+    const mv=d.shares*p.price;
+    const gain=mv-d.cost;
+    totalMV+=mv;
+    if(d.cost>0){totalCost+=d.cost; total++; if(gain>0){winning++;totalGain+=gain;}else if(gain<0){totalLoss+=gain;}}
+  });
   const gainPct=totalCost>0?((totalMV-totalCost)/totalCost*100):0;
   const winRate=total>0?(winning/total*100):0;
   const stockCount=Object.keys(allHoldings).filter(t=>getPrice(t).price>0).length;
+
+  // Calculate max drawdown and Sharpe-like score from HISTORY_DATA
+  const dates=Object.keys(HISTORY_DATA).sort();
+  const vals=dates.map(d=>HISTORY_DATA[d]?.Total||0);
+  let peak=vals[0]||0,maxDrawdown=0;
+  for(const v of vals){
+    if(v>peak)peak=v;
+    const dd=(peak>0?(v-peak)/peak*100:0);
+    if(dd<maxDrawdown)maxDrawdown=dd;
+  }
+  const totalReturn=dates.length>=2&&vals[0]>0?((vals[vals.length-1]-vals[0])/vals[0]*100):0;
+  // Annualized return approximation (trading days)
+  const annDays=Math.max(1,vals.length);
+  const annReturn=totalReturn*(252/annDays);
+  const riskFree=2.0;
+  const sharpeRatio=annReturn>0&&maxDrawdown<0?(annReturn-riskFree)/Math.abs(maxDrawdown):0;
+
   const metrics=[
     {label:'總檔數',value:stockCount,sub:'含 ETF'},
     {label:'整體報酬',value:fmtPct(gainPct),sub:'成本法',up:gainPct>=0},
     {label:'勝率',value:winRate.toFixed(0)+'%',sub:'獲利/總檔數',up:winRate>=50},
     {label:'總市值',value:fmtTWD(totalMV),sub:'即時估值'},
-    {label:'未實現損益',value:(totalMV>=totalCost?'+':'')+fmtTWD(totalMV-totalCost),sub:'成本 vs 市值',up:totalMV>=totalCost}
+    {label:'未實現損益',value:(totalMV>=totalCost?'+':'')+fmtTWD(totalMV-totalCost),sub:'成本 vs 市值',up:totalMV>=totalCost},
+    {label:'夏普比率',value:sharpeRatio.toFixed(2),sub:'年化/波動',up:sharpeRatio>=1},
+    {label:'最大回檔',value:maxDrawdown.toFixed(1)+'%',sub:'歷史最大',up:false},
+    {label:'YTD報酬',value:fmtPct(totalReturn),sub:'追蹤期間',up:totalReturn>=0},
   ];
   const el=document.getElementById('portfolioMetrics');
   el.innerHTML=metrics.map(m=>`
@@ -3512,7 +3830,7 @@ function buildPortfolioGauge(){
     moodEl.style.color=moodColor;
   }
 
-  // Draw arc gauge (semi-circle from left=180° to right=0° via bottom)
+  // Draw arc gauge — improved with gradient segments and better labels
   const canvas=document.getElementById('gaugeChart');
   if(!canvas)return;
   const ctx=canvas.getContext('2d');
@@ -3520,35 +3838,61 @@ function buildPortfolioGauge(){
   canvas.width=W;canvas.height=H;
   const cx=80,cy=85,r=55;
   const startA=Math.PI,endA=0;
-  const normVal=Math.max(-5,Math.min(5,dayChg))/5; // normalize to -1..1
+
+  // Clamp to reasonable range (-3% to +3% is the "normal" market move)
+  const clampedPct=Math.max(-5,Math.min(5,dayChg));
+  const normVal=clampedPct/5; // normalize to -1..1
   const angle=startA-normVal*(startA-endA); // counterclockwise from PI toward 0
 
-  // Background arc
+  // Background arc (dark)
   ctx.beginPath();
-  ctx.arc(cx,cy,r,startA,endA,false); // counterclockwise: PI→0 via bottom
-  ctx.strokeStyle='#333';
+  ctx.arc(cx,cy,r,startA,endA,false);
+  ctx.strokeStyle='#2a2a2a';
   ctx.lineWidth=8;
   ctx.lineCap='round';
   ctx.stroke();
 
-  // Value arc
-  const valColor=dayChg>=0?'#00d68f':'#ff4444';
+  // Gradient arc — red zone on left, amber in middle, green on right
+  const grad=ctx.createLinearGradient(10,0,150,0);
+  grad.addColorStop(0,'#ff4444');
+  grad.addColorStop(0.5,'#ffb020');
+  grad.addColorStop(1,'#00d68f');
   ctx.beginPath();
   ctx.arc(cx,cy,r,startA,angle,false);
-  ctx.strokeStyle=valColor;
+  ctx.strokeStyle=grad;
   ctx.lineWidth=8;
   ctx.lineCap='round';
   ctx.stroke();
 
+  // Tick marks (perpendicular to arc at each point)
+  for(let t=-5;t<=5;t+=1){
+    const tNorm=t/5;
+    // Clockwise from PI to 0: angle decreases as t increases
+    const tAngle=startA-tNorm*(startA-endA);
+    // Arc goes clockwise (y positive downward in canvas), so sin has sign flip
+    const cosA=Math.cos(tAngle);
+    const sinA=-Math.sin(tAngle); // flip for clockwise arc direction
+    const inner=r-9,outer=r+9;
+    const x1=cx+inner*cosA,y1=cy+inner*sinA;
+    const x2=cx+outer*cosA,y2=cy+outer*sinA;
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x2,y2);
+    ctx.strokeStyle=t===0?'#555':'#333';
+    ctx.lineWidth=t===0?2:1;
+    ctx.stroke();
+  }
+
   // Center text
+  const valColor=dayChg>=0?'#00d68f':'#ff4444';
   ctx.fillStyle=valColor;
-  ctx.font='bold 18px Consolas,monospace';
+  ctx.font='bold 17px Consolas,monospace';
   ctx.textAlign='center';
   ctx.textBaseline='middle';
-  ctx.fillText((dayChg>=0?'+':'')+dayChg.toFixed(1)+'%',cx,cy+2);
+  ctx.fillText((dayChg>=0?'+':'')+dayChg.toFixed(1)+'%',cx,cy+1);
   ctx.fillStyle='#666';
-  ctx.font='9px Inter,sans-serif';
-  ctx.fillText('日報酬',cx,cy+16);
+  ctx.font='8px Inter,sans-serif';
+  ctx.fillText('日報酬',cx,cy+15);
 }
 
 // ============================================================
@@ -4215,6 +4559,8 @@ function filterStocksByIndustry(btn, industry){
 // ============================================================
 // HISTORY CHARTS
 // ============================================================
+let historyChartInstance = null;
+let historyFamilyChartInstance = null;
 function buildHistoryCharts(){
   const dates=Object.keys(HISTORY_DATA).sort();
   const totalData=dates.map(d=>HISTORY_DATA[d].Total);
@@ -4423,9 +4769,9 @@ function buildSignals(){
   const holdingShares=Object.fromEntries(Object.entries(allHoldings).map(([t,d])=>[t,d.shares]));
 
   _signalsCache=Object.entries(allHoldings).map(([ticker,holdData])=>{
-    const d=PRICE_DATA[ticker];
-    const price=d.price;
-    const prev=d.prev_close||price;
+    const d=PRICE_DATA[ticker]||{price:0,prev_close:0,year_low:0,year_high:0};
+    const price=d.price||0;
+    const prev=d.prev_close||price||0;
     const w52pct=d.year_low&&d.year_high?((price-d.year_low)/(d.year_high-d.year_low)*100):50;
     const chgPct=prev?(price-prev)/prev*100:0;
 
@@ -4721,7 +5067,7 @@ function refreshNews(){
     const emoji=top.absChg>=3?'📉':'⬇️';
     news.push(makeNewsItem(
       `${emoji} ${top.name}(${top.ticker.replace('.TW','')})下跌 ${top.absChg.toFixed(1)}%！注意短線風險`,
-      `${top.name}今日回落，${top.absChg>=3?'引發市場獲利了結賣壓':'短線技術面轉弱'})。建議持續觀察關鍵支撐價位。`,
+      `${top.name}今日回落，${top.absChg>=3?'引發市場獲利了結賣壓':'短線技術面轉弱'}。建議持續觀察關鍵支撐價位。`,
       top.absChg>=3?'neg':'neu',
       [top.ticker.replace('.TW','')],
       top.industry==='半導體'?'semi':top.industry==='金融'?'finance':'macro'
@@ -4921,23 +5267,35 @@ function setTVInterval(ival,btn){
 }
 
 
+// Dynamic document title date
+function updateDocTitle() {
+  const now = new Date();
+  const tw = new Date(now.toLocaleString('en-US', {timeZone: 'Asia/Taipei'}));
+  const el = document.getElementById('docTitleDate');
+  if (el) {
+    el.textContent = tw.toLocaleDateString('zh-TW', {year:'numeric',month:'2-digit',day:'2-digit'}).replace(/\//g, '-');
+  }
+}
+
 // TradingView Widget Library Loader — improved with CDN fallbacks and duplicate prevention
 (function() {
+  // Only load if not already present
   if (document.getElementById('tv-lib-loaded')) return;
-  var s = document.createElement('script');
-  s.id = 'tv-lib-loaded';
-  s.src = 'https://s.tradingview.com/tv.js';
-  s.async = true;
-  s.onerror = function() {
-    // Fallback CDN
-    var s2 = document.createElement('script');
-    s2.id = 'tv-lib-loaded';
-    s2.src = 'https://widget.tradingview.com/static/tv-chart.js';
-    s2.async = true;
-    s2.onerror = function() { console.warn('TradingView: all CDN sources failed'); };
-    document.head.appendChild(s2);
-  };
-  document.head.appendChild(s);
+  var _tvLoaded = false;
+  function tryLoad(url) {
+    if (_tvLoaded) return;
+    var s = document.createElement('script');
+    s.id = 'tv-lib-loaded';
+    s.src = url;
+    s.async = true;
+    s.onload = function() { _tvLoaded = true; console.log('[TV] Library loaded from:', url); };
+    s.onerror = function() { console.warn('[TV] Failed:', url); };
+    document.head.appendChild(s);
+  }
+  // Load all CDN sources in parallel — browser uses first that succeeds
+  tryLoad('https://s.tradingview.com/tv.js');
+  tryLoad('https://widget.tradingview.com/static/tv-chart.js');
+  tryLoad('https://www.tradingview.com/static/bundles/tv-chart.45693d7b67cba05a3f3e.js');
 })();
 
 const scriptId = 'tv-widget-script';
@@ -5008,6 +5366,8 @@ function loadTVWidget(){
     if(extLink)extLink.href=`https://www.tradingview.com/chart/?symbol=TWSE:${tickerSym}`;
     if(yhooLink)yhooLink.href=`https://tw.stock.yahoo.com/quote/${tickerSym}.TW`;
     if(goodinfoLink)goodinfoLink.href=`https://goodinfo.tw/StockDetail.asp?STOCK_ID=${tickerSym}`;
+    const newsLink=document.getElementById('tvNewsLink');
+    if(newsLink)newsLink.href=`https://news.google.com/search?q=${encodeURIComponent(tickerSym + ' ' + name)}&hl=zh-TW&gl=TW`;
 
     // Calculate values for status bar
     let chgPctVal=null, peVal=null, divVal=null, w52Val=null;
@@ -5050,7 +5410,8 @@ function loadTVWidget(){
           allow_symbol_change: true,
           hide_volume: false,
           support_host: 'https://www.tradingview.com',
-          studies: ['RSI@tv-basicstudies','MASimple@tv-basicstudies'],
+          withdateranges: true,
+          studies: ['RSI@tv-basicstudies', 'MASimple@tv-basicstudies', 'MACD@tv-basicstudies'],
           container_id: 'tradingview-widget',
           autosize: true,
         });
@@ -5073,26 +5434,29 @@ function loadTVWidget(){
       },15000);
     };
 
-    // Try multiple CDN sources for TradingView
-    const tryLoad=(urls)=>{
-      let idx=0;
-      const attempt=()=>{
-        if(idx>=urls.length){loadTVFallback(tickerSym);return;}
-        const s=document.createElement('script');
-        s.id=tvScriptId;
-        s.src=urls[idx];
-        s.type='text/javascript';
-        s.async=true;
-        s.onload=initWidget;
-        s.onerror=()=>{idx++;attempt();};
+    // Try multiple CDN sources for TradingView (fallback chain)
+    const tryLoad = (urls) => {
+      let idx = 0;
+      const attempt = () => {
+        if (idx >= urls.length) { loadTVFallback(tickerSym); return; }
+        const s = document.createElement('script');
+        s.id = tvScriptId;
+        s.src = urls[idx];
+        s.type = 'text/javascript';
+        s.async = true;
+        s.onload = initWidget;
+        s.onerror = () => { idx++; attempt(); };
         document.head.appendChild(s);
       };
       attempt();
     };
+    // Primary: TradingView embed widget (official CDN)
+    // Fallback 1: TradingView static CDN bundle
+    // Fallback 2: TradingView widget CDN
     tryLoad([
       'https://s.tradingview.com/external-embedding/embed-widget-advanced-chart.js',
       'https://www.tradingview.com/static/bundles/embed-widget-advanced-chart.js',
-      'https://widget.tradingview.com/static/tv-chart.js'
+      'https://widget.tradingview.com/static/bundles/embed-widget-advanced-chart.js'
     ]);
   },300);
 }
@@ -5650,6 +6014,7 @@ function buildHeatmap(){
   }).join('');
 }
 
+let currentSort = 'mv';
 function sortMovers(btn){
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
@@ -5744,11 +6109,27 @@ function refreshData(){
     else if(activeTab==='signals'){buildSignals();sectionsBuilt.add('signals');}
     else if(activeTab==='news'){buildNews();sectionsBuilt.add('news');}
     else    if(activeTab==='analytics'){setTimeout(()=>{buildAnalytics();buildHeatmap();buildMoversTable();buildCompare();buildRiskMeter();buildPEDistribution();buildMonthlyTable();},50);sectionsBuilt.add('analytics');}
-    else if(activeTab==='overview'){buildPortfolioAlertBanner();buildDailyPLSummary();buildSparkline();buildMoverCards();buildTopMovers();buildPortfolioHealth();buildActionableAlerts();buildMarketPulse();buildDividendSummary();updateQuickSummary();updateMarketMood();buildPortfolioGauge();buildDailyPLCard();buildNewsSummary();updateMarketContextBanner();}
+    else if(activeTab==='overview'){buildPortfolioAlertBanner();buildDailyPLSummary();buildSparkline();buildMoverCards();buildTopMovers();buildPortfolioHealth();buildActionableAlerts();buildMarketPulse();buildDividendSummary();updateQuickSummary();updateMarketMood();buildPortfolioGauge();buildDailyPLCard();buildNewsSummary();updateMarketContextBanner();buildBenchmarkStrip();buildSectorAllocationMini();}
     btn.textContent=oldText;
     btn.disabled=false;
     showToast('資料已更新 ✓',2000);
   },800);
+}
+
+// ============================================================
+// TV CHART INIT — called when chart tab is first shown
+// ============================================================
+let _tvInitialized = false;
+function showTVChart() {
+  // Reset the TradingView container so the widget can reinitialize cleanly
+  const widget = document.getElementById('tradingview-widget');
+  const loading = document.getElementById('tvLoading');
+  if (widget) {
+    widget.innerHTML = '';
+    if (loading) loading.style.display = 'flex';
+  }
+  _tvInitialized = true;
+  loadTVWidget();
 }
 
 // ============================================================
@@ -5761,7 +6142,10 @@ document.querySelectorAll('.tab').forEach(tab=>{
     tab.classList.add('active');
     const sec=document.getElementById('sec-'+tab.dataset.tab);
     if(sec)sec.classList.add('active');
-    if(tab.dataset.tab==='chart')setTimeout(loadTVWidget,100);
+    if(tab.dataset.tab==='chart'){
+      if(!_tvInitialized){showTVChart();}
+      else{setTimeout(loadTVWidget,100);}
+    }
     if(tab.dataset.tab==='history'&&!sectionsBuilt.has('history')){buildHistoryCharts();sectionsBuilt.add('history');}
     if(tab.dataset.tab==='signals'&&!sectionsBuilt.has('signals')){buildSignals();sectionsBuilt.add('signals');}
     if(tab.dataset.tab==='news'&&!sectionsBuilt.has('news')){buildNews();sectionsBuilt.add('news');}
@@ -6023,6 +6407,8 @@ function buildNewsSentimentBanner(){
 
 // AUTO-REFRESH COUNTDOWN TIMER
 let refreshCountdown = 15 * 60; // 15 minutes in seconds
+let sectionsBuilt = new Set(); // tracks which lazy sections have been built
+let _holdingsCache = null; // cache for getAllHoldings()
 function startRefreshTimer() {
   const el = document.getElementById('refreshTimer');
   if (!el) return;
@@ -6030,10 +6416,16 @@ function startRefreshTimer() {
     refreshCountdown--;
     if (refreshCountdown <= 0) {
       refreshCountdown = 15 * 60;
-      // Silently refresh data every 15 minutes
-      const btn = document.querySelector('.refresh-btn');
-      if (btn && document.visibilityState !== 'hidden') {
-        // Don't auto-refresh, just reset counter — user clicks refresh
+      // Reload the page to get fresh data
+      if (document.visibilityState !== 'hidden') {
+        const el = document.getElementById('refreshTimer');
+        if (el) el.textContent = '重新整理中...';
+        // Re-run the price update script then reload
+        fetch(window.location.href, {cache: 'no-store'}).then(() => {
+          window.location.reload();
+        }).catch(() => {
+          window.location.reload();
+        });
       }
     }
     const m = Math.floor(refreshCountdown / 60);
@@ -6098,6 +6490,81 @@ function buildNewsSummary(){
     + (sectorRows ? '<div style="border-top:1px solid var(--border);padding-top:8px;margin-top:6px">'
       + '<div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.04em">📌 產業影響</div>'
       + sectorRows + '</div>' : '')
+    + '</div>';
+}
+
+// ============================================================
+// PORTFOLIO NEWS DIGEST — shows news related to held stocks
+// ============================================================
+function buildPortfolioNewsDigest(){
+  var el = document.getElementById('portfolioNewsDigest');
+  if(!el) return;
+
+  // Get all held tickers
+  var holdings = getAllHoldings();
+  var heldTickers = Object.keys(holdings);
+
+  // Filter news related to held stocks
+  var relevantNews = [];
+  NEWS_DATA.forEach(function(n) {
+    if(!n.title) return;
+    var isRelated = false;
+    // Check by related tickers
+    if(n.related && Array.isArray(n.related)){
+      n.related.forEach(function(t){
+        if(heldTickers.indexOf(String(t)) >= 0) isRelated = true;
+      });
+    }
+    // Check by title keyword matching
+    if(!isRelated){
+      heldTickers.forEach(function(t){
+        var name = holdings[t]?.name || '';
+        // Check for ticker in title
+        if(n.title.indexOf(t) >= 0 || n.title.indexOf(name.slice(0,4)) >= 0) isRelated = true;
+      });
+    }
+    if(isRelated) relevantNews.push(n);
+  });
+
+  if(relevantNews.length === 0){
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text3);font-size:0.78rem">'
+      + '📰 目前尚無與持股相關的新聞<br>'
+      + '<span style="font-size:0.65rem">新聞資料將自動更新</span>'
+      + '</div>';
+    return;
+  }
+
+  // Sort: pos first, then neu, then neg; limit to 8
+  var sorted = relevantNews.sort(function(a,b){
+    var order = {pos:0, neu:1, neg:2};
+    return (order[a.sentiment]||1) - (order[b.sentiment]||1);
+  }).slice(0, 8);
+
+  el.innerHTML = '<div class="portfolio-news-digest" style="background:transparent;border:none;padding:0;margin:0">'
+    + sorted.map(function(n){
+      var sentClass = n.sentiment || 'neu';
+      var sentLabel = {pos:'利多',neg:'利空',neu:'中立'}[sentClass] || '中立';
+      var sentColor = {pos:'var(--green)',neg:'var(--red)',neu:'var(--text3)'}[sentClass] || 'var(--text3)';
+      var timeStr = n.time ? '<span class="portfolio-news-time">' + n.time + '</span>' : '';
+      var relatedHtml = '';
+      if(n.related && n.related.length > 0){
+        var chips = n.related.slice(0,3).map(function(t){
+          var name = holdings[t]?.name || t;
+          return '<span class="portfolio-news-ticker" style="margin-right:3px">' + t + '</span>';
+        }).join('');
+        relatedHtml = '<div style="margin-top:3px">' + chips + '</div>';
+      }
+      return '<div class="portfolio-news-item">'
+        + '<div class="portfolio-news-sentiment ' + sentClass + '" title="' + sentLabel + '"></div>'
+        + '<div class="portfolio-news-text">'
+        + '<div style="font-weight:600;color:var(--text);line-height:1.4;margin-bottom:2px">' + n.title + '</div>'
+        + '<div style="display:flex;align-items:center;gap:6px;margin-top:2px">'
+        + '<span style="font-size:0.6rem;padding:1px 5px;border-radius:6px;font-weight:700;background:' + (sentClass==='pos'?'rgba(0,214,143,0.1)':sentClass==='neg'?'rgba(255,68,68,0.1)':'var(--surface3)') + ';color:' + sentColor + '">' + sentLabel + '</span>'
+        + timeStr
+        + '</div>'
+        + relatedHtml
+        + '</div></div>';
+    }).join('')
     + '</div>';
 }
 
@@ -6194,6 +6661,8 @@ async function init() {
   updateHeader();
   buildPortfolioAlertBanner();
   updateGlobalSummary();
+  buildBenchmarkStrip();
+  buildSectorAllocationMini();
   updateFamilyCards();
   buildSectorList();
   buildMemberPanels();
@@ -6223,6 +6692,7 @@ async function init() {
   buildMoverCards();
   buildTopMovers();
   buildNewsSummary(); // News sentiment + sector impact
+  buildPortfolioNewsDigest(); // Portfolio-specific news digest
   startRefreshTimer(); // Auto-refresh countdown
 
   // Preload TradingView widget script in background for faster chart loading
