@@ -464,6 +464,7 @@ select:focus{outline:none;border-color:var(--blue)}
 
 /* === SIGNAL CARDS === */
 .signal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+.signal-summary-chip{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:12px;font-size:0.65rem;font-weight:600;white-space:nowrap}
 .signal-card{
   background:var(--surface2);border:1px solid var(--border);border-radius:8px;
   padding:10px;display:flex;align-items:flex-start;gap:8px;
@@ -1997,6 +1998,17 @@ input[type=file]{display:none}
             <div class="hint-text" id="ioStatus"></div>
           </div>
         </div>
+
+        <!-- Portfolio News Digest -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📰 持股相關資訊</div>
+            <div class="text-xs" style="color:var(--text3);font-size:0.62rem">根據持股自動過濾相關市場資訊</div>
+          </div>
+          <div class="card-body">
+            <div id="portfolioNewsDigest"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -2530,7 +2542,8 @@ function buildPortfolioAlertBanner(){
 
   // Determine market context
   const twii=MARKET_INDICES.find(i=>i.ticker==='^TWII'||i.ticker==='TWSE:TAIEX');
-  const tsla=MARKET_INDICES.find(i=>i.ticker==='2330.TW');
+  const tsmc2=getPrice('2330');
+  const tsmc2Chg=tsmc2.prev_close?((tsmc2.price-tsmc2.prev_close)/tsmc2.prev_close*100):0;
   const isDown=dayPct<-0.3;
   const isUp=dayPct>0.3;
   // Use local variable to avoid referencing outer scope
@@ -2552,7 +2565,7 @@ function buildPortfolioAlertBanner(){
     title.style.color='var(--red)';
   } else if(isUp){
     title.textContent='📈 今日表現佳';
-    text.textContent=`日增 NT$${Math.abs(Math.round(dayChg)).toLocaleString('zh-TW')} (${dayPct>=0?'+':''}${dayPct.toFixed(2)}%)，台積電 ${tsla&&tsla.changePct>=0?'▲':'▼'} ${Math.abs(tsla?.changePct||0).toFixed(2)}%`;
+    text.textContent=`日增 NT$${Math.abs(Math.round(dayChg)).toLocaleString('zh-TW')} (${dayPct>=0?'+':''}${dayPct.toFixed(2)}%)，台積電 ${tsmc2Chg>=0?'▲':'▼'} ${Math.abs(tsmc2Chg).toFixed(2)}%`;
     title.style.color='var(--green)';
   } else {
     title.textContent='⚡ 市場快訊';
@@ -2635,14 +2648,14 @@ function buildMarketContextBanner(){
   // Dynamic market alert
   const alertTag = document.getElementById('marketAlertTag');
   if(alertTag){
-    const tsla = MARKET_INDICES.find(i=>i.ticker==='2330.TW');
-    const tslaPct = tsla?.changePct||0;
+    const tsmc3=getPrice('2330');
+    const tsmc3Pct=tsmc3.prev_close?((tsmc3.price-tsmc3.prev_close)/tsmc3.prev_close*100):0;
     const twiiPct = (MARKET_INDICES.find(i=>i.ticker==='^TWII')||{}).changePct||0;
     let msg = '';
     const localDayChg = portfolioDayChg; // use local var to avoid scope confusion
     const localIsNewHigh = totalMV >= Math.max(...dates.map(d=>HISTORY_DATA[d]?.Total||0));
     if(localDayChg < -1.5) msg = '組合大跌 ' + Math.abs(localDayChg).toFixed(1) + '%';
-    else if(tslaPct < -3) msg = '台積電重挫 ' + Math.abs(tslaPct).toFixed(1) + '%';
+    else if(tsmc3Pct < -3) msg = '台積電重挫 ' + Math.abs(tsmc3Pct).toFixed(1) + '%';
     else if(twiiPct < -1) msg = '大盤下跌 ' + Math.abs(twiiPct).toFixed(1) + '%';
     else if(localDayChg > 1.5) msg = '組合大漲 +' + localDayChg.toFixed(1) + '%';
     else if(localIsNewHigh) msg = '創歷史新高！';
@@ -4174,7 +4187,7 @@ function buildTodayGlance(){
   const topGainer=movers.find(x=>x.chg>0);
   const topLoser=movers.find(x=>x.chg<0);
   const twii=MARKET_INDICES.find(i=>i.ticker==='^TWII');
-  const tsla=MARKET_INDICES.find(i=>i.ticker==='2330.TW');
+  const tsmc=getPrice('2330');
 
   const items=[];
   items.push({label:'總市值',value:fmtTWDShort(totalMV),sub:'NT$',up:null});
@@ -4183,7 +4196,10 @@ function buildTodayGlance(){
   if(topGainer)items.push({label:'今日最強',value:topGainer.name.slice(0,4),sub:'+'+topGainer.chg.toFixed(1)+'%',up:true});
   if(topLoser)items.push({label:'今日最弱',value:topLoser.name.slice(0,4),sub:topLoser.chg.toFixed(1)+'%',up:false});
   if(twii)items.push({label:'加權指數',value:(twii.changePct>=0?'+':'')+twii.changePct.toFixed(2)+'%',sub:Math.round(twii.price).toLocaleString(),up:twii.changePct>=0});
-  if(tsla)items.push({label:'台積電',value:(tsla.changePct>=0?'+':'')+tsla.changePct.toFixed(2)+'%',sub:tsla.price>=1000?Math.round(tsla.price).toLocaleString():tsla.price.toFixed(0),up:tsla.changePct>=0});
+  if(tsmc.price>0){
+    const tsmcChg=tsmc.prev_close?((tsmc.price-tsmc.prev_close)/tsmc.prev_close*100):0;
+    items.push({label:'台積電',value:(tsmcChg>=0?'+':'')+tsmcChg.toFixed(2)+'%',sub:tsmc.price>=1000?Math.round(tsmc.price).toLocaleString():tsmc.price.toFixed(0),up:tsmcChg>=0});
+  }
 
   el.innerHTML=items.map(item=>`
     <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center">
@@ -4703,7 +4719,7 @@ function initMarketPulseRibbon(){
   ribbon.innerHTML=MARKET_INDICES.map(idx=>{
     const isUp=idx.change>=0;
     const pct=idx.changePct;
-    const w52Bar=(idx.price/(idx.price-idx.change||idx.price)*50).toFixed(0);
+    const w52Bar=(idx.price&&(idx.price-idx.change)&&idx.price-idx.change!==idx.price?(idx.price/(idx.price-idx.change)*50).toFixed(0):50);
     const barColor=isUp?'var(--green)':'var(--red)';
     return `<div class="market-pulse-item">
       <div class="market-pulse-dot ${isMarketOpen?'open':'closed'}"></div>
@@ -4854,6 +4870,27 @@ function renderSignals(){
     if(score<=-3)return{label:'極弱賣',color:'#ff4444',bg:'rgba(255,68,68,0.1)'};
     if(score<=-1)return{label:'偏空',color:'#ff8c00',bg:'rgba(255,140,0,0.1)'};
     return{label:'中立',color:'#666',bg:'var(--surface3)'};
+  }
+
+  // Build signal summary strip
+  const stripEl=document.getElementById('signalSummaryStrip');
+  if(stripEl){
+    const buySig=filtered.filter(s=>s.overallTag==='強力買入'||s.overallTag==='溫和買入').length;
+    const sellSig=filtered.filter(s=>s.overallTag==='建議減碼'||s.overallTag==='溫和賣出').length;
+    const neuSig=filtered.length-buySig-sellSig;
+    const rsiOB=filtered.filter(s=>parseFloat(s.rsi)>70).length;
+    const rsiOS=filtered.filter(s=>parseFloat(s.rsi)<30).length;
+    const nearHigh=filtered.filter(s=>parseFloat(s.w52pct)>80).length;
+    const nearLow=filtered.filter(s=>parseFloat(s.w52pct)<20).length;
+    stripEl.innerHTML=`
+      <span class="signal-summary-chip" style="background:rgba(0,214,143,0.1);color:#00d68f;border:1px solid rgba(0,214,143,0.2)">📈 偏多 ${buySig}</span>
+      <span class="signal-summary-chip" style="background:var(--surface3);color:var(--text2);border:1px solid var(--border)">中立 ${neuSig}</span>
+      <span class="signal-summary-chip" style="background:rgba(255,68,68,0.08);color:#ff8c00;border:1px solid rgba(255,140,0,0.15)">📉 偏空 ${sellSig}</span>
+      <span class="signal-summary-chip" style="background:rgba(255,68,68,0.08);color:#ff4444;border:1px solid rgba(255,68,68,0.15)">⚠️ 超買 RSI>70 ${rsiOB}</span>
+      <span class="signal-summary-chip" style="background:rgba(0,214,143,0.08);color:#00d68f;border:1px solid rgba(0,214,143,0.15)">💡 超賣 RSI<30 ${rsiOS}</span>
+      <span class="signal-summary-chip" style="background:rgba(255,176,32,0.08);color:#ffb020;border:1px solid rgba(255,176,32,0.15)">🔥 52W高 ${nearHigh}</span>
+      <span class="signal-summary-chip" style="background:rgba(77,159,255,0.08);color:#4d9fff;border:1px solid rgba(77,159,255,0.15)">❄️ 52W低 ${nearLow}</span>
+    `;
   }
 
   el.innerHTML=filtered.map(s=>{
@@ -5388,6 +5425,7 @@ function loadTVWidget(){
 
     setStatusBar('正在載入 TradingView...',null,null,null,null,null);
 
+    // Try TradingView iframe embed (most reliable)
     const initWidget=()=>{
       try {
         if(typeof TradingView===typeof undefined){
@@ -5423,11 +5461,12 @@ function loadTVWidget(){
         setStatusBar('Widget 初始化失敗，使用本地圖表...',p.price,chgPctVal,peVal,divVal,w52Val);
         loadTVFallback(tickerSym);
       }
+      // Detect widget load failure after 15s
       setTimeout(()=>{
         if(!tvLoaded){
           const children=document.getElementById('tradingview-widget')?.children?.length;
           if(!children){
-            setStatusBar('載入逾時，切換至本地圖表...',p.price,chgPctVal,peVal,divVal,w52Val);
+            setStatusBar('載入逾時，切換至本地K線圖...',p.price,chgPctVal,peVal,divVal,w52Val);
             loadTVFallback(tickerSym);
           }
         }
@@ -6108,8 +6147,8 @@ function refreshData(){
     if(activeTab==='history'){buildHistoryCharts();sectionsBuilt.add('history');}
     else if(activeTab==='signals'){buildSignals();sectionsBuilt.add('signals');}
     else if(activeTab==='news'){buildNews();sectionsBuilt.add('news');}
-    else    if(activeTab==='analytics'){setTimeout(()=>{buildAnalytics();buildHeatmap();buildMoversTable();buildCompare();buildRiskMeter();buildPEDistribution();buildMonthlyTable();},50);sectionsBuilt.add('analytics');}
-    else if(activeTab==='overview'){buildPortfolioAlertBanner();buildDailyPLSummary();buildSparkline();buildMoverCards();buildTopMovers();buildPortfolioHealth();buildActionableAlerts();buildMarketPulse();buildDividendSummary();updateQuickSummary();updateMarketMood();buildPortfolioGauge();buildDailyPLCard();buildNewsSummary();updateMarketContextBanner();buildBenchmarkStrip();buildSectorAllocationMini();}
+    else if(activeTab==='analytics'){setTimeout(()=>{buildAnalytics();buildHeatmap();buildMoversTable();buildCompare();buildRiskMeter();buildPEDistribution();buildMonthlyTable();},50);sectionsBuilt.add('analytics');}
+    else if(activeTab==='overview'){buildPortfolioAlertBanner();buildDailyPLSummary();buildSparkline();buildMoverCards();buildTopMovers();buildPortfolioHealth();buildActionableAlerts();buildMarketPulse();buildDividendSummary();updateQuickSummary();updateMarketMood();buildPortfolioGauge();buildDailyPLCard();buildNewsSummary();updateMarketContextBanner();buildBenchmarkStrip();buildSectorAllocationMini();buildPortfolioNewsDigest();}
     btn.textContent=oldText;
     btn.disabled=false;
     showToast('資料已更新 ✓',2000);
@@ -6149,7 +6188,7 @@ document.querySelectorAll('.tab').forEach(tab=>{
     if(tab.dataset.tab==='history'&&!sectionsBuilt.has('history')){buildHistoryCharts();sectionsBuilt.add('history');}
     if(tab.dataset.tab==='signals'&&!sectionsBuilt.has('signals')){buildSignals();sectionsBuilt.add('signals');}
     if(tab.dataset.tab==='news'&&!sectionsBuilt.has('news')){buildNews();sectionsBuilt.add('news');}
-    if(tab.dataset.tab==='analytics'&&!sectionsBuilt.has('analytics')){setTimeout(()=>{buildAnalytics();buildHeatmap();buildMoversTable();buildCompare();},50);sectionsBuilt.add('analytics');}
+    if(tab.dataset.tab==='analytics'&&!sectionsBuilt.has('analytics')){setTimeout(()=>{buildAnalytics();buildHeatmap();buildMoversTable();buildCompare();buildRiskMeter();buildPEDistribution();buildMonthlyTable();},50);sectionsBuilt.add('analytics');}
     // Preload other sections lazily — removed duplicate calls
   });
 });
