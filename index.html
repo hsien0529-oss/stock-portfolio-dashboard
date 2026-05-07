@@ -12,7 +12,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="dns-prefetch" href="https://s.tradingview.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="data.js"></script>
+<script src="data.js?v=2026050717"></script>
+<!-- TradingView widget script loaded eagerly for faster chart startup -->
+<script src="https://s.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async defer onerror="window.__tvLoadFailed=true"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -661,10 +663,10 @@ select:focus{outline:none;border-color:var(--blue)}
 .tv-status-bar .tv-stock-chip.near-high{border-color:rgba(0,214,143,0.3);color:var(--green)}
 .tv-status-bar .tv-stock-chip.near-low{border-color:rgba(255,68,68,0.3);color:var(--red)}
 .tv-status-bar .tv-stock-chip:hover{background:var(--surface3)}
-
 /* === PORTFOLIO METRICS IMPROVED === */
 .portfolio-metrics-grid{
-  display:grid;grid-template-columns:repeat(6,1fr);gap:8px;
+  display:grid;
+  grid-template-columns:repeat(6,1fr);gap:8px;
 }
 @media(max-width:1100px){.portfolio-metrics-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:600px){.portfolio-metrics-grid{grid-template-columns:repeat(2,1fr)}}
@@ -677,6 +679,37 @@ select:focus{outline:none;border-color:var(--blue)}
 .pm-value{font-family:var(--font-mono);font-size:1.05rem;font-weight:700;color:var(--text)}
 .pm-value.up{color:var(--green)}.pm-value.down{color:var(--red)}.pm-value.neu{color:var(--amber)}
 .pm-sub{font-size:0.62rem;font-weight:600;font-family:var(--font-mono);margin-top:2px;color:var(--text3)}
+
+/* === REAL NEWS TICKER === */
+.real-news-ticker{
+  display:flex;align-items:center;gap:0;
+  background:var(--surface2);border-bottom:1px solid var(--border);
+  padding:0;overflow:hidden;height:36px;
+  position:sticky;top:92px;z-index:99;
+}
+.rnt-label{
+  flex-shrink:0;padding:0 10px;font-size:0.6rem;font-weight:700;
+  color:var(--amber);background:var(--surface3);border-right:1px solid var(--border);
+  height:100%;display:flex;align-items:center;white-space:nowrap;letter-spacing:0.05em;
+}
+.rnt-marquee-wrapper{overflow:hidden;flex:1}
+.rnt-marquee{display:flex;gap:0;white-space:nowrap}
+.rnt-item{
+  display:inline-flex;align-items:center;gap:6px;padding:0 14px;
+  border-right:1px solid var(--border);font-size:0.72rem;cursor:default;flex-shrink:0;
+}
+.rnt-item:hover{background:rgba(255,255,255,0.03)}
+.rnt-sym{font-family:var(--font-mono);font-weight:700;color:var(--blue)}
+.rnt-headline{color:var(--text2);max-width:200px;overflow:hidden;text-overflow:ellipsis}
+.rnt-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.rnt-dot.pos{background:var(--green)}.rnt-dot.neg{background:var(--red)}.rnt-dot.neu{background:var(--amber)}
+
+/* === DIVIDEND PROJECTION CARD === */
+.dividend-projection{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.dp-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.dp-label{font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:3px}
+.dp-value{font-family:var(--font-mono);font-size:1.1rem;font-weight:700;color:var(--green)}
+.dp-sub{font-size:0.62rem;font-family:var(--font-mono);color:var(--text3);margin-top:2px}
 
 /* === NEWS DIGEST IMPROVED === */
 .news-digest-card{
@@ -1715,6 +1748,16 @@ input[type=file]{display:none}
   <div class="tab" data-tab="signals"><span class="tab-icon">⚡</span>技術訊號 <span class="kbd">5</span></div>
   <div class="tab" data-tab="news"><span class="tab-icon">📰</span>市場資訊 <span class="kbd">6</span></div>
   <div class="tab" data-tab="analytics"><span class="tab-icon">🔍</span>進階分析 <span class="kbd">7</span></div>
+</div>
+
+<!-- Real-time news ticker strip -->
+<div class="real-news-ticker" id="realNewsTicker">
+  <div class="rnt-label">📰 快訊</div>
+  <div class="rnt-marquee-wrapper">
+    <div class="rnt-marquee" id="rntMarqueeContent">
+      <div class="rnt-item"><span class="rnt-sym">2330</span><span class="rnt-headline">載入中...</span><span class="rnt-dot neu"></span></div>
+    </div>
+  </div>
 </div>
 
 <!-- SECTION: OVERVIEW -->
@@ -3873,6 +3916,10 @@ function buildDividendSummary(){
   const avgYield=totalMV>0?(totalDiv/totalMV*100):0;
   const annualDiv=totalDiv;
   const portfolioYield=totalCost>0?(annualDiv/totalCost*100):0;
+  // Quarterly estimate
+  const quarterlyDiv=annualDiv/4;
+  // Monthly passive income estimate
+  const monthlyDiv=annualDiv/12;
 
   el.innerHTML=`
     <div class="div-item">
@@ -3883,7 +3930,7 @@ function buildDividendSummary(){
     <div class="div-item">
       <div class="div-label">年化股息收入</div>
       <div class="div-value">${fmtTWDShort(annualDiv)}</div>
-      <div class="div-sub">元 (預估)</div>
+      <div class="div-sub">月均 ${fmtTWDShort(monthlyDiv)}</div>
     </div>
     <div class="div-item">
       <div class="div-label">成本殖利率</div>
@@ -3891,6 +3938,95 @@ function buildDividendSummary(){
       <div class="div-sub">股息/總成本</div>
     </div>
   `;
+}
+
+// ============================================================
+// REAL-TIME NEWS TICKER
+// ============================================================
+function buildNewsTicker(){
+  const el=document.getElementById('rntMarqueeContent');
+  if(!el)return;
+  const allHoldings=getAllHoldings();
+  const now=new Date();
+  const timeStr=now.toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'});
+
+  // Generate market headlines based on actual price movements
+  const movers=Object.entries(allHoldings)
+    .map(([t,d])=>{
+      const p=getPrice(t);if(!p.price||!p.prev_close)return null;
+      const chg=((p.price-p.prev_close)/p.prev_close*100);
+      return {ticker:t,name:d.name,chg,absChg:Math.abs(chg),mv:d.shares*p.price,price:p.price};
+    })
+    .filter(x=>x&&x.absChg>=0.3)
+    .sort((a,b)=>b.absChg-a.absChg)
+    .slice(0,8);
+
+  if(movers.length===0){
+    el.innerHTML=`<div class="rnt-item"><span class="rnt-sym">📊</span><span class="rnt-headline">市場持平，關注明晨美國 CPI 數據</span><span class="rnt-dot neu"></span></div>`;
+    startTickerAnimation();
+    return;
+  }
+
+  // Build headline items
+  const headlines=movers.map(m=>{
+    const dir=m.chg>=0?'pos':'neg';
+    const icon=m.chg>=0?'▲':'▼';
+    const colorClass=dir;
+    const label=m.name.length>5?m.name.slice(0,5):m.name;
+    const headline=`${label} ${icon} ${Math.abs(m.chg).toFixed(1)}%`;
+    return `<div class="rnt-item">
+      <span class="rnt-sym">${m.ticker}</span>
+      <span class="rnt-headline">${headline}</span>
+      <span class="rnt-dot ${colorClass}"></span>
+    </div>`;
+  });
+
+  // Add a few context items
+  const twii=MARKET_INDICES.find(i=>i.ticker==='^TWII');
+  if(twii){
+    const dir=twii.changePct>=0?'pos':'neg';
+    headlines.push(`<div class="rnt-item">
+      <span class="rnt-sym">加權</span>
+      <span class="rnt-headline">加權指數 ${twii.changePct>=0?'▲':'▼'} ${Math.abs(twii.changePct).toFixed(2)}% → ${twii.price.toLocaleString('zh-TW',{maximumFractionDigits:0})}</span>
+      <span class="rnt-dot ${dir}"></span>
+    </div>`);
+  }
+
+  const tsla=MARKET_INDICES.find(i=>i.ticker==='2330.TW');
+  if(tsla){
+    const dir=tsla.changePct>=0?'pos':'neg';
+    headlines.push(`<div class="rnt-item">
+      <span class="rnt-sym">2330</span>
+      <span class="rnt-headline">台積電 ${tsla.changePct>=0?'▲':'▼'} ${Math.abs(tsla.changePct).toFixed(2)}%</span>
+      <span class="rnt-dot ${dir}"></span>
+    </div>`);
+  }
+
+  // Duplicate for seamless loop
+  el.innerHTML=headlines.join('')+headlines.join('');
+  startTickerAnimation();
+}
+
+let _tickerAnimFrame=null;
+function startTickerAnimation(){
+  const wrapper=document.querySelector('.rnt-marquee-wrapper');
+  const content=document.getElementById('rntMarqueeContent');
+  if(!wrapper||!content)return;
+  if(_tickerAnimFrame)cancelAnimationFrame(_tickerAnimFrame);
+
+  let pos=0;
+  const speed=0.5; // px per frame
+  const contentWidth=content.scrollWidth/2;
+
+  function animate(){
+    pos+=speed;
+    if(pos>=contentWidth){
+      pos=0;
+    }
+    content.style.transform=`translateX(-${pos}px)`;
+    _tickerAnimFrame=requestAnimationFrame(animate);
+  }
+  animate();
 }
 
 // ============================================================
@@ -5624,56 +5760,53 @@ function loadTVWidget(){
 
     setStatusBar('正在載入 TradingView...', null, null, null, null, null);
 
-    // Method 1: Try official TradingView embed widget (most reliable)
-    const tryEmbed = () => {
+    // Method 1: TradingView already preloaded via <script> tag in <head>
+    const tryPreloaded = () => {
+      return new Promise((resolve) => {
+        if (typeof TradingView !== 'undefined') {
+          console.log('[TV] Preloaded TradingView detected');
+          resolve(true);
+        } else if (window.__tvLoadFailed) {
+          console.warn('[TV] Preloaded script failed');
+          resolve(false);
+        } else {
+          // Poll for TradingView to become available (preloaded async)
+          let attempts = 0;
+          const poll = setInterval(() => {
+            attempts++;
+            if (typeof TradingView !== 'undefined') {
+              clearInterval(poll);
+              console.log('[TV] TradingView loaded via polling');
+              resolve(true);
+            } else if (attempts >= 16) { // ~8 seconds max
+              clearInterval(poll);
+              resolve(false);
+            }
+          }, 500);
+        }
+      });
+    };
+
+    // Method 2: Dynamic script injection as fallback
+    const tryDynamicLoad = () => {
       return new Promise((resolve) => {
         const s = document.createElement('script');
-        s.id = 'tv-widget-script';
+        s.id = 'tv-widget-script-dynamic';
         s.src = 'https://s.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
         s.type = 'text/javascript';
         s.async = true;
-        s.onload = () => { console.log('[TV] Embed widget loaded'); resolve('embed'); };
-        s.onerror = () => { console.warn('[TV] Embed failed, trying static...'); resolve('static'); };
+        s.onload = () => { console.log('[TV] Dynamic script loaded'); resolve(true); };
+        s.onerror = () => { console.warn('[TV] Dynamic script failed'); resolve(false); };
         document.head.appendChild(s);
-        setTimeout(() => resolve('static'), 8000);
+        // If it doesn't load in 10s, give up
+        setTimeout(() => resolve(false), 10000);
       });
     };
 
-    // Method 2: Static bundle fallback
-    const tryStatic = () => {
-      return new Promise((resolve) => {
-        const s = document.createElement('script');
-        s.id = 'tv-widget-script';
-        s.src = 'https://www.tradingview.com/static/bundles/tv-chart.45693d7b67cba05a3f3e.js';
-        s.type = 'text/javascript';
-        s.async = true;
-        s.onload = () => { console.log('[TV] Static bundle loaded'); resolve(true); };
-        s.onerror = () => { console.warn('[TV] Static failed'); resolve(false); };
-        document.head.appendChild(s);
-        setTimeout(() => resolve(false), 8000);
-      });
-    };
-
-    // Method 3: Widget CDN fallback
-    const tryWidgetCDN = () => {
-      return new Promise((resolve) => {
-        const s = document.createElement('script');
-        s.id = 'tv-widget-script';
-        s.src = 'https://widget.tradingview.com/static/tv-chart.js';
-        s.type = 'text/javascript';
-        s.async = true;
-        s.onload = () => { console.log('[TV] Widget CDN loaded'); resolve(true); };
-        s.onerror = () => { console.warn('[TV] Widget CDN failed'); resolve(false); };
-        document.head.appendChild(s);
-        setTimeout(() => resolve(false), 8000);
-      });
-    };
-
-    // Try all methods in sequence, init widget on first success
     const initWidget = () => {
       try {
-        if (typeof TradingView === typeof undefined) {
-          setStatusBar('TradingView 載入失敗，使用本地圖表...', p.price, chgPctVal, peVal, divVal, w52Val);
+        if (typeof TradingView === 'undefined') {
+          setStatusBar('TradingView 未就緒，使用本地圖表...', p.price, chgPctVal, peVal, divVal, w52Val);
           loadTVFallback(tickerSym);
           return;
         }
@@ -5703,6 +5836,7 @@ function loadTVWidget(){
         const dot = document.getElementById('tvStatusDot');
         if (dot) { dot.className = 'tv-status-dot'; dot.style.background = 'var(--green)'; }
       } catch(e) {
+        console.warn('[TV] Widget init error:', e);
         setStatusBar('Widget 初始化失敗，使用本地圖表...', p.price, chgPctVal, peVal, divVal, w52Val);
         loadTVFallback(tickerSym);
       }
@@ -5710,20 +5844,25 @@ function loadTVWidget(){
 
     (async () => {
       let success = false;
-      const results = await Promise.race([
-        tryEmbed().then(async (r) => {
-          if (r === 'embed') { success = true; return true; }
-          const s2 = await tryStatic();
-          if (s2) { success = true; return true; }
-          const s3 = await tryWidgetCDN();
-          return s3;
-        }),
-        new Promise(r => setTimeout(() => r(false), 20000))
-      ]);
-      if (success || results) {
-        setTimeout(initWidget, 500);
+      // Step 1: Check if already preloaded
+      const preloaded = await tryPreloaded();
+      if (preloaded) {
+        success = true;
       } else {
-        setStatusBar('TradingView 載入逾時，使用本地圖表...', p.price, chgPctVal, peVal, divVal, w52Val);
+        // Step 2: Try dynamic load
+        const dynamic = await tryDynamicLoad();
+        if (dynamic) {
+          // Wait a moment for TradingView to be ready
+          await new Promise(r => setTimeout(r, 800));
+          success = typeof TradingView !== 'undefined';
+        }
+      }
+
+      if (success) {
+        setTimeout(() => initWidget(), 300);
+      } else {
+        // Step 3: Use iframe fallback (most reliable, works everywhere)
+        setStatusBar('TradingView 載入逾時，使用 iframe 嵌入...', p.price, chgPctVal, peVal, divVal, w52Val);
         loadTVFallback(tickerSym);
       }
     })();
@@ -6369,7 +6508,7 @@ function refreshData(){
     else if(activeTab==='signals'){buildSignals();sectionsBuilt.add('signals');}
     else if(activeTab==='news'){buildNews();sectionsBuilt.add('news');}
     else    if(activeTab==='analytics'){setTimeout(()=>{buildAnalytics();buildHeatmap();buildMoversTable();buildCompare();buildRiskMeter();buildPEDistribution();buildMonthlyTable();},50);sectionsBuilt.add('analytics');}
-    else if(activeTab==='overview'){buildPortfolioAlertBanner();buildDailyPLSummary();buildSparkline();buildMoverCards();buildTopMovers();buildPortfolioHealth();buildActionableAlerts();buildMarketPulse();buildDividendSummary();updateQuickSummary();updateMarketMood();buildPortfolioGauge();buildDailyPLCard();buildNewsSummary();updateMarketContextBanner();buildBenchmarkStrip();buildSectorAllocationMini();}
+    else if(activeTab==='overview'){buildPortfolioAlertBanner();buildDailyPLSummary();buildSparkline();buildMoverCards();buildTopMovers();buildPortfolioHealth();buildActionableAlerts();buildMarketPulse();buildDividendSummary();updateQuickSummary();updateMarketMood();buildPortfolioGauge();buildDailyPLCard();buildNewsSummary();updateMarketContextBanner();buildBenchmarkStrip();buildSectorAllocationMini();buildNewsTicker();}
     btn.textContent=oldText;
     btn.disabled=false;
     showToast('資料已更新 ✓',2000);
@@ -6915,6 +7054,10 @@ async function loadData() {
   } catch (e) {
     console.warn('[loadData] history.json load failed, using static data:', e.message);
   }
+
+  // Refresh market context banner and status after data is loaded
+  if (typeof updateMarketContextBanner === 'function') updateMarketContextBanner();
+  if (typeof updateMarketStatus === 'function') updateMarketStatus();
 }
 
 // ================================================================
@@ -6950,6 +7093,7 @@ async function init() {
   buildMarketPulse();
   buildSectorPulseBars();
   buildDividendSummary();
+  buildNewsTicker(); // Animated ticker with top movers + market data
   buildPortfolioGauge();
   buildDailyPLCard();
   buildRebalancingSuggestions();
