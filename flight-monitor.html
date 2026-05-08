@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>廖家旅遊監控 — 春節滑雪 2027</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;--bg2:#141414;--surface:#1a1a1a;--surface2:#222222;
+  --surface3:#2a2a2a;--surface4:#333333;--border:#2e2e2e;--border2:#3a3a3a;
+  --text:#e8e8e8;--text2:#9a9a9a;--text3:#666666;
+  --red:#ff4444;--red-dim:#cc3333;--green:#00d68f;--green-dim:#00a36e;
+  --blue:#4d9fff;--amber:#ffb020;--purple:#b066ff;--cyan:#00c9d4;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.4);--shadow-md:0 4px 12px rgba(0,0,0,0.5);
+  --shadow-lg:0 8px 30px rgba(0,0,0,0.6);
+  --radius-sm:4px;--radius-md:8px;--radius-lg:12px;
+  --font-mono:'JetBrains Mono','Fira Code','Consolas',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC','Inter',sans-serif;font-size:14px;line-height:1.5}
+
+/* TOP NAV */
+.top-nav{
+  display:flex;align-items:center;gap:12px;padding:12px 20px;
+  background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;
+}
+.top-nav h1{font-size:1.1rem;font-weight:700;color:var(--text);flex:1}
+.top-nav h1 span{color:var(--cyan)}
+.nav-tab{
+  padding:6px 14px;border-radius:var(--radius-md);cursor:pointer;font-size:0.82rem;font-weight:600;
+  background:var(--surface2);color:var(--text2);border:1px solid var(--border);transition:all 0.15s;
+}
+.nav-tab:hover{background:var(--surface3);color:var(--text)}
+.nav-tab.active{background:var(--surface4);color:var(--cyan);border-color:var(--cyan)}
+.nav-tab.saved-badge{
+  position:relative;
+}
+.nav-tab.saved-badge::after{
+  content:attr(data-count);
+  position:absolute;top:-6px;right:-6px;
+  background:var(--cyan);color:#000;font-size:0.6rem;font-weight:800;
+  width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+}
+
+/* SECTION WRAPPER */
+.section-wrap{display:none}
+.section-wrap.active{display:block}
+
+/* SEARCH FORM */
+.search-form{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:20px;margin:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;
+}
+.search-form h3{grid-column:1/-1;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text3);margin-bottom:4px}
+.search-form label{font-size:0.75rem;color:var(--text2);margin-bottom:4px;display:block}
+.search-form input,.search-form select{
+  width:100%;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);color:var(--text);font-size:0.88rem;outline:none;
+  transition:border-color 0.15s;
+}
+.search-form input:focus,.search-form select:focus{border-color:var(--cyan)}
+.search-form input::placeholder{color:var(--text3)}
+.search-form .btn-row{grid-column:1/-1;display:flex;gap:10px;margin-top:4px}
+.btn{
+  padding:9px 20px;border-radius:var(--radius-md);cursor:pointer;font-size:0.85rem;font-weight:600;
+  border:none;transition:all 0.15s;font-family:inherit;
+}
+.btn-primary{background:var(--cyan);color:#000}
+.btn-primary:hover{background:#00e0ed}
+.btn-secondary{background:var(--surface3);color:var(--text);border:1px solid var(--border2)}
+.btn-secondary:hover{background:var(--surface4)}
+
+/* CARD */
+.card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  margin:16px;overflow:hidden;
+}
+.card-header{
+  display:flex;align-items:center;justify-content:space-between;padding:12px 16px;
+  border-bottom:1px solid var(--border);background:var(--bg2);
+}
+.card-header h3{font-size:0.9rem;font-weight:700}
+.card-header .badge{
+  font-size:0.68rem;font-weight:700;padding:2px 8px;border-radius:20px;
+}
+.badge-low{background:rgba(0,214,143,0.15);color:var(--green)}
+.badge-mid{background:rgba(255,176,32,0.15);color:var(--amber)}
+.badge-high{background:rgba(255,68,68,0.15);color:var(--red)}
+.badge-new{background:rgba(77,159,255,0.15);color:var(--blue)}
+
+/* RECORD ROW */
+.record{
+  display:flex;align-items:center;gap:12px;padding:12px 16px;
+  border-bottom:1px solid var(--border);transition:background 0.12s;
+}
+.record:hover{background:rgba(255,255,255,0.02)}
+.record:last-child{border-bottom:none}
+.record .r-icon{
+  width:36px;height:36px;border-radius:var(--radius-md);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+}
+.record .r-icon.flight{background:rgba(77,159,255,0.12)}
+.record .r-icon.hotel{background:rgba(176,102,255,0.12)}
+.record .r-icon.car{background:rgba(0,201,212,0.12)}
+.record .r-icon.skiday{background:rgba(255,176,32,0.12)}
+.record .r-main{flex:1;min-width:0}
+.record .r-title{font-weight:600;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.record .r-sub{font-size:0.75rem;color:var(--text2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.record .r-price{text-align:right;flex-shrink:0}
+.record .r-price .price{font-family:var(--font-mono);font-size:1rem;font-weight:700;color:var(--green)}
+.record .r-price .per{font-size:0.68rem;color:var(--text3)}
+.record .r-price .old{font-family:var(--font-mono);font-size:0.72rem;color:var(--text3);text-decoration:line-through}
+.record .r-actions{display:flex;gap:6px;margin-top:4px;justify-content:flex-end}
+.record .r-actions button{
+  font-size:0.68rem;padding:2px 8px;border-radius:4px;cursor:pointer;border:none;
+  background:var(--surface3);color:var(--text2);transition:all 0.12s;
+}
+.record .r-actions button:hover{background:var(--surface4);color:var(--text)}
+
+/* EMPTY STATE */
+.empty-state{
+  text-align:center;padding:40px 20px;color:var(--text3);font-size:0.85rem;
+}
+.empty-state .emoji{font-size:2rem;margin-bottom:8px}
+
+/* TABS */
+.tab-bar{
+  display:flex;border-bottom:1px solid var(--border);padding:0 16px;
+}
+.tab{
+  padding:10px 14px;font-size:0.82rem;font-weight:600;color:var(--text2);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px;transition:all 0.15s;
+}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--cyan);border-bottom-color:var(--cyan)}
+
+/* TRIP PLANNER */
+.trip-hero{
+  margin:16px;background:linear-gradient(135deg,#1a2a3a 0%,#2a1a3a 100%);
+  border:1px solid var(--border2);border-radius:var(--radius-lg);padding:24px;
+}
+.trip-hero .trip-title{font-size:1.4rem;font-weight:800;color:var(--cyan)}
+.trip-hero .trip-title span{color:var(--amber)}
+.trip-hero .trip-sub{color:var(--text2);font-size:0.85rem;margin-top:4px}
+.trip-hero .trip-dates{
+  display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;
+}
+.trip-hero .trip-dates span{
+  background:rgba(0,214,143,0.1);color:var(--green);border:1px solid rgba(0,214,143,0.3);
+  padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:600;
+}
+.trip-hero .trip-dates span.weekend{
+  background:rgba(255,176,32,0.1);color:var(--amber);border-color:rgba(255,176,32,0.3);
+}
+
+/* ITINERARY */
+.day-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);
+  margin:12px 16px;overflow:hidden;
+}
+.day-card .day-header{
+  padding:10px 16px;background:var(--bg2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.day-card .day-num{
+  background:var(--cyan);color:#000;font-size:0.7rem;font-weight:800;
+  padding:2px 8px;border-radius:20px;
+}
+.day-card .day-date{font-size:0.82rem;font-weight:600;color:var(--text2)}
+.day-card .day-label{font-size:0.72rem;color:var(--text3);margin-left:auto}
+.day-card .day-body{padding:12px 16px;display:flex;flex-direction:column;gap:8px}
+.itinerary-item{
+  display:flex;align-items:flex-start;gap:10px;font-size:0.85rem;
+}
+.itinerary-item .item-time{
+  font-family:var(--font-mono);font-size:0.72rem;color:var(--cyan);width:40px;flex-shrink:0;
+}
+.itinerary-item .item-dot{
+  width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;
+}
+.itinerary-item .item-dot.flight{background:var(--blue)}
+.itinerary-item .item-dot.hotel{background:var(--purple)}
+.itinerary-item .item-dot.car{background:var(--cyan)}
+.itinerary-item .item-dot.ski{background:var(--amber)}
+.itinerary-item .item-dot.meal{background:var(--green)}
+.itinerary-item .item-text{flex:1;color:var(--text2)}
+.itinerary-item .item-text strong{color:var(--text)}
+
+/* BUDGET */
+.budget-bar{
+  padding:16px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+}
+.budget-item{
+  background:var(--surface2);border-radius:var(--radius-md);padding:10px;text-align:center;
+}
+.budget-item .b-label{font-size:0.65rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em}
+.budget-item .b-value{font-family:var(--font-mono);font-size:1.1rem;font-weight:700;margin-top:2px}
+.budget-item .b-value.flight{color:var(--blue)}
+.budget-item .b-value.hotel{color:var(--purple)}
+.budget-item .b-value.car{color:var(--cyan)}
+.budget-item .b-value.total{color:var(--amber)}
+
+/* COST ROW */
+.cost-row{
+  display:flex;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border);
+  font-size:0.85rem;
+}
+.cost-row .cr-name{flex:1;color:var(--text2)}
+.cost-row .cr-qty{color:var(--text3);font-size:0.75rem;margin-right:8px}
+.cost-row .cr-amount{font-family:var(--font-mono);font-weight:700}
+
+/* PRICE TREND */
+.price-trend{
+  display:flex;align-items:center;gap:6px;padding:8px 16px;
+}
+.price-trend .trend-arrow{font-size:0.85rem}
+.price-trend .trend-up{color:var(--red)}
+.price-trend .trend-down{color:var(--green)}
+.price-trend .trend-text{font-size:0.72rem;color:var(--text2)}
+
+/* NOTE */
+.note-input{
+  padding:10px 16px;border-bottom:1px solid var(--border);
+}
+.note-input textarea{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);color:var(--text);font-family:inherit;font-size:0.82rem;
+  padding:8px;outline:none;resize:vertical;min-height:60px;
+}
+.note-input textarea:focus{border-color:var(--cyan)}
+
+/* SEARCH ENGINE LINKS */
+.engine-links{
+  padding:8px 16px;display:flex;gap:8px;flex-wrap:wrap;
+}
+.engine-links a{
+  font-size:0.72rem;padding:4px 10px;border-radius:20px;
+  text-decoration:none;transition:all 0.12s;font-weight:600;
+}
+.engine-links a.flight{background:rgba(77,159,255,0.1);color:var(--blue)}
+.engine-links a.hotel{background:rgba(176,102,255,0.1);color:var(--purple)}
+.engine-links a.car{background:rgba(0,201,212,0.1);color:var(--cyan)}
+.engine-links a:hover{opacity:0.8}
+
+/* TOAST */
+.toast{
+  position:fixed;bottom:20px;right:20px;background:var(--surface4);
+  border:1px solid var(--border2);border-radius:var(--radius-md);padding:10px 16px;
+  font-size:0.82rem;color:var(--text);z-index:999;pointer-events:none;
+  box-shadow:var(--shadow-lg);opacity:0;transition:opacity 0.2s;
+}
+.toast.show{opacity:1}
+
+/* MANUAL ENTRY */
+.manual-entry{
+  display:flex;gap:8px;padding:10px 16px;background:var(--bg2);
+  border-bottom:1px solid var(--border);
+}
+.manual-entry input{
+  flex:1;padding:7px 10px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:var(--radius-sm);color:var(--text);font-size:0.82rem;outline:none;
+}
+.manual-entry input:focus{border-color:var(--cyan)}
+.manual-entry input::placeholder{color:var(--text3)}
+.manual-entry button{
+  padding:7px 12px;border-radius:var(--radius-sm);cursor:pointer;border:none;
+  font-size:0.78rem;font-weight:600;background:var(--cyan);color:#000;
+}
+
+/* DESTINATION PILLS */
+.dest-pills{
+  display:flex;gap:8px;padding:12px 16px;flex-wrap:wrap;
+}
+.dest-pill{
+  padding:6px 14px;border-radius:20px;font-size:0.78rem;font-weight:600;
+  cursor:pointer;border:1px solid var(--border2);background:var(--surface2);
+  color:var(--text2);transition:all 0.12s;
+}
+.dest-pill:hover,.dest-pill.active{
+  background:rgba(0,201,212,0.12);color:var(--cyan);border-color:var(--cyan);
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="top-nav">
+  <h1>🎿 <span>廖家旅遊監控</span></h1>
+  <div class="nav-tab active" data-tab="flights">✈ 機票</div>
+  <div class="nav-tab" data-tab="hotels" id="tab-hotels">🏨 飯店</div>
+  <div class="nav-tab" data-tab="cars">🚗 租車</div>
+  <div class="nav-tab" data-tab="trip">📋 春節行程</div>
+  <div class="nav-tab" data-tab="saved" id="tab-saved" data-count="0">💾 已記錄</div>
+</div>
+
+<!-- ═══ FLIGHTS ═══ -->
+<div class="section-wrap active" id="sec-flights">
+  <div class="search-form">
+    <h3>✈ 機票搜尋</h3>
+    <div>
+      <label>出發機場</label>
+      <select id="f-from">
+        <option value="TPE">TPE — 台北</option>
+        <option value="TSA">TSA — 松山</option>
+        <option value="KHH">KHH — 高雄</option>
+      </select>
+    </div>
+    <div>
+      <label>目的地</label>
+      <select id="f-to">
+        <option value="CTS">CTS — 北海道札幌</option>
+        <option value="TYO">TYO — 東京</option>
+        <option value="ICN">ICN — 韓國首爾</option>
+        <option value="YVR">YVR — 加拿大溫哥華</option>
+      </select>
+    </div>
+    <div>
+      <label>去程日期</label>
+      <input type="date" id="f-dep">
+    </div>
+    <div>
+      <label>回程日期</label>
+      <input type="date" id="f-ret">
+    </div>
+    <div>
+      <label>人數</label>
+      <select id="f-pax">
+        <option>1</option>
+        <option>2</option>
+        <option selected>3</option>
+        <option>4</option>
+      </select>
+    </div>
+    <div>
+      <label>艙等</label>
+      <select id="f-class">
+        <option>經濟艙</option>
+        <option>商務艙</option>
+      </select>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="addFlight()">+ 記錄搜尋</button>
+      <button class="btn btn-secondary" onclick="openFlightEngine()">🔍 搜尋引擎</button>
+    </div>
+  </div>
+
+  <!-- Engine Links -->
+  <div class="engine-links" id="flight-engine-links">
+    <a class="flight" href="https://www.skyscanner.com.tw/transport/flights/tp/cts/270129/" target="_blank">Skyscanner</a>
+    <a class="flight" href="https://www.google.com/travel/flights/search?tfs=CBwQAhopagwIAxIIL2cvMTF0eGoxEgoyMDI3LTAxLTI5agwIAxIIL20vMGpoeG0QAxopagwIAxIIL20vMGpoeG0SCjIwMjctMDEtMDZqDAgDEggvZy8xMXR4ajESAggB" target="_blank">Google Flights</a>
+    <a class="flight" href="https://www.eztravel.com.tw/pkgflght/FRTCTSA/main.faces" target="_blank">易遊網</a>
+    <a class="flight" href="https://www.trip.com/flights/airport/cts/" target="_blank">Trip.com</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3>📊 記錄的機票報價</h3>
+      <span class="badge badge-new" id="f-count">0 筆記錄</span>
+    </div>
+    <div id="flight-list">
+      <div class="empty-state"><div class="emoji">✈️</div>尚無機票記錄<br>在上方輸入條件並點擊「記錄搜尋」</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HOTELS ═══ -->
+<div class="section-wrap" id="sec-hotels">
+  <div class="search-form">
+    <h3>🏨 飯店搜尋</h3>
+    <div>
+      <label>目的地</label>
+      <select id="h-dest">
+        <option value="sapporo">北海道札幌</option>
+        <option value="tokyo">東京</option>
+        <option value="seoul">首爾</option>
+        <option value="vancouver">溫哥華</option>
+      </select>
+    </div>
+    <div>
+      <label>入住日期</label>
+      <input type="date" id="h-checkin">
+    </div>
+    <div>
+      <label>退房日期</label>
+      <input type="date" id="h-checkout">
+    </div>
+    <div>
+      <label>房間數</label>
+      <select id="h-rooms">
+        <option>1</option>
+        <option selected>2</option>
+      </select>
+    </div>
+    <div>
+      <label>住客人數</label>
+      <select id="h-guests">
+        <option>2</option>
+        <option selected>3</option>
+        <option>4</option>
+      </select>
+    </div>
+    <div>
+      <label>飯店類型</label>
+      <select id="h-type">
+        <option>滑雪度假村 / 村內飯店</option>
+        <option>市區飯店</option>
+        <option>商務飯店</option>
+      </select>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="addHotel()">+ 記錄飯店</button>
+      <button class="btn btn-secondary" onclick="openHotelEngine()">🔍 搜尋引擎</button>
+    </div>
+  </div>
+
+  <div class="engine-links">
+    <a class="hotel" href="https://www.booking.com" target="_blank">Booking.com</a>
+    <a class="hotel" href="https://www.agoda.com" target="_blank">Agoda</a>
+    <a class="hotel" href="https://www.expedia.com" target="_blank">Expedia</a>
+    <a class="hotel" href="https://www.japanican.com" target="_blank">Japanican</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3>📊 記錄的飯店報價</h3>
+      <span class="badge badge-new" id="h-count">0 筆記錄</span>
+    </div>
+    <div id="hotel-list">
+      <div class="empty-state"><div class="emoji">🏨</div>尚無飯店記錄</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CARS ═══ -->
+<div class="section-wrap" id="sec-cars">
+  <div class="search-form">
+    <h3>🚗 租車搜尋</h3>
+    <div>
+      <label>取車地點</label>
+      <select id="c-pickup">
+        <option value="cts">北海道札幌機場</option>
+        <option value="tyo">東京成田機場</option>
+        <option value="icn">首爾仁川機場</option>
+        <option value="yvr">溫哥華機場</option>
+      </select>
+    </div>
+    <div>
+      <label>還車地點</label>
+      <select id="c-dropoff">
+        <option value="same">同取車地點</option>
+        <option value="cts">北海道札幌機場</option>
+        <option value="tyo">東京成田機場</option>
+      </select>
+    </div>
+    <div>
+      <label>取車日期</label>
+      <input type="date" id="c-from">
+    </div>
+    <div>
+      <label>還車日期</label>
+      <input type="date" id="c-to">
+    </div>
+    <div>
+      <label>車型</label>
+      <select id="c-type">
+        <option>中小型SUV（4人）</option>
+        <option>MPV／7人座（全家）</option>
+        <option>經濟小車</option>
+      </select>
+    </div>
+    <div>
+      <label>保險</label>
+      <select id="c-ins">
+        <option>全險</option>
+        <option>基本第三人責任險</option>
+        <option>不需保險</option>
+      </select>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="addCar()">+ 記錄租車</button>
+      <button class="btn btn-secondary" onclick="openCarEngine()">🔍 搜尋引擎</button>
+    </div>
+  </div>
+
+  <div class="engine-links">
+    <a class="car" href="https://www.rentalcars.com" target="_blank">Rentalcars.com</a>
+    <a class="car" href="https://www.klook.com" target="_blank">Klook</a>
+    <a class="car" href="https://www.qoo10.tw" target="_blank">Qoo10</a>
+    <a class="car" href="https://www.tabirai.net" target="_blank">Tabirai（日本租車）</a>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h3>📊 記錄的租車報價</h3>
+      <span class="badge badge-new" id="c-count">0 筆記錄</span>
+    </div>
+ <div id="car-list">
+      <div class="empty-state"><div class="emoji">🚗</div>尚無租車記錄</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TRIP PLANNER ═══ -->
+<div class="section-wrap" id="sec-trip">
+  <div class="trip-hero">
+    <div class="trip-title">🎿 2027 春節滑雪假期 <span>（1/29 - 2/4）</span></div>
+    <div class="trip-sub">全家4口（爸媽＋兩位兒子）· 北海道札幌 · 租車自駕</div>
+    <div class="trip-dates">
+      <span>1/28 除夕</span>
+      <span class="weekend">1/29 初一 🌟</span>
+      <span>1/30 初二</span>
+      <span>1/31 初三</span>
+      <span>2/1 初四</span>
+      <span>2/2 初五</span>
+      <span>2/3 初六</span>
+      <span>2/4 初七</span>
+      <span class="weekend">2/5 初八</span>
+      <span class="weekend">2/6 初九</span>
+    </div>
+  </div>
+
+  <!-- Budget Summary -->
+  <div class="card" style="margin:0 16px 16px">
+    <div class="card-header">
+      <h3>💰 預算概覽</h3>
+      <span class="badge badge-low">TWD 估</span>
+    </div>
+    <div class="budget-bar">
+      <div class="budget-item">
+        <div class="b-label">✈ 機票</div>
+        <div class="b-value flight" id="b-flight">--</div>
+      </div>
+      <div class="budget-item">
+        <div class="b-label">🏨 飯店</div>
+        <div class="b-value hotel" id="b-hotel">--</div>
+      </div>
+      <div class="budget-item">
+        <div class="b-label">🚗 租車</div>
+        <div class="b-value car" id="b-car">--</div>
+      </div>
+      <div class="budget-item">
+        <div class="b-label">💎 合計</div>
+        <div class="b-value total" id="b-total">--</div>
+      </div>
+    </div>
+    <div id="cost-list"></div>
+  </div>
+
+  <!-- Itinerary -->
+  <div class="card" style="margin:0 16px 16px">
+    <div class="card-header">
+      <h3>📅 行程規劃（參考版）</h3>
+      <span class="badge badge-new">8天7夜</span>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header">
+        <span class="day-num">Day 1</span>
+        <span class="day-date">1/28（除夕）</span>
+        <span class="day-label">✈ + 🏨</span>
+      </div>
+      <div class="day-body">
+        <div class="itinerary-item"><span class="item-time">08:00</span><span class="item-dot flight"></span><span class="item-text">桃園 → 札幌新千歲（直航，約4hr）</span></div>
+        <div class="itinerary-item"><span class="item-time">13:00</span><span class="item-dot car"></span><span class="item-text">新千歲機場取車 → 札幌市區</span></div>
+        <div class="itinerary-item"><span class="item-time">15:00</span><span class="item-dot hotel"></span><span class="item-text">入住：Ski-in/Ski-out 度假村</span></div>
+        <div class="itinerary-item"><span class="item-time">17:00</span><span class="item-dot meal"></span><span class="item-text">除夕晚餐：飯店宴席 or 居酒屋（提早預訂）</span></div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header">
+        <span class="day-num">Day 2</span>
+        <span class="day-date">1/29（初一）🌟</span>
+        <span class="day-label">⛷ + 🎿</span>
+      </div>
+      <div class="day-body">
+        <div class="itinerary-item"><span class="item-time">08:30</span><span class="item-dot ski"></span><span class="item-text">全家滑雪：Kiroro / 留壽都 / Club Med 度假村</span></div>
+        <div class="itinerary-item"><span class="item-time">12:00</span><span class="item-dot meal"></span><span class="item-text">雪場午餐（村內餐廳）</span></div>
+        <div class="itinerary-item"><span class="item-time">14:00</span><span class="item-dot ski"></span><span class="item-text">下午滑雪 / 泡湯 / SPA</span></div>
+        <div class="itinerary-item"><span class="item-time">18:00</span><span class="item-dot meal"></span><span class="item-text">初一晚餐：螃蟹大餐（札幌場外市場）</span></div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header">
+        <span class="day-num">Day 3-6</span>
+        <span class="day-date">1/30 - 2/2</span>
+        <span class="day-label">⛷⛷⛷</span>
+      </div>
+      <div class="day-body">
+        <div class="itinerary-item"><span class="item-time">全天</span><span class="item-dot ski"></span><span class="item-text">滑雪日（每天換不同雪場）</span></div>
+        <div class="itinerary-item"><span class="item-time">--</span><span class="item-dot meal"></span><span class="item-text">午/晚餐：白色戀人公園 / 狸小路 / 薄野</span></div>
+        <div class="itinerary-item"><span class="item-time">晚</span><span class="item-dot hotel"></span><span class="item-text">溫泉大浴場 / 雪地露天浴（♨️）</span></div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header">
+        <span class="day-num">Day 7</span>
+        <span class="day-date">2/4（初七）</span>
+        <span class="day-label">🛍 + ✈</span>
+      </div>
+      <div class="day-body">
+        <div class="itinerary-item"><span class="item-time">09:00</span><span class="item-dot car"></span><span class="item-text">退房、還車</span></div>
+        <div class="itinerary-item"><span class="item-time">11:00</span><span class="item-dot meal"></span><span class="item-text">最後採買：機場 / 市区免稅店</span></div>
+        <div class="itinerary-item"><span class="item-time">14:00</span><span class="item-dot flight"></span><span class="item-text">札幌 → 台北 直航返台</span></div>
+      </div>
+    </div>
+
+    <div class="note-input">
+      <label style="font-size:0.72rem;color:var(--text3);margin-bottom:4px;display:block">📝 行程備註</label>
+      <textarea id="trip-notes" placeholder="可寫下任何備註：教練預訂、保險、加購項目、注意事項..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SAVED RECORDS ═══ -->
+<div class="section-wrap" id="sec-saved">
+  <div class="card" style="margin:16px">
+    <div class="card-header">
+      <h3>💾 所有已記錄項目</h3>
+      <button class="btn btn-secondary" onclick="exportAll()">📤 匯出JSON</button>
+    </div>
+    <div id="saved-list">
+      <div class="empty-state"><div class="emoji">💾</div>尚無記錄</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── STORAGE ───
+const STORE_KEY = 'trip_monitor_v1';
+
+function loadStore(){
+  const raw = localStorage.getItem(STORE_KEY);
+  return raw ? JSON.parse(raw) : {flights:[],hotels:[],cars:[],notes:''};
+}
+function saveStore(data){
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+  updateBadge();
+}
+function updateBadge(){
+  const d = loadStore();
+  const total = d.flights.length + d.hotels.length + d.cars.length;
+  const el = document.getElementById('tab-saved');
+  if(el) el.setAttribute('data-count', total > 0 ? total : '');
+}
+
+// ─── TOAST ───
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 2000);
+}
+
+// ─── TAB NAVIGATION ───
+document.querySelectorAll('.nav-tab[data-tab]').forEach(tab=>{
+  tab.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.section-wrap').forEach(s=>s.classList.remove('active'));
+    document.getElementById('sec-'+tab.dataset.tab).classList.add('active');
+  });
+});
+
+// ─── DATE INIT ───
+const CNY_2027 = '2027-01-29';
+const CNY_RET = '2027-02-04';
+const CNY_DEP = '2027-01-28';
+
+document.getElementById('f-dep').value = CNY_DEP;
+document.getElementById('f-ret').value = CNY_RET;
+document.getElementById('h-checkin').value = CNY_DEP;
+document.getElementById('h-checkout').value = '2027-02-04';
+document.getElementById('c-from').value = CNY_DEP;
+document.getElementById('c-to').value = '2027-02-04';
+
+// ─── DESTINATION LABEL MAP ───
+const DEST_LABELS = {
+  CTS:'北海道札幌', TYO:'東京', ICN:'首爾仁川', YVR:'溫哥華',
+  sapporo:'北海道札幌', tokyo:'東京', seoul:'首爾', vancouver:'溫哥華',
+  cts:'北海道札幌', tyoi:'東京', icn:'首爾仁川', yvr:'溫哥華'
+};
+
+// ─── FORMAT ───
+function fmt(n){ return n.toLocaleString('zh-TW') }
+function daysBetween(a,b){
+  const d = new Date(b) - new Date(a);
+  return Math.round(d/86400000);
+}
+
+// ─── FLIGHT HELPERS ───
+function getFlightLabel(from,to){
+  return `${from} → ${to}`;
+}
+
+function openFlightEngine(){
+  const from = document.getElementById('f-from').value;
+  const to = document.getElementById('f-to').value;
+  const dep = document.getElementById('f-dep').value;
+  const ret = document.getElementById('f-ret').value;
+  const url = `https://www.google.com/travel/flights/search?tfs=CBwQAhopagwIAxIIL2cvMTF0eGoxEgoyMDI3LTAxLTI5agwIAxIIL20vMGpoeG0QAxopagwIAxIIL20vMGpoeG0SCjIwMjctMDEtMDZqDAgDEggvZy8xMXR4ajESAggB&dep=${dep}&ret=${ret}`;
+  window.open(url,'_blank');
+}
+
+function addFlight(){
+  const from = document.getElementById('f-from').value;
+  const to = document.getElementById('f-to').value;
+  const dep = document.getElementById('f-dep').value;
+  const ret = document.getElementById('f-ret').value;
+  const pax = document.getElementById('f-pax').value;
+  const cls = document.getElementById('f-class').value;
+
+  const price = prompt('機票報價（TWD，總價）：','');
+  if(!price) return;
+  const p = parseFloat(price.replace(/,/g,''));
+  if(isNaN(p)){ toast('請輸入數字'); return; }
+
+  const store = loadStore();
+  const rec = {
+    id: Date.now(),
+    from, to, dep, ret, pax, cls,
+    price: p,
+    date: new Date().toISOString().slice(0,10)
+  };
+  store.flights.push(rec);
+  saveStore(store);
+  renderFlights();
+  toast('✓ 機票已記錄');
+}
+
+function renderFlights(){
+  const d = loadStore();
+  const el = document.getElementById('flight-list');
+  document.getElementById('f-count').textContent = d.flights.length + ' 筆記錄';
+  if(!d.flights.length){
+    el.innerHTML = '<div class="empty-state"><div class="emoji">✈️</div>尚無機票記錄</div>';
+    return;
+  }
+  // sort by price
+  const sorted = [...d.flights].sort((a,b)=>a.price-b.price);
+  el.innerHTML = sorted.map(r=>`
+    <div class="record">
+      <div class="r-icon flight">✈</div>
+      <div class="r-main">
+        <div class="r-title">${getFlightLabel(r.from,r.to)}</div>
+        <div class="r-sub">${r.dep} → ${r.ret} · ${r.pax}人 · ${r.cls}</div>
+        ${r.note ? '<div class="r-sub" style="color:var(--amber)">📝 '+r.note+'</div>' : ''}
+        <div class="price-trend">
+          <span class="trend-arrow trend-down">▼</span>
+          <span class="trend-text">記錄於 ${r.date}</span>
+        </div>
+      </div>
+      <div class="r-price">
+        <div class="old">--</div>
+        <div class="price">${fmt(r.price)}</div>
+        <div class="per">TWD</div>
+      </div>
+      <div class="r-actions">
+        <button onclick="delFlight(${r.id})">刪</button>
+      </div>
+    </div>`).join('');
+}
+
+function delFlight(id){
+  const store = loadStore();
+  store.flights = store.flights.filter(r=>r.id!==id);
+  saveStore(store);
+  renderFlights();
+}
+
+// ─── HOTEL HELPERS ───
+function openHotelEngine(){
+  window.open('https://www.booking.com', '_blank');
+}
+
+function addHotel(){
+  const dest = document.getElementById('h-dest').value;
+  const ci = document.getElementById('h-checkin').value;
+  const co = document.getElementById('h-checkout').value;
+  const rooms = document.getElementById('h-rooms').value;
+  const guests = document.getElementById('h-guests').value;
+  const type = document.getElementById('h-type').value;
+
+  const price = prompt('飯店報價（TWD，總價）：','');
+  if(!price) return;
+  const p = parseFloat(price.replace(/,/g,''));
+  if(isNaN(p)){ toast('請輸入數字'); return; }
+
+  const nights = daysBetween(ci, co);
+  const store = loadStore();
+  const rec = {
+    id: Date.now(),
+    dest, ci, co, rooms, guests, type,
+    price: p, nights,
+    date: new Date().toISOString().slice(0,10)
+  };
+  store.hotels.push(rec);
+  saveStore(store);
+  renderHotels();
+  toast('✓ 飯店已記錄');
+}
+
+function renderHotels(){
+  const d = loadStore();
+  const el = document.getElementById('hotel-list');
+  document.getElementById('h-count').textContent = d.hotels.length + ' 筆記錄';
+  if(!d.hotels.length){
+    el.innerHTML = '<div class="empty-state"><div class="emoji">🏨</div>尚無飯店記錄</div>';
+    return;
+  }
+  const sorted = [...d.hotels].sort((a,b)=>a.price-b.price);
+  el.innerHTML = sorted.map(r=>`
+    <div class="record">
+      <div class="r-icon hotel">🏨</div>
+      <div class="r-main">
+        <div class="r-title">${DEST_LABELS[r.dest]||r.dest} · ${r.nights}晚</div>
+        <div class="r-sub">${r.ci} → ${r.co} · ${r.rooms}房 · ${r.guests}人 · ${r.type}</div>
+        <div class="price-trend">
+          <span class="trend-arrow trend-down">▼</span>
+          <span class="trend-text">記錄於 ${r.date}</span>
+        </div>
+      </div>
+      <div class="r-price">
+        <div class="price">${fmt(r.price)}</div>
+        <div class="per">TWD/${r.nights}晚</div>
+      </div>
+      <div class="r-actions">
+        <button onclick="delHotel(${r.id})">刪</button>
+      </div>
+    </div>`).join('');
+}
+
+function delHotel(id){
+  const store = loadStore();
+  store.hotels = store.hotels.filter(r=>r.id!==id);
+  saveStore(store);
+  renderHotels();
+}
+
+// ─── CAR HELPERS ───
+function openCarEngine(){
+  window.open('https://www.rentalcars.com', '_blank');
+}
+
+function addCar(){
+  const pickup = document.getElementById('c-pickup').value;
+  const dropoff = document.getElementById('c-dropoff').value;
+  const from = document.getElementById('c-from').value;
+  const to = document.getElementById('c-to').value;
+  const type = document.getElementById('c-type').value;
+  const ins = document.getElementById('c-ins').value;
+
+  const price = prompt('租車報價（TWD，總價）：','');
+  if(!price) return;
+  const p = parseFloat(price.replace(/,/g,''));
+  if(isNaN(p)){ toast('請輸入數字'); return; }
+
+  const days = daysBetween(from, to);
+  const store = loadStore();
+  const rec = {
+    id: Date.now(), pickup, dropoff, from, to, type, ins,
+    price: p, days,
+    date: new Date().toISOString().slice(0,10)
+  };
+  store.cars.push(rec);
+  saveStore(store);
+  renderCars();
+  toast('✓ 租車已記錄');
+}
+
+function renderCars(){
+  const d = loadStore();
+  const el = document.getElementById('car-list');
+  document.getElementById('c-count').textContent = d.cars.length + ' 筆記錄';
+  if(!d.cars.length){
+    el.innerHTML = '<div class="empty-state"><div class="emoji">🚗</div>尚無租車記錄</div>';
+    return;
+  }
+  const sorted = [...d.cars].sort((a,b)=>a.price-b.price);
+  el.innerHTML = sorted.map(r=>`
+    <div class="record">
+      <div class="r-icon car">🚗</div>
+      <div class="r-main">
+        <div class="r-title">${DEST_LABELS[r.pickup]||r.pickup} 取還車 · ${r.days}天</div>
+        <div class="r-sub">${r.from} → ${r.to} · ${r.type} · ${r.ins}</div>
+        <div class="price-trend">
+          <span class="trend-arrow trend-down">▼</span>
+          <span class="trend-text">記錄於 ${r.date}</span>
+        </div>
+      </div>
+      <div class="r-price">
+        <div class="price">${fmt(r.price)}</div>
+        <div class="per">TWD/${r.days}天</div>
+      </div>
+      <div class="r-actions">
+        <button onclick="delCar(${r.id})">刪</button>
+      </div>
+    </div>`).join('');
+}
+
+function delCar(id){
+  const store = loadStore();
+  store.cars = store.cars.filter(r=>r.id!==id);
+  saveStore(store);
+  renderCars();
+}
+
+// ─── BUDGET ───
+function updateBudget(){
+  const d = loadStore();
+  const bestFlight = d.flights.length ? Math.min(...d.flights.map(r=>r.price)) : null;
+  const bestHotel = d.hotels.length ? Math.min(...d.hotels.map(r=>r.price)) : null;
+  const bestCar = d.cars.length ? Math.min(...d.cars.map(r=>r.price)) : null;
+
+  document.getElementById('b-flight').textContent = bestFlight ? fmt(bestFlight) : '--';
+  document.getElementById('b-hotel').textContent = bestHotel ? fmt(bestHotel) : '--';
+  document.getElementById('b-car').textContent = bestCar ? fmt(bestCar) : '--';
+
+  const total = [bestFlight,bestHotel,bestCar].filter(v=>v).reduce((a,b)=>a+b,0);
+  document.getElementById('b-total').textContent = total ? fmt(total) : '--';
+}
+
+// ─── SAVED VIEW ───
+function renderSaved(){
+  const d = loadStore();
+  const el = document.getElementById('saved-list');
+  const all = [
+    ...d.flights.map(r=>({...r,_type:'flight',_icon:'✈',_label:getFlightLabel(r.from,r.to)})),
+    ...d.hotels.map(r=>({...r,_type:'hotel',_icon:'🏨',_label:(DEST_LABELS[r.dest]||r.dest)+' '+r.nights+'晚'})),
+    ...d.cars.map(r=>({...r,_type:'car',_icon:'🚗',_label:(DEST_LABELS[r.pickup]||r.pickup)+' '+r.days+'天'}))
+  ].sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  if(!all.length){
+    el.innerHTML = '<div class="empty-state"><div class="emoji">💾</div>尚無記錄</div>';
+    return;
+  }
+  el.innerHTML = all.map(r=>`
+    <div class="record">
+      <div class="r-icon ${r._type}">${r._icon}</div>
+      <div class="r-main">
+        <div class="r-title">${r._label}</div>
+        <div class="r-sub">${r.date} · ${r._type==='flight' ? r.pax+'人·'+r.cls : r._type==='hotel' ? r.rooms+'房·'+r.guests+'人' : r.type}</div>
+      </div>
+      <div class="r-price">
+        <div class="price">${fmt(r.price)}</div>
+        <div class="per">TWD</div>
+      </div>
+    </div>`).join('');
+}
+
+function exportAll(){
+  const d = loadStore();
+  d.notes = document.getElementById('trip-notes')?.value || '';
+  const blob = new Blob([JSON.stringify(d, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'trip_monitor_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('✓ 已匯出');
+}
+
+// ─── INIT ───
+renderFlights();
+renderHotels();
+renderCars();
+updateBadge();
+updateBudget();
+
+// ─── TAB SWITCH → update budget ───
+document.querySelectorAll('.nav-tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    setTimeout(updateBudget, 50);
+    if(t.dataset.tab==='saved') renderSaved();
+  });
+});
+</script>
+</body>
+</html>
