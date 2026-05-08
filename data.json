@@ -1,248 +1,295 @@
 {
-  "updated": "2026-05-08T11:19:56.962022",
+  "updated": "2026-05-08T16:11:46.696584+08:00",
   "prices": {
-    "00878": {
-      "price": 27.8,
-      "year_high": 28.13,
-      "year_low": 20.01,
-      "prev_close": 27.89
+    "0050": {
+      "price": 97.0,
+      "prev_close": 97.7,
+      "year_high": 97.7,
+      "year_low": 42.25
     },
     "00646": {
-      "price": 72.7,
-      "year_high": 72.8,
-      "year_low": 53.5,
-      "prev_close": 73.0
+      "price": 72.55,
+      "prev_close": 73.0,
+      "year_high": 73.0,
+      "year_low": 53.7
     },
-    "3703": {
-      "price": 20.5,
-      "year_high": 25.75,
-      "year_low": 20.25,
-      "prev_close": 20.9
+    "00878": {
+      "price": 27.82,
+      "prev_close": 27.89,
+      "year_high": 27.89,
+      "year_low": 18.96
     },
-    "2618": {
-      "price": 35.45,
-      "year_high": 44.5,
-      "year_low": 32.15,
-      "prev_close": 35.4
+    "00881": {
+      "price": 50.45,
+      "prev_close": 50.95,
+      "year_high": 50.95,
+      "year_low": 19.32
     },
-    "5880": {
-      "price": 23.0,
-      "year_high": 25.631067,
-      "year_low": 22.55,
-      "prev_close": 23.0
+    "00981A": {
+      "price": 28.91,
+      "prev_close": 29.58,
+      "year_high": 29.63,
+      "year_low": 9.69
     },
-    "2882": {
-      "price": 79.7,
-      "year_high": 81.6,
-      "year_low": 54.2,
-      "prev_close": 79.0
-    },
-    "2317": {
-      "price": 248.5,
-      "year_high": 265.0,
-      "year_low": 145.5,
-      "prev_close": 253.5
-    },
-    "3045": {
-      "price": 110.0,
-      "year_high": 119.0,
-      "year_low": 104.0,
-      "prev_close": 110.0
-    },
-    "3008": {
-      "price": 2545.0,
-      "year_high": 2930.0,
-      "year_low": 2020.0,
-      "prev_close": 2575.0
-    },
-    "2880": {
-      "price": 33.35,
-      "year_high": 38.1,
-      "year_low": 25.841583,
-      "prev_close": 33.3
-    },
-    "2884": {
-      "price": 32.15,
-      "year_high": 35.5,
-      "year_low": 29.009466,
-      "prev_close": 32.1
-    },
-    "2308": {
-      "price": 2205.0,
-      "year_high": 2370.0,
-      "year_low": 361.0,
-      "prev_close": 2280.0
-    },
-    "2887": {
-      "price": 23.95,
-      "year_high": 26.0,
-      "year_low": 15.75,
-      "prev_close": 24.0
+    "1301": {
+      "price": 48.55,
+      "prev_close": 49.55,
+      "year_high": 54.5,
+      "year_low": 32.74
     },
     "2034": {
-      "price": 21.1,
-      "year_high": 24.65,
-      "year_low": 18.4,
-      "prev_close": 21.55
+      "price": 21.2,
+      "prev_close": 21.55,
+      "year_high": 23.21,
+      "year_low": 18.65
+    },
+    "2308": {
+      "price": 2200.0,
+      "prev_close": 2280.0,
+      "year_high": 2280.0,
+      "year_low": 356.66
+    },
+    "2317": {
+      "price": 250.0,
+      "prev_close": 253.5,
+      "year_high": 262.0,
+      "year_low": 140.88
     },
     "2330": {
       "price": 2290.0,
-      "year_high": 2345.0,
-      "year_low": 934.0,
-      "prev_close": 2310.0
-    },
-    "00881": {
-      "price": 50.4,
-      "year_high": 51.0,
-      "year_low": 21.29,
-      "prev_close": 50.95
-    },
-    "2886": {
-      "price": 39.9,
-      "year_high": 43.2,
-      "year_low": 37.85,
-      "prev_close": 39.65
-    },
-    "0050": {
-      "price": 96.8,
-      "year_high": 97.7,
-      "year_low": 43.0875,
-      "prev_close": 97.7
+      "prev_close": 2310.0,
+      "year_high": 2310.0,
+      "year_low": 904.5
     },
     "2382": {
-      "price": 338.5,
-      "year_high": 352.5,
-      "year_low": 250.0,
-      "prev_close": 344.0
+      "price": 340.5,
+      "prev_close": 344.0,
+      "year_high": 346.5,
+      "year_low": 240.05
     },
-    "2885": {
-      "price": 56.0,
-      "year_high": 57.4,
-      "year_low": 29.951456,
-      "prev_close": 56.1
+    "2618": {
+      "price": 35.65,
+      "prev_close": 35.4,
+      "year_high": 41.13,
+      "year_low": 32.5
     },
-    "1301": {
-      "price": 48.65,
-      "year_high": 56.3,
-      "year_low": 32.95,
-      "prev_close": 49.55
+    "2880": {
+      "price": 33.3,
+      "prev_close": 33.3,
+      "year_high": 38.1,
+      "year_low": 24.73
     },
     "2881": {
       "price": 96.7,
-      "year_high": 98.8,
-      "year_low": 74.82927,
-      "prev_close": 94.5
+      "prev_close": 94.5,
+      "year_high": 98.2,
+      "year_low": 71.84
     },
-    "00981A": {
-      "price": 28.95,
-      "year_high": 30.0,
-      "year_low": 9.88,
-      "prev_close": 29.58
+    "2882": {
+      "price": 80.0,
+      "prev_close": 79.0,
+      "year_high": 80.0,
+      "year_low": 52.35
     },
-    "2887A": {
-      "price": 18.5,
-      "year_high": 20.0,
-      "year_low": 16.0,
-      "prev_close": 18.5
+    "2884": {
+      "price": 32.5,
+      "prev_close": 32.1,
+      "year_high": 35.1,
+      "year_low": 27.55
+    },
+    "2885": {
+      "price": 56.5,
+      "prev_close": 56.1,
+      "year_high": 56.5,
+      "year_low": 28.82
+    },
+    "2886": {
+      "price": 40.2,
+      "prev_close": 39.65,
+      "year_high": 42.8,
+      "year_low": 37.36
+    },
+    "2887": {
+      "price": 23.8,
+      "prev_close": 24.0,
+      "year_high": 25.6,
+      "year_low": 14.89
+    },
+    "3008": {
+      "price": 2570.0,
+      "prev_close": 2575.0,
+      "year_high": 2820.0,
+      "year_low": 1981.84
+    },
+    "3045": {
+      "price": 110.0,
+      "prev_close": 110.0,
+      "year_high": 113.78,
+      "year_low": 104.5
+    },
+    "3703": {
+      "price": 20.7,
+      "prev_close": 20.9,
+      "year_high": 24.46,
+      "year_low": 20.45
+    },
+    "5880": {
+      "price": 23.05,
+      "prev_close": 23.0,
+      "year_high": 24.87,
+      "year_low": 22.55
     }
   },
   "fundamentals": {
-    "00878": {
-      "trailingPE": 19.367144,
-      "dividendYield": 7.8
-    },
-    "00646": {
-      "trailingPE": 29.042255,
-      "dividendYield": 0.0
-    },
-    "3703": {
-      "trailingPE": 11.388889,
-      "dividendYield": 5.02
-    },
-    "2618": {
-      "trailingPE": 7.3854165,
-      "dividendYield": 6.78
-    },
-    "5880": {
-      "trailingPE": 16.911764,
-      "dividendYield": 3.04
-    },
-    "2882": {
-      "trailingPE": 11.288952,
-      "dividendYield": 4.43
-    },
-    "2317": {
-      "trailingPE": 18.530947,
-      "dividendYield": 2.29
-    },
-    "3045": {
-      "trailingPE": 23.404257,
-      "dividendYield": 4.09
-    },
-    "3008": {
-      "trailingPE": 16.18442,
-      "dividendYield": 3.11
-    },
-    "2880": {
-      "trailingPE": 17.552631,
-      "dividendYield": 3.75
-    },
-    "2884": {
-      "trailingPE": 15.165096,
-      "dividendYield": 3.74
-    },
-    "2308": {
-      "trailingPE": 95.744675,
-      "dividendYield": 0.31
-    },
-    "2887": {
-      "trailingPE": 12.539268,
-      "dividendYield": 3.75
-    },
-    "2034": {
-      "trailingPE": 105.5,
-      "dividendYield": 4.64
-    },
-    "2330": {
-      "trailingPE": 31.076128,
-      "dividendYield": 1.04
-    },
-    "00881": {
-      "trailingPE": 37.229664,
-      "dividendYield": 9.14
-    },
-    "2886": {
-      "trailingPE": 16.90678,
-      "dividendYield": 4.04
-    },
     "0050": {
-      "trailingPE": 31.674728,
+      "trailingPE": 31.740171,
       "dividendYield": 1.89
     },
-    "2382": {
-      "trailingPE": 17.89112,
-      "dividendYield": 3.78
+    "00646": {
+      "trailingPE": 28.982336,
+      "dividendYield": null
     },
-    "2885": {
-      "trailingPE": 20.437956,
-      "dividendYield": 2.68
+    "00878": {
+      "trailingPE": 19.381077,
+      "dividendYield": 7.8
+    },
+    "00881": {
+      "trailingPE": 37.266598,
+      "dividendYield": 9.14
+    },
+    "00981A": {
+      "trailingPE": 60.133156,
+      "dividendYield": null
     },
     "1301": {
       "trailingPE": null,
       "dividendYield": 1.01
     },
+    "2034": {
+      "trailingPE": 106.0,
+      "dividendYield": 4.64
+    },
+    "2308": {
+      "trailingPE": 95.52757,
+      "dividendYield": 0.31
+    },
+    "2317": {
+      "trailingPE": 18.642803,
+      "dividendYield": 2.29
+    },
+    "2330": {
+      "trailingPE": 31.076128,
+      "dividendYield": 1.04
+    },
+    "2382": {
+      "trailingPE": 17.996828,
+      "dividendYield": 3.78
+    },
+    "2618": {
+      "trailingPE": 7.4270835,
+      "dividendYield": null
+    },
+    "2880": {
+      "trailingPE": 17.526316,
+      "dividendYield": 3.75
+    },
     "2881": {
       "trailingPE": 11.553165,
       "dividendYield": 4.39
     },
-    "00981A": {
-      "trailingPE": 60.21636,
+    "2882": {
+      "trailingPE": 11.331445,
       "dividendYield": null
     },
-    "2887A": {
-      "trailingPE": null,
+    "2884": {
+      "trailingPE": 15.33019,
       "dividendYield": null
+    },
+    "2885": {
+      "trailingPE": 20.620438,
+      "dividendYield": null
+    },
+    "2886": {
+      "trailingPE": 17.0339,
+      "dividendYield": 4.04
+    },
+    "2887": {
+      "trailingPE": 12.460732,
+      "dividendYield": null
+    },
+    "3008": {
+      "trailingPE": 16.335093,
+      "dividendYield": 3.11
+    },
+    "3045": {
+      "trailingPE": 23.404257,
+      "dividendYield": 4.09
+    },
+    "3703": {
+      "trailingPE": 11.500001,
+      "dividendYield": 5.02
+    },
+    "5880": {
+      "trailingPE": 16.948528,
+      "dividendYield": 3.04
     }
   },
-  "indices": []
+  "indices": [
+    {
+      "sym": "加權指數",
+      "ticker": "^TWII",
+      "price": 41603.94,
+      "change": -329.84,
+      "changePct": -0.79
+    },
+    {
+      "sym": "台積電",
+      "ticker": "2330.TW",
+      "price": 2290.0,
+      "change": -20.0,
+      "changePct": -0.87
+    },
+    {
+      "sym": "鴻　海",
+      "ticker": "2317.TW",
+      "price": 250.0,
+      "change": -3.5,
+      "changePct": -1.38
+    },
+    {
+      "sym": "S&P 500",
+      "ticker": "^GSPC",
+      "price": 7337.11,
+      "change": -28.01,
+      "changePct": -0.38
+    },
+    {
+      "sym": "NASDAQ",
+      "ticker": "^IXIC",
+      "price": 25806.2,
+      "change": -32.74,
+      "changePct": -0.13
+    },
+    {
+      "sym": "道　瓊",
+      "ticker": "^DJI",
+      "price": 49596.97,
+      "change": -313.62,
+      "changePct": -0.63
+    },
+    {
+      "sym": "日　經",
+      "ticker": "^N225",
+      "price": 62713.65,
+      "change": -120.19,
+      "changePct": -0.19
+    },
+    {
+      "sym": "香　港",
+      "ticker": "^HSI",
+      "price": 26406.03,
+      "change": -220.25,
+      "changePct": -0.83
+    }
+  ]
 }
