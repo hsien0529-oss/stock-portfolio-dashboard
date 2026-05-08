@@ -281,8 +281,17 @@ body{background:var(--bg);color:var(--text);font-family:'Noto Sans TC','Inter',s
   background:rgba(0,201,212,0.12);color:var(--cyan);border-color:var(--cyan);
 }
 </style>
+<script src="trip_data.js"></script>
 </head>
 <body>
+
+<!-- SCHEDULED PRICES RIBBON (auto-updated by cron) -->
+<div id="scheduled-ribbon" style="background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 16px;display:none">
+  <div style="font-size:0.65rem;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em">
+    📡 排程自動更新 · <span id="trip-updated">--</span>
+  </div>
+  <div style="display:flex;gap:16px;flex-wrap:wrap" id="ribbon-items"></div>
+</div>
 
 <!-- TOP NAV -->
 <div class="top-nav">
@@ -967,10 +976,80 @@ function exportAll(){
   toast('✓ 已匯出');
 }
 
+// ─── TRIP DATA RIBBON (from trip_data.js, updated by cron) ───
+function renderTripRibbon(){
+  if(typeof TRIP_DATA === 'undefined') return;
+  const el = document.getElementById('scheduled-ribbon');
+  const items = document.getElementById('ribbon-items');
+  if(!el || !items) return;
+
+  document.getElementById('trip-updated').textContent = TRIP_DATA.updated || '--';
+
+  let html = '';
+
+  // Flights
+  if(TRIP_DATA.flights){
+    for(const [key, f] of Object.entries(TRIP_DATA.flights)){
+      if(f.bestPrice){
+        const age = f.bestPriceDate ? daysSince(f.bestPriceDate) : '?';
+        const badge = f.bestPrice < 25000 ? 'badge-low' : f.bestPrice < 40000 ? 'badge-mid' : 'badge-high';
+        html += `<div style="display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px">
+          <span style="font-size:0.75rem;font-weight:700;color:var(--blue)">${f.route}</span>
+          <span style="font-family:var(--font-mono);font-size:0.82rem;font-weight:700;color:var(--green)">${fmt(f.bestPrice)}</span>
+          <span class="badge ${badge}" style="font-size:0.6rem">${f.airline || ''}</span>
+          <span style="font-size:0.62rem;color:var(--text3)">${age}天前</span>
+          ${f.bestPriceUrl ? `<a href="${f.bestPriceUrl}" target="_blank" style="font-size:0.65rem;color:var(--blue)">查</a>` : ''}
+        </div>`;
+      }
+    }
+  }
+
+  // Hotels
+  if(TRIP_DATA.hotels){
+    for(const [key, h] of Object.entries(TRIP_DATA.hotels)){
+      if(h.bestPrice){
+        const age = h.bestPriceDate ? daysSince(h.bestPriceDate) : '?';
+        html += `<div style="display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px">
+          <span style="font-size:0.75rem;font-weight:700;color:var(--purple)">🏨 ${h.name}</span>
+          <span style="font-family:var(--font-mono);font-size:0.82rem;font-weight:700;color:var(--green)">${fmt(h.bestPrice)}</span>
+          <span style="font-size:0.62rem;color:var(--text3)">${age}天前</span>
+        </div>`;
+      }
+    }
+  }
+
+  // Cars
+  if(TRIP_DATA.cars){
+    for(const [key, c] of Object.entries(TRIP_DATA.cars)){
+      if(c.bestPrice){
+        const age = c.bestPriceDate ? daysSince(c.bestPriceDate) : '?';
+        html += `<div style="display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px">
+          <span style="font-size:0.75rem;font-weight:700;color:var(--cyan)">🚗 ${c.pickup}</span>
+          <span style="font-family:var(--font-mono);font-size:0.82rem;font-weight:700;color:var(--green)">${fmt(c.bestPrice)}</span>
+          <span style="font-size:0.62rem;color:var(--text3)">${age}天前</span>
+        </div>`;
+      }
+    }
+  }
+
+  if(html){
+    items.innerHTML = html;
+    el.style.display = 'block';
+  }
+}
+
+function daysSince(dateStr){
+  if(!dateStr) return '?';
+  const d = new Date(dateStr);
+  const now = new Date();
+  return Math.floor((now - d) / 86400000);
+}
+
 // ─── INIT ───
 renderFlights();
 renderHotels();
 renderCars();
+renderTripRibbon();
 updateBadge();
 updateBudget();
 
