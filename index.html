@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="dns-prefetch" href="https://s.tradingview.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="data.js?v=2026050908"></script>
+<script src="data.js?v=2026050801"></script>
 <!-- TradingView widget script loaded eagerly for faster chart startup -->
 <script src="https://s.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async defer onerror="window.__tvLoadFailed=true"></script>
 <style>
@@ -1799,7 +1799,10 @@ input[type=file]{display:none}
 .index-chg{font-family:var(--font-mono);font-size:0.68rem;font-weight:600}
 .index-chg.up{color:var(--green)}.index-chg.down{color:var(--red)}
 .navbar-market-indices{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-
+/* === PORTFOLIO INSIGHT CARD === */
+#portfolioInsightCard{transition:background 0.5s;animation:fadeSlideIn 0.3s ease-out}
+#insightIcon{font-size:1.8rem;flex-shrink:0;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.3))}
+#insightTitle{transition:color 0.3s}
 </style>
 </head>
 <body>
@@ -2103,6 +2106,22 @@ input[type=file]{display:none}
         <div class="daily-pl-label">日內勝出股</div>
         <div class="daily-pl-value" id="dailyWinCount">--</div>
         <div class="daily-pl-sub" id="dailyWinSub">--</div>
+      </div>
+    </div>
+
+    <!-- Portfolio Quick Insight -->
+    <div id="portfolioInsightCard" class="card mb8" style="padding:10px 14px">
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div id="insightIcon" style="font-size:1.5rem;flex-shrink:0">🤔</div>
+        <div style="flex:1;min-width:200px">
+          <div style="display:flex;align-items:center;gap:6px">
+            <div id="insightTitle" style="font-size:0.75rem;font-weight:700;margin-bottom:3px">分析中...</div>
+            <span id="insightLiveBadge" style="display:none;font-size:0.5rem;padding:1px 4px;background:rgba(0,214,143,0.15);color:var(--green);border-radius:3px;border:1px solid rgba(0,214,143,0.3)">LIVE</span>
+          </div>
+          <div id="insightText" style="font-size:0.7rem;color:var(--text2);line-height:1.4"></div>
+        </div>
+        <div id="insightMetrics" style="display:flex;gap:10px;flex-shrink:0"></div>
+        <button onclick="buildPortfolioInsight();buildMarketContextBanner();updateMarketStatus();" title="重新分析" style="flex-shrink:0;border:none;background:transparent;cursor:pointer;font-size:0.65rem;padding:2px 6px;color:var(--text3);opacity:0.6;border-radius:4px">🔄</button>
       </div>
     </div>
 
@@ -2516,7 +2535,7 @@ input[type=file]{display:none}
           <div class="tv-loading-spinner"></div>
           <div style="color:var(--text2);font-size:0.78rem;margin-top:4px">載入 TradingView K線圖...</div>
           <div style="color:var(--text3);font-size:0.65rem;margin-top:4px;max-width:300px;text-align:center">建議使用 VPN 以獲得最佳圖表體驗</div>
-          <div style="font-size:0.62rem;color:var(--text3);margin-top:2px" id="tvLoadingHint">若無法載入，15秒後自動切換本地圖表</div>
+          <div style="font-size:0.62rem;color:var(--text3);margin-top:2px" id="tvLoadingHint">若無法載入，約5秒後自動切換本地圖表</div>
           <div style="margin-top:8px;display:flex;gap:6px;justify-content:center">
             <a href="https://www.tradingview.com/chart/?symbol=TWSE:2330" target="_blank" class="btn btn-sm" style="text-decoration:none;opacity:0.7" title="備用連結">🌐 直接開啟</a>
             <button class="btn btn-sm" onclick="loadTVFallback(document.getElementById('tvSymbol')?.value?.replace('TWSE:','')||'2330')" style="opacity:0.7">📊 跳過等待</button>
@@ -2860,8 +2879,10 @@ function parseRSS(xml, srcUrl) {
 }
 
 function detectSentiment(text) {
-  const pos = /漲|多|漲停|利多|突破|新高|成長|獲利|上升|買超|法人買|護國|AI|利多|紅|揚|增|擴張|反彈/i;
-  const neg = /跌|空|跌停|利空|新低|衰退|虧損|下降|賣超|法人賣|風險|警示|黑|挫|縮|減|暴|警示/i;
+  // Taiwan-specific positive keywords (expanding coverage)
+  const pos = /漲|多|漲停|利多|突破|新高|成長|獲利|上升|買超|法人買|護國|AI|利多|紅|揚|增|擴張|反彈|反轉|回升|反攻|帶量|量大|護盤|除息|填息|殖利率|股息|季報|亮眼|超標|優於|首季|上半年|下半年|併購|擴廠|新訂單|擴產/i;
+  // Taiwan-specific negative keywords
+  const neg = /跌|空|跌停|利空|新低|衰退|虧損|下降|賣超|法人賣|風險|警示|黑|挫|縮|減|暴|警示|庫存|降價|砍單|傳產|失守|破底|跳水|重挫|暴跌|倒莊|假跌破|假突破|烏雲|夜星|避險|逃命|法人調節/i;
   if (neg.test(text)) return 'neg';
   if (pos.test(text)) return 'pos';
   return 'neu';
@@ -3251,7 +3272,7 @@ function updateMarketStatus(){
 
   if(isWeekend){
     banner.className='status-banner weekend';
-    status.textContent='台股市場休市中';
+    status.textContent='台股市場休市中 ⛱';
     dateEl.textContent=dateStr+' · 下一交易: '+nextStr;
   }else if(marketOpen){
     banner.className='status-banner open';
@@ -4770,6 +4791,120 @@ function updateMarketContextBanner(){
 }
 
 
+// ============================================================
+// PORTFOLIO INSIGHT CARD
+// ============================================================
+function buildPortfolioInsight(){
+  const insightCard=document.getElementById('portfolioInsightCard');
+  const insightIcon=document.getElementById('insightIcon');
+  const insightTitle=document.getElementById('insightTitle');
+  const insightText=document.getElementById('insightText');
+  const insightMetrics=document.getElementById('insightMetrics');
+  if(!insightCard) return;
+
+  const allHoldings=getAllHoldings();
+  let totalMV=0,totalPrevMV=0,winners=0,totalStocks=0;
+  Object.entries(allHoldings).forEach(([t,d])=>{
+    const p=getPrice(t);
+    if(!p.price) return;
+    totalMV+=d.shares*p.price;
+    totalPrevMV+=d.shares*(p.prev_close||p.price);
+    totalStocks++;
+    if(p.price>p.prev_close) winners++;
+  });
+
+  const dayPct=totalPrevMV>0?((totalMV-totalPrevMV)/totalPrevMV*100):0;
+  const twii=MARKET_INDICES.find(i=>i.ticker==='^TWII');
+  const twiiPct=twii?.changePct||0;
+  const alpha=dayPct-twiiPct;
+  const winRate=totalStocks>0?(winners/totalStocks*100):0;
+
+  const winColor=winRate>=60?'var(--green)':winRate<=40?'var(--red)':'var(--amber)';
+  const alphaColor=alpha>=0?'var(--green)':'var(--red)';
+
+  // Determine insight type
+  let icon='🤔',title='市場觀察',text='';
+  let bgStyle='linear-gradient(135deg,var(--surface2) 0%,var(--bg) 100%)';
+
+  if(dayPct>1.5&&winRate>70){
+    icon='🚀';title='多頭格局';
+    text=`組合全面上漲，${winners}/${totalStocks} 檔走揚，超額報酬 α ${alpha>=0?'+':''}${alpha.toFixed(2)}%，市場情緒偏多`;
+    bgStyle='linear-gradient(135deg,rgba(0,214,143,0.08) 0%,var(--bg) 100%)';
+  } else if(dayPct>0.5){
+    icon='📈';title='穩健上行';
+    text=`${winners} 檔上漲，勝率 ${winRate.toFixed(0)}%，注意是否出現滞漲訊號`;
+    bgStyle='linear-gradient(135deg,rgba(0,214,143,0.04) 0%,var(--bg) 100%)';
+  } else if(dayPct<-1.5&&winRate<30){
+    icon='🔻';title='空頭承壓';
+    text=`組合普遍下跌，${totalStocks-winners} 檔收黑，注意止损或分散風險`;
+    bgStyle='linear-gradient(135deg,rgba(255,68,68,0.08) 0%,var(--bg) 100%)';
+  } else if(dayPct<-0.5){
+    icon='📉';title='回調整理';
+    text=`日減 ${Math.abs(dayPct).toFixed(2)}%，${totalStocks-winners} 檔走跌，可逢低佈局核心持股`;
+    bgStyle='linear-gradient(135deg,rgba(255,68,68,0.04) 0%,var(--bg) 100%)';
+  } else if(Math.abs(dayPct)<0.3){
+    icon='⚖️';title='牛皮整理';
+    text=`加權指數 ${twiiPct>=0?'▲':'▼'} ${Math.abs(twiiPct).toFixed(2)}%，組合胜率 ${winRate.toFixed(0)}%，观望为主`;
+    bgStyle='linear-gradient(135deg,rgba(255,176,32,0.04) 0%,var(--bg) 100%)';
+  } else {
+    icon='📊';title='市場觀察';
+    text=`日報酬 ${dayPct>=0?'+':''}${dayPct.toFixed(2)}%，α ${alpha>=0?'+':''}${alpha.toFixed(2)}%，胜率 ${winRate.toFixed(0)}%`;
+  }
+
+  insightCard.style.background=bgStyle;
+  if(insightIcon) insightIcon.textContent=icon;
+  if(insightTitle){
+    insightTitle.textContent=title;
+    insightTitle.style.color=icon==='🚀'||icon==='📈'?'var(--green)':icon==='🔻'||icon==='📉'?'var(--red)':'var(--amber)';
+  }
+  if(insightText) insightText.textContent=text;
+
+  // Show LIVE badge during market hours (9am-1:30pm Taipei)
+  const badge=document.getElementById('insightLiveBadge');
+  const now=new Date();
+  const taipeiHour=parseFloat(now.toLocaleString('en-US',{timeZone:'Asia/Taipei',hour:'2-digit',hour12:false}));
+  const taipeiMinute=parseFloat(now.toLocaleString('en-US',{timeZone:'Asia/Taipei',minute:'2-digit'}));
+  const isMarketTime=(taipeiHour===9&&taipeiMinute>=30)||(taipeiHour>=10&&taipeiHour<13)||(taipeiHour===13&&taipeiMinute<=30);
+  if(badge){
+    badge.style.display=isMarketTime?'inline':'none';
+  }
+
+  // Right-side metrics
+  if(insightMetrics){
+    // Check for 52-week high/low alerts
+    const nearHigh=allHoldings.filter(([t,d])=>{
+      const p=getPrice(t);
+      return p.price&&p.year_high&&p.price>=p.year_high*0.97;
+    });
+    const nearLow=allHoldings.filter(([t,d])=>{
+      const p=getPrice(t);
+      return p.price&&p.year_low&&p.price<=p.year_low*1.03;
+    });
+    const alerts=[];
+    if(nearHigh.length>0) alerts.push({icon:'🏆',text:`${nearHigh.length}檔創年度高`,color:'var(--amber)'});
+    if(nearLow.length>0) alerts.push({icon:'⚠️',text:`${nearLow.length}檔近低點`,color:'var(--red)'});
+
+    insightMetrics.innerHTML=`
+      <div style="text-align:center">
+        <div style="font-size:0.55rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em">勝率</div>
+        <div style="font-size:1.1rem;font-weight:800;font-family:var(--font-mono);color:${winColor}">${winRate.toFixed(0)}%</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:0.55rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em">α</div>
+        <div style="font-size:1.1rem;font-weight:800;font-family:var(--font-mono);color:${alphaColor}">${alpha>=0?'+':''}${alpha.toFixed(2)}%</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:0.55rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em">上漲</div>
+        <div style="font-size:1.1rem;font-weight:800;font-family:var(--font-mono);color:var(--green)">${winners}</div>
+      </div>
+      ${alerts.length>0?`<div style="text-align:center;border-left:1px solid var(--border);padding-left:10px">
+        ${alerts.map(a=>`<div style="font-size:0.6rem;color:${a.color}">${a.icon} ${a.text}</div>`).join('')}
+      </div>`:''}
+    `;
+  }
+}
+
+
 // SECTOR PULSE BARS
 // ============================================================
 function buildSectorPulseBars(){
@@ -6048,26 +6183,6 @@ function updateDocTitle() {
 }
 
 // TradingView Widget Library Loader — improved with CDN fallbacks and duplicate prevention
-(function() {
-  // Only load if not already present
-  if (document.getElementById('tv-lib-loaded')) return;
-  var _tvLoaded = false;
-  function tryLoad(url) {
-    if (_tvLoaded) return;
-    var s = document.createElement('script');
-    s.id = 'tv-lib-loaded';
-    s.src = url;
-    s.async = true;
-    s.onload = function() { _tvLoaded = true; console.log('[TV] Library loaded from:', url); };
-    s.onerror = function() { console.warn('[TV] Failed:', url); };
-    document.head.appendChild(s);
-  }
-  // Load all CDN sources in parallel — browser uses first that succeeds
-  tryLoad('https://s.tradingview.com/tv.js');
-  tryLoad('https://widget.tradingview.com/static/tv-chart.js');
-  tryLoad('https://www.tradingview.com/static/bundles/tv-chart.45693d7b67cba05a3f3e.js');
-})();
-
 const scriptId = 'tv-widget-script';
 
 let tvInterval=null;
@@ -6076,6 +6191,7 @@ let tvFallbackChart=null;
 
 function loadTVWidget(){
   if(tvInterval)clearTimeout(tvInterval);
+  tvLoaded = false; // reset so fallback chain works on each symbol change
   tvInterval=setTimeout(()=>{
     const sym=document.getElementById('tvSymbol').value; // e.g. "TWSE:2330"
     const interval=document.getElementById('tvInterval').value;
@@ -6201,6 +6317,13 @@ function loadTVWidget(){
     container.innerHTML = '';
     // TradingView widget with multi-source fallback chain
     const tvScriptId = 'tv-widget-script';
+    // Pre-start iframe fallback immediately so user sees chart fast
+    setTimeout(() => {
+      if (!tvLoaded) {
+        console.log('[TV] Loading iframe fallback in background...');
+        loadTVFallback(tickerSym);
+      }
+    }, 3000);
     const clearOldScript = () => {
       ['tv-widget-script','tv-lib-loaded'].forEach(id => {
         document.getElementById(id)?.remove();
@@ -6228,11 +6351,11 @@ function loadTVWidget(){
               clearInterval(poll);
               console.log('[TV] TradingView loaded via polling');
               resolve(true);
-            } else if (attempts >= 16) { // ~8 seconds max
+            } else if (attempts >= 12) { // ~3.6 seconds max — fast fallback
               clearInterval(poll);
               resolve(false);
             }
-          }, 500);
+          }, 300);
         }
       });
     };
@@ -6249,7 +6372,7 @@ function loadTVWidget(){
         s.onerror = () => { console.warn('[TV] Dynamic script failed'); resolve(false); };
         document.head.appendChild(s);
         // If it doesn't load in 10s, give up
-        setTimeout(() => resolve(false), 10000);
+        setTimeout(() => resolve(false), 5000);
       });
     };
 
@@ -6975,6 +7098,7 @@ function refreshData(){
     buildSignals(); sectionsBuilt.add('signals');
     buildNews(); sectionsBuilt.add('news');
     buildAnalytics(); buildHeatmap(); buildMoversTable(); buildCompare(); buildRiskMeter(); buildPEDistribution(); buildMonthlyTable(); sectionsBuilt.add('analytics');
+    buildPortfolioInsight();
     // Re-sync TV chart to current symbol if on chart tab
     const activeTab=document.querySelector('.tab.active')?.dataset?.tab;
     if(activeTab==='chart'){
@@ -7690,6 +7814,7 @@ async function loadData() {
 
   // Refresh market context banner and status after data is loaded
   if (typeof updateMarketContextBanner === 'function') updateMarketContextBanner();
+  if (typeof buildPortfolioInsight === 'function') buildPortfolioInsight();
   if (typeof updateMarketStatus === 'function') updateMarketStatus();
 }
 
@@ -7704,6 +7829,7 @@ async function init() {
   updateMarketHoursClock();
   initMarketPulseRibbon();
   buildMarketContextBanner();
+  buildPortfolioInsight();
   updateHeader();
   buildPortfolioAlertBanner();
   updateGlobalSummary();
@@ -7768,6 +7894,13 @@ setInterval(async () => {
   await loadData();
   refreshData();
 }, 30*60*1000);
+
+// Live update portfolio insight every 5 minutes (lighter-weight refresh)
+setInterval(() => {
+  if (typeof buildPortfolioInsight === 'function') buildPortfolioInsight();
+  if (typeof updateMarketContextBanner === 'function') updateMarketContextBanner();
+  if (typeof updateMarketStatus === 'function') updateMarketStatus();
+}, 5*60*1000);
 // Footer time update
 function updateFooterTime(){
   const el=document.getElementById('footerTime');
@@ -7787,7 +7920,7 @@ document.addEventListener('DOMContentLoaded', async () => { await loadData(); in
 
 <!-- FOOTER -->
 <footer class="dashboard-footer">
-  <span>📊 廖家投資看板 v2.1</span>
+  <span>📊 廖家投資看板 v2.2</span>
   <span class="footer-sep">·</span>
   <span>自動更新於 <span id="footerTime">--</span></span>
   <span class="footer-sep">·</span>
