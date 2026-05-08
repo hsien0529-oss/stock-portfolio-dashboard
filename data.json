@@ -1,5 +1,5 @@
 {
-  "updated": "2026-05-08T16:11:46.696584+08:00",
+  "updated": "2026-05-08T18:45:28.302757+08:00",
   "prices": {
     "0050": {
       "price": 97.0,
@@ -187,7 +187,7 @@
     },
     "2618": {
       "trailingPE": 7.4270835,
-      "dividendYield": null
+      "dividendYield": 6.78
     },
     "2880": {
       "trailingPE": 17.526316,
@@ -199,15 +199,15 @@
     },
     "2882": {
       "trailingPE": 11.331445,
-      "dividendYield": null
+      "dividendYield": 4.43
     },
     "2884": {
       "trailingPE": 15.33019,
-      "dividendYield": null
+      "dividendYield": 3.74
     },
     "2885": {
       "trailingPE": 20.620438,
-      "dividendYield": null
+      "dividendYield": 2.68
     },
     "2886": {
       "trailingPE": 17.0339,
@@ -215,7 +215,7 @@
     },
     "2887": {
       "trailingPE": 12.460732,
-      "dividendYield": null
+      "dividendYield": 3.75
     },
     "3008": {
       "trailingPE": 16.335093,
@@ -287,9 +287,9 @@
     {
       "sym": "香　港",
       "ticker": "^HSI",
-      "price": 26406.03,
-      "change": -220.25,
-      "changePct": -0.83
+      "price": 26393.71,
+      "change": -232.57,
+      "changePct": -0.87
     }
   ]
 }
