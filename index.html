@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="dns-prefetch" href="https://s.tradingview.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="data.js?v=2026050801"></script>
+<script src="data.js?v=202605090926"></script>
 <!-- TradingView widget script loaded eagerly for faster chart startup -->
 <script src="https://s.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async defer onerror="window.__tvLoadFailed=true"></script>
 <style>
@@ -694,20 +694,21 @@ select:focus{outline:none;border-color:var(--blue)}
 .tag-sell{background:rgba(255,176,32,0.1);color:var(--amber)}
 
 /* === NEWS === */
-.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px}
 .news-item{
   background:var(--surface2);border:1px solid var(--border);border-radius:8px;
   padding:12px;transition:all 0.2s;cursor:default;position:relative;overflow:hidden;
+  border-left:3px solid var(--border)
 }
+.news-item.pos{border-left-color:var(--green)}
+.news-item.neg{border-left-color:var(--red)}
+.news-item.neu{border-left-color:var(--text3)}
+.news-item.semi{border-left-color:#4d9fff}
+.news-item.finance{border-left-color:#00d68f}
+.news-item.etf{border-left-color:#00c9d4}
+.news-item.macro{border-left-color:#ff4444}
+.news-item.ai{border-left-color:#b066ff}
 .news-item:hover{background:var(--surface3);border-color:var(--border2);transform:translateY(-1px)}
-.news-item::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px}
-.news-item.tech::before{background:var(--blue)}
-.news-item.ai::before{background:var(--purple)}
-.news-item.finance::before{background:var(--green)}
-.news-item.aero::before{background:var(--amber)}
-.news-item.macro::before{background:var(--red)}
-.news-item.etf::before{background:var(--cyan)}
-.news-item.semi::before{background:#60a5fa}
 .news-meta{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
 .news-tag{
   font-size:0.6rem;font-weight:700;padding:2px 7px;border-radius:10px;
@@ -865,17 +866,6 @@ select:focus{outline:none;border-color:var(--blue)}
   padding:6px 14px;background:#111;border-bottom:1px solid var(--border);
   font-size:0.73rem;flex-wrap:wrap;min-height:40px;
 }
-.tv-status-bar .tv-stock-chip{
-  display:inline-flex;align-items:center;gap:3px;
-  background:var(--surface2);border:1px solid var(--border);border-radius:6px;
-  padding:3px 7px;font-size:0.68rem;font-family:var(--font-mono);font-weight:600;
-  transition:all 0.2s;
-}
-.tv-status-bar .tv-stock-chip.up{border-color:rgba(0,214,143,0.3);color:var(--green)}
-.tv-status-bar .tv-stock-chip.down{border-color:rgba(255,68,68,0.3);color:var(--red)}
-.tv-status-bar .tv-stock-chip.near-high{border-color:rgba(0,214,143,0.3);color:var(--green)}
-.tv-status-bar .tv-stock-chip.near-low{border-color:rgba(255,68,68,0.3);color:var(--red)}
-.tv-status-bar .tv-stock-chip:hover{background:var(--surface3)}
 /* === PORTFOLIO METRICS IMPROVED === */
 .portfolio-metrics-grid{
   display:grid;
@@ -1453,6 +1443,174 @@ input[type=file]{display:none}
 }
 @keyframes slideUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
+/* === NEW: PORTFOLIO VS BENCHMARK CARD === */
+.portfolio-vs-benchmark{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
+  margin-top:10px;
+}
+.pvb-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;text-align:center}
+.pvb-label{font-size:0.55rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:3px}
+.pvb-value{font-family:var(--font-mono);font-size:0.88rem;font-weight:700}
+.pvb-sub{font-size:0.58rem;font-family:var(--font-mono);color:var(--text3);margin-top:1px}
+
+/* === NEW: 52W POSITION BARS IN SIGNAL CARDS === */
+.signal-52w-wrap{display:flex;align-items:center;gap:4px;margin-top:3px}
+.signal-52w-label{font-size:0.58rem;color:var(--text3);width:28px}
+.signal-52w-bar{flex:1;height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;position:relative}
+.signal-52w-fill{height:100%;border-radius:2px;transition:width 0.5s;position:relative}
+.signal-52w-fill::after{content:'';position:absolute;right:-1px;top:-1px;width:6px;height:6px;border-radius:50%;background:var(--text);border:1px solid var(--surface2)}
+.signal-52w-pct{font-size:0.6rem;font-family:var(--font-mono);font-weight:600;width:30px;text-align:right}
+
+/* === NEW: AM/PM MARKET SESSION BADGE === */
+.session-pill{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:10px;font-size:0.62rem;font-weight:700;border:1px solid}
+.session-pill.open{background:rgba(0,214,143,0.1);color:var(--green);border-color:rgba(0,214,143,0.2)}
+.session-pill.closed{background:var(--surface3);color:var(--text3);border-color:var(--border)}
+.session-pill.holiday{background:rgba(255,176,32,0.08);color:var(--amber);border-color:rgba(255,176,32,0.15)}
+
+/* === NEW: PORTFOLIO MOMENTUM INDICATOR === */
+.momentum-indicator{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 10px;background:var(--surface2);
+  border:1px solid var(--border);border-radius:8px;margin-top:8px;
+}
+.momentum-bar{flex:1;height:6px;background:var(--surface3);border-radius:3px;overflow:hidden;position:relative}
+.momentum-fill{height:100%;border-radius:3px;transition:width 0.8s}
+.momentum-label{font-size:0.6rem;color:var(--text3);white-space:nowrap}
+
+/* === NEW: HOLDING ROW EXPANDED INFO === */
+.holding-row-expanded{
+  display:flex;align-items:center;gap:10px;
+  padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.03);
+  font-size:0.72rem;transition:background 0.1s;cursor:pointer;
+}
+.holding-row-expanded:hover{background:rgba(77,159,255,0.04)}
+.holding-row-expanded:last-child{border-bottom:none}
+.holding-exp-ticker{font-weight:700;font-family:var(--font-mono);color:var(--blue);width:46px;flex-shrink:0}
+.holding-exp-name{font-size:0.65rem;color:var(--text3);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.holding-exp-mv{font-family:var(--font-mono);font-weight:600;width:70px;text-align:right;flex-shrink:0}
+.holding-exp-cost{font-family:var(--font-mono);font-size:0.65rem;color:var(--text3);width:60px;text-align:right;flex-shrink:0}
+.holding-exp-gain{font-family:var(--font-mono);font-weight:700;width:50px;text-align:right;flex-shrink:0}
+.holding-exp-bar-wrap{width:50px;height:4px;background:var(--surface3);border-radius:2px;overflow:hidden;flex-shrink:0}
+.holding-exp-bar{height:100%;border-radius:2px;transition:width 0.5s}
+
+/* === NEW: COMPARISON VS 0050 ROW === */
+.vs-bench-row{display:flex;align-items:center;gap:8px;padding:4px 0}
+.vs-bench-name{font-size:0.7rem;color:var(--text3);width:45px;white-space:nowrap}
+.vs-bench-bar{flex:1;height:8px;background:var(--surface3);border-radius:4px;overflow:hidden;position:relative}
+.vs-bench-portfolio{position:absolute;top:-2px;width:8px;height:12px;border-radius:2px;transition:left 0.6s}
+.vs-bench-bench{position:absolute;top:0;width:3px;height:8px;border-radius:2px;background:var(--amber);transition:left 0.6s}
+.vs-bench-val{font-size:0.68rem;font-family:var(--font-mono);font-weight:600;width:42px;text-align:right}
+
+/* === NEW: DIVIDEND TRACKER === */
+.dividend-ticker-row{display:flex;align-items:center;gap:8px;padding:3px 0}
+.dividend-ticker{font-family:var(--font-mono);font-weight:700;font-size:0.72rem;color:var(--blue);width:42px;flex-shrink:0}
+.dividend-yield-bar{flex:1;height:5px;background:var(--surface3);border-radius:3px;overflow:hidden}
+.dividend-yield-fill{height:100%;background:var(--green);border-radius:3px;transition:width 0.6s}
+.dividend-yield-val{font-family:var(--font-mono);font-size:0.7rem;font-weight:700;color:var(--green);width:42px;text-align:right}
+
+/* === NEWS TAG FILTER ACTIVE STATE === */
+.news-tag-btn.active{background:var(--blue)!important;border-color:var(--blue)!important;color:#fff!important}
+
+/* === NEW: SCROLL TO TOP ANIMATION === */
+.scroll-top-btn{transition:all 0.3s cubic-bezier(0.4,0,0.2,1)}
+
+/* === INDEX MINI CARD === */
+.index-mini-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center;cursor:default;transition:all 0.2s}
+.index-mini-card:hover{border-color:var(--border2);transform:translateY(-1px)}
+.index-mini-name{font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:3px}
+.index-mini-price{font-family:var(--font-mono);font-size:0.9rem;font-weight:700}
+.index-mini-chg{font-family:var(--font-mono);font-size:0.72rem;font-weight:600;margin-top:2px}
+.index-mini-chg.up{color:var(--green)}.index-mini-chg.down{color:var(--red)}
+
+/* === RISK SCORE CARD NEW === */
+.risk-score-visual{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.risk-score-gauge{flex:1;height:10px;background:var(--surface3);border-radius:5px;overflow:hidden;position:relative}
+.risk-score-fill{height:100%;border-radius:5px;transition:width 1s ease-out}
+
+/* === SIGNAL CARD: RSI GAUGE MINI === */
+.rsi-gauge-wrap{position:relative;width:50px;height:28px;overflow:hidden;flex-shrink:0}
+.rsi-gauge-bar{position:absolute;bottom:0;left:0;right:0;height:100%;border-radius:4px 4px 0 0;transition:height 0.5s,background 0.3s;opacity:0.7}
+
+/* === NEW: PORTFOLIO PEAK-TROUGH INDICATOR === */
+.peak-trough-row{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--border)}
+.peak-trough-label{font-size:0.65rem;color:var(--text3);width:60px;flex-shrink:0}
+.peak-trough-bar{flex:1;height:6px;background:var(--surface3);border-radius:3px;position:relative;overflow:hidden}
+.peak-trough-current{position:absolute;top:50%;transform:translateY(-50%);width:8px;height:8px;border-radius:50%;border:2px solid #fff;transition:left 0.6s}
+.peak-trough-peak{position:absolute;top:0;width:100%;height:2px;background:rgba(0,214,143,0.3)}
+.peak-trough-trough{position:absolute;bottom:0;width:100%;height:2px;background:rgba(255,68,68,0.3)}
+.peak-trough-val{font-size:0.65rem;font-family:var(--font-mono);font-weight:600;width:50px;text-align:right}
+
+/* === FOOTER ENHANCEMENT === */
+.footer-live-indicator{display:inline-flex;align-items:center;gap:4px;font-size:0.65rem}
+.footer-live-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:live-pulse 2s infinite}
+
+/* === TICKER: NEWS HEADLINE BADGE === */
+.ticker-news-badge{background:rgba(255,176,32,0.15);color:var(--amber);padding:1px 5px;border-radius:6px;font-size:0.58rem;font-weight:700}
+
+/* === IMPROVED NEWS FILTER ROW === */
+.news-filter-bar{display:flex;gap:6px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:10px}
+.news-filter-btn{
+  padding:3px 10px;border-radius:14px;
+  font-size:0.65rem;font-weight:600;
+  border:1px solid var(--border);background:var(--surface2);color:var(--text2);
+  cursor:pointer;transition:all 0.15s;white-space:nowrap;
+}
+.news-filter-btn:hover{border-color:var(--blue);color:var(--blue)}
+.news-filter-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* === TAILORED ALERT BADGE === */
+.alert-type-chip{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:1px 6px;border-radius:8px;font-size:0.58rem;font-weight:700;
+}
+.alert-type-chip.critical{background:rgba(255,68,68,0.12);color:var(--red);border:1px solid rgba(255,68,68,0.2)}
+.alert-type-chip.warning{background:rgba(255,176,32,0.1);color:var(--amber);border:1px solid rgba(255,176,32,0.15)}
+.alert-type-chip.info{background:rgba(77,159,255,0.1);color:var(--blue);border:1px solid rgba(77,159,255,0.15)}
+.alert-type-chip.tip{background:rgba(0,214,143,0.08);color:var(--green);border:1px solid rgba(0,214,143,0.12)}
+
+/* === TV WIDGET IMPROVED FALLBACK === */
+.tv-error-recovery{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:16px;flex-direction:column;text-align:center;
+}
+.tv-reload-btn{
+  padding:5px 14px;border-radius:6px;font-size:0.72rem;font-weight:600;
+  background:var(--surface3);border:1px solid var(--border2);color:var(--text);
+  cursor:pointer;transition:all 0.15s;
+}
+.tv-reload-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* === SECTOR COLOR LEGEND === */
+.sector-legend{display:flex;gap:8px;flex-wrap:wrap;padding:6px 0;font-size:0.65rem}
+.sector-legend-item{display:flex;align-items:center;gap:4px}
+.sector-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* === MOVER CHIP EXPANDED === */
+.mover-chip-expanded{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px;min-width:100px;text-align:center;cursor:pointer;transition:all 0.15s}
+.mover-chip-expanded:hover{transform:translateY(-2px);border-color:var(--border2);box-shadow:var(--shadow-md)}
+.mover-chip-expanded.top-gainer{border-color:rgba(0,214,143,0.2);background:rgba(0,214,143,0.04)}
+.mover-chip-expanded.top-loser{border-color:rgba(255,68,68,0.2);background:rgba(255,68,68,0.04)}
+
+/* === FAMILY MEMBER DETAIL CARD === */
+.family-member-detail{
+  background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+  padding:12px;display:none;margin-top:8px;
+}
+.family-member-detail.active{display:block}
+.fmd-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.fmd-avatar{font-size:1.8rem}
+.fmd-info{flex:1}
+.fmd-name{font-size:0.85rem;font-weight:700;color:var(--text)}
+.fmd-role{font-size:0.62rem;color:var(--text3)}
+
+/* === PERFORMANCE RIBBON === */
+.perf-ribbon{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.perf-chip{font-size:0.62rem;padding:2px 7px;border-radius:10px;font-weight:600;border:1px solid}
+.perf-chip.excellent{background:rgba(0,214,143,0.1);color:var(--green);border-color:rgba(0,214,143,0.2)}
+.perf-chip.good{background:rgba(77,159,255,0.1);color:var(--blue);border-color:rgba(77,159,255,0.2)}
+.perf-chip.neutral{background:var(--surface3);color:var(--text3);border-color:var(--border)}
+.perf-chip.poor{background:rgba(255,68,68,0.1);color:var(--red);border-color:rgba(255,68,68,0.2)}
+
 @media(max-width:600px){
   .card-body{padding:8px 10px}.card-header{padding:7px 10px}
   .nav-tabs{padding:4px 12px}.tab{font-size:0.76rem;padding:4px 9px}
@@ -1877,8 +2035,7 @@ input[type=file]{display:none}
         autocomplete="off">
       <div id="searchResults" style="position:absolute;top:calc(100% + 4px);right:0;min-width:200px;max-height:260px;overflow-y:auto;background:var(--surface);border:1px solid var(--border2);border-radius:8px;box-shadow:var(--shadow-lg);z-index:1000;display:none"></div>
     </div>
-    <button class="refresh-btn" onclick="refreshData()" title="重新整理 (R)" id="refreshBtn"><span id="refreshSpinner" class="spinner" style="display:none"></span><span id="refreshText">🔄 更新</span></button>
-    <script>document.addEventListener('keydown',e=>{if(e.key==='r'&&!e.ctrlKey&&!e.metaKey&&document.activeElement.tagName!=='INPUT'){loadData().then(()=>refreshData());}});</script>
+    <button class="refresh-btn" onclick="refreshData()" title="重新整理 (R)" id="refreshBtn"><span id="refreshSpinner" class="spinner" style="display:none"></span><span id="refreshText">🔄 更新</span><span id="refreshCountdown" style="font-size:0.6rem;color:var(--text3);margin-left:4px"></span></button>
     <div class="navbar-stat">
       <div class="navbar-stat-label">總市值</div>
       <div class="navbar-stat-value" id="totalValue">--</div>
@@ -1894,7 +2051,7 @@ input[type=file]{display:none}
 
 <!-- LIVE TICKER TAPE -->
 <div id="tickerTape" style="background:var(--surface2);border-bottom:1px solid var(--border);overflow:hidden;white-space:nowrap;height:28px;line-height:28px;font-size:0.68rem;font-family:var(--font-mono)">
-  <div id="tickerContent" style="display:inline-block;animation:tickerScroll 60s linear infinite"></div>
+  <div id="tickerContent" style="display:flex;width:max-content;animation:ticker-scroll 60s linear infinite;will-change:transform" onmouseenter="this.style.animationPlayState='paused'" onmouseleave="this.style.animationPlayState='running'"></div>
 </div>
 
 <!-- Portfolio Alert Banner -->
@@ -2081,10 +2238,27 @@ input[type=file]{display:none}
       </div>
     </div>
 
-    <!-- Daily P/L Summary Card -->
-    <div id="dailyPLCard" class="daily-pl-card">
-      <div class="daily-pl-icon" id="dailyPLIcon">📉</div>
-      <div class="daily-pl-info">
+    <!-- Top Movers + News Headlines Strip -->
+    <div class="card mb8" id="overviewNewsStrip" style="padding:10px 14px">
+      <div style="display:flex;gap:16px;flex-wrap:wrap">
+        <div style="flex:1;min-width:180px">
+          <div style="font-size:0.62rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">📈 今日強勢股</div>
+          <div id="overviewTopMovers" style="display:flex;flex-direction:column;gap:3px"></div>
+        </div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div style="flex:1;min-width:180px">
+          <div style="font-size:0.62rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">📰 最新頭條</div>
+          <div id="overviewLatestNews" style="display:flex;flex-direction:column;gap:4px"></div>
+        </div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div style="flex:1;min-width:160px">
+          <div style="font-size:0.62rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">📉 今日弱勢股</div>
+          <div id="overviewBottomMovers" style="display:flex;flex-direction:column;gap:3px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Portfolio Quick Insight -->
         <div class="daily-pl-label">今日組合損益</div>
         <div class="daily-pl-value" id="dailyPLValue">--</div>
         <div class="daily-pl-sub" id="dailyPLSub">--</div>
@@ -2109,21 +2283,20 @@ input[type=file]{display:none}
       </div>
     </div>
 
-    <!-- Portfolio Quick Insight -->
-    <div id="portfolioInsightCard" class="card mb8" style="padding:10px 14px">
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-        <div id="insightIcon" style="font-size:1.5rem;flex-shrink:0">🤔</div>
-        <div style="flex:1;min-width:200px">
-          <div style="display:flex;align-items:center;gap:6px">
-            <div id="insightTitle" style="font-size:0.75rem;font-weight:700;margin-bottom:3px">分析中...</div>
-            <span id="insightLiveBadge" style="display:none;font-size:0.5rem;padding:1px 4px;background:rgba(0,214,143,0.15);color:var(--green);border-radius:3px;border:1px solid rgba(0,214,143,0.3)">LIVE</span>
-          </div>
-          <div id="insightText" style="font-size:0.7rem;color:var(--text2);line-height:1.4"></div>
-        </div>
-        <div id="insightMetrics" style="display:flex;gap:10px;flex-shrink:0"></div>
-        <button onclick="buildPortfolioInsight();buildMarketContextBanner();updateMarketStatus();" title="重新分析" style="flex-shrink:0;border:none;background:transparent;cursor:pointer;font-size:0.65rem;padding:2px 6px;color:var(--text3);opacity:0.6;border-radius:4px">🔄</button>
+    <!-- Portfolio Quick Insight (content built by buildPortfolioInsight()) -->
+    <div id="portfolioInsightCard" class="card mb8" style="padding:10px 14px"></div>
+
+    <!-- Portfolio vs Benchmark Card -->
+    <div id="portfolioVsBench" class="card mb8" style="padding:8px 14px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+        <div style="font-size:0.65rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em">📊 組合績效 vs 標竿</div>
+        <span style="font-size:0.62rem;color:var(--text3)">2026-05-08</span>
       </div>
+      <div class="portfolio-vs-benchmark"></div>
     </div>
+
+    <!-- Portfolio Peak-Trough Card -->
+    <div id="peakTroughCard" class="card mb8" style="padding:8px 14px"></div>
 
     <!-- Alerts -->
     <div id="alertBanner" class="mb8"></div>
@@ -2188,6 +2361,24 @@ input[type=file]{display:none}
         </div>
         <div style="display:flex;gap:4px;flex-wrap:wrap" id="sectorPulseBars"></div>
       </div>
+    </div>
+
+    <!-- Enhanced Signal Row with 52W Bars -->
+    <div class="card mb12">
+      <div class="card-header">
+        <div class="card-title">📈 重點持股技術訊號</div>
+        <div class="text-xs" style="color:var(--text3)">52週區間 · RSI · 均線</div>
+      </div>
+      <div id="enhancedSignalRow" class="card-body" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px"></div>
+    </div>
+
+    <!-- Dividend Yield Tracker -->
+    <div class="card mb12">
+      <div class="card-header">
+        <div class="card-title">💰 殖利率追蹤</div>
+        <div class="text-xs" style="color:var(--text3)">年化殖利率排行</div>
+      </div>
+      <div id="dividendTracker" class="card-body" style="padding:8px 14px"></div>
     </div>
 
     <div class="main-grid">
@@ -2490,7 +2681,7 @@ input[type=file]{display:none}
           <button class="btn btn-sm tv-ival-btn active" onclick="setTVInterval('60',this)" title="按 H 鍵">60分</button>
           <button class="btn btn-sm tv-ival-btn" onclick="setTVInterval('D',this)" title="按 D 鍵">日線</button>
           <button class="btn btn-sm tv-ival-btn" onclick="setTVInterval('W',this)" title="按 W 鍵">週線</button>
-          <button class="btn btn-sm" onclick="loadTVWidget()" title="重載">🔄</button>
+          <button class="btn btn-sm" onclick="reloadTVWidget()" title="重載圖表 (R)">🔄</button>
           <button class="btn btn-sm" onclick="navigateTVPrev()" title="上一檔 (←)">◀</button>
           <button class="btn btn-sm" onclick="navigateTVNext()" title="下一檔 (→)">▶</button>
           <a id="tvExternalLink2" href="#" target="_blank" class="btn btn-sm" style="text-decoration:none" title="在新分頁開啟" onclick="document.getElementById('tvExternalLink').click()">🌐</a>
@@ -2536,9 +2727,10 @@ input[type=file]{display:none}
           <div style="color:var(--text2);font-size:0.78rem;margin-top:4px">載入 TradingView K線圖...</div>
           <div style="color:var(--text3);font-size:0.65rem;margin-top:4px;max-width:300px;text-align:center">建議使用 VPN 以獲得最佳圖表體驗</div>
           <div style="font-size:0.62rem;color:var(--text3);margin-top:2px" id="tvLoadingHint">若無法載入，約5秒後自動切換本地圖表</div>
-          <div style="margin-top:8px;display:flex;gap:6px;justify-content:center">
-            <a href="https://www.tradingview.com/chart/?symbol=TWSE:2330" target="_blank" class="btn btn-sm" style="text-decoration:none;opacity:0.7" title="備用連結">🌐 直接開啟</a>
-            <button class="btn btn-sm" onclick="loadTVFallback(document.getElementById('tvSymbol')?.value?.replace('TWSE:','')||'2330')" style="opacity:0.7">📊 跳過等待</button>
+          <div style="margin-top:8px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap">
+            <button class="tv-reload-btn" onclick="reloadTVWidget()">🔄 重新載入</button>
+            <a href="https://www.tradingview.com/chart/?symbol=TWSE:2330" target="_blank" class="tv-reload-btn" style="text-decoration:none">🌐 直接開啟</a>
+            <button class="tv-reload-btn" onclick="loadTVFallback(document.getElementById('tvSymbol')?.value?.replace('TWSE:','')||'2330')">📊 跳過等待</button>
           </div>
         </div>
         <!-- Chart widget container -->
@@ -2606,6 +2798,51 @@ input[type=file]{display:none}
 <!-- SECTION: NEWS -->
 <div class="section" id="sec-news">
   <div class="page">
+    <!-- Market Breadth & Sentiment Bar -->
+    <div class="card mb12">
+      <div class="card-header">
+        <div class="card-title">📊 市場廣度 & 情緒儀表</div>
+        <div id="newsFreshness" style="font-size:0.6rem;color:var(--amber);background:rgba(255,176,32,0.08);padding:2px 8px;border-radius:10px;font-weight:600;border:1px solid rgba(255,176,32,0.2)">📰 載入中</div>
+      </div>
+      <div class="card-body">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
+          <!-- Market Breadth -->
+          <div id="marketBreadthCard" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px">
+            <div style="font-size:0.65rem;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em">📈 市場廣度</div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="flex:1">
+                <div style="display:flex;justify-content:space-between;font-size:0.68rem;margin-bottom:4px">
+                  <span style="color:var(--green)">▲ 上漲 <span id="breadthUp">—</span></span>
+                  <span style="color:var(--red)">▼ 下跌 <span id="breadthDown">—</span></span>
+                </div>
+                <div style="height:6px;background:var(--surface3);border-radius:3px;overflow:hidden">
+                  <div id="breadthBar" style="height:100%;background:var(--green);width:50%;transition:width 0.5s"></div>
+                </div>
+              </div>
+              <div id="breadthRatio" style="font-family:var(--font-mono);font-size:0.75rem;font-weight:700;color:var(--text)">—</div>
+            </div>
+          </div>
+          <!-- News Sentiment Overview -->
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px">
+            <div style="font-size:0.65rem;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em">📰 新聞情緒</div>
+            <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px">
+              <div id="newsPosCount" style="font-size:0.68rem;color:var(--green);font-weight:700">🟢 —</div>
+              <div id="newsNegCount" style="font-size:0.68rem;color:var(--red);font-weight:700">🔴 —</div>
+              <div id="newsNeuCount" style="font-size:0.68rem;color:var(--text3);font-weight:700">⚪ —</div>
+              <div id="newsCount" style="font-size:0.65rem;color:var(--text3);margin-left:auto"></div>
+            </div>
+            <div id="newsSentimentItems" style="font-size:0.62rem"></div>
+          </div>
+          <!-- Portfolio vs TAIEX -->
+          <div id="portfolioVsTAIEX" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px">
+            <div style="font-size:0.65rem;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em">⚡ 組合 vs 大盤</div>
+            <div id="pvbCards" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- News Section -->
     <div class="card grid-full">
       <div class="card-header">
         <div class="card-title">📰 台股市場資訊</div>
@@ -2614,12 +2851,10 @@ input[type=file]{display:none}
         </div>
       </div>
       <div class="card-body">
-        <!-- News sentiment summary banner -->
-        <div id="newsSentimentBanner" style="display:flex;gap:8px;flex-wrap:wrap;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:10px;align-items:center">
-          <div id="newsSentimentItems"></div>
-        </div>
         <div id="newsSummaryGrid" style="margin-bottom:8px"></div>
         <div id="newsSummaryBanner"></div>
+        <!-- Sector Industry Insight Strip -->
+        <div id="sectorInsightStrip" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:8px;scrollbar-width:thin"></div>
         <div class="news-filter-row" style="margin-bottom:8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
             <button class="news-filter-pill active" data-news="all" onclick="filterNewsByTag(this,'all')">全部</button>
             <button class="news-filter-pill semi" data-news="semi" onclick="filterNewsByTag(this,'semi')">半導體</button>
@@ -2630,19 +2865,15 @@ input[type=file]{display:none}
             <button class="news-filter-pill aero" data-news="aero" onclick="filterNewsByTag(this,'aero')">航空</button>
             <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
               <button id="refreshNewsBtn" class="btn btn-sm" onclick="refreshNews()" style="font-size:0.65rem" title="刷新新聞">🔄</button>
-              <div id="newsPosCount" data-total="0" style="font-size:0.62rem;color:var(--green);background:rgba(0,214,143,0.08);padding:2px 8px;border-radius:10px;font-weight:600;border:1px solid rgba(0,214,143,0.2)">🟢 —</div>
-              <div id="newsNegCount" data-total="0" style="font-size:0.62rem;color:var(--red);background:rgba(255,68,68,0.08);padding:2px 8px;border-radius:10px;font-weight:600;border:1px solid rgba(255,68,68,0.2)">🔴 —</div>
-              <div id="newsNeuCount" data-total="0" style="font-size:0.62rem;color:var(--text3);background:var(--surface3);padding:2px 8px;border-radius:10px;font-weight:600">⚪ —</div>
-              <div style="font-size:0.62rem;color:var(--text3);margin-left:4px" id="newsCount"></div>
-              <div id="newsFreshness" style="font-size:0.6rem;color:var(--amber);background:rgba(255,176,32,0.08);padding:2px 8px;border-radius:10px;font-weight:600;border:1px solid rgba(255,176,32,0.2)">📰 載入中</div>
             </div>
         </div>
-        <div style="display:flex;gap:6px;align-items:center;margin-bottom:8px">
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:8px;flex-wrap:wrap">
             <div style="font-size:0.62rem;color:var(--text3)">情緒：</div>
             <button class="filter-btn active" data-sent="all" onclick="filterNewsBySentiment(this,'all')">全部</button>
             <button class="filter-btn" data-sent="pos" onclick="filterNewsBySentiment(this,'pos')" style="border-color:rgba(0,214,143,0.3)" title="利多">🟢</button>
             <button class="filter-btn" data-sent="neg" onclick="filterNewsBySentiment(this,'neg')" style="border-color:rgba(255,68,68,0.3)" title="利空">🔴</button>
           </div>
+        <div id="newsTagFilter" class="news-filter-bar"></div>
         <div class="news-grid" id="newsGrid"></div>
       </div>
     </div>
@@ -2908,6 +3139,11 @@ async function loadLiveRSS() {
   if (typeof filterNews === 'function') filterNews();
   updateNewsTicker();
   updateNewsSummaryInOverview();
+  // Rebuild news-dependent UI components immediately
+  if (typeof buildOverviewStrip === 'function') buildOverviewStrip();
+  if (typeof buildPortfolioNewsDigest === 'function') buildPortfolioNewsDigest();
+  if (typeof buildNews === 'function') buildNews();
+  if (typeof buildMarketBreadth === 'function') buildMarketBreadth();
 }
 
 function updateNewsSummaryInOverview() {
@@ -2942,12 +3178,16 @@ function fmtPrice(n){return n>=1000?Math.round(n).toLocaleString('zh-TW'):parseF
 
 function getPrice(code){
   const t=code.replace('.TW','');
-  return PRICE_DATA[t]||{price:0,year_high:0,year_low:0,prev_close:0};
+  const d=PRICE_DATA[t];
+  if(!d)return{price:0,year_high:0,year_low:0,prev_close:0};
+  return{price:d.price??0,year_high:d.year_high??0,year_low:d.year_low??0,prev_close:d.prev_close??0};
 }
 
 function getFundamental(code){
   const t=code.replace('.TW','');
-  return FUNDAMENTALS[t]||{trailingPE:null,dividendYield:null};
+  const d=FUNDAMENTALS[t];
+  if(!d)return{trailingPE:null,dividendYield:null};
+  return{trailingPE:d.trailingPE??null,dividendYield:d.dividendYield??null};
 }
 
 const INDUSTRY_ICON = {
@@ -3423,7 +3663,7 @@ function buildTickerTape(){
   const sorted=Object.entries(allHoldings)
     .map(([t,d])=>{const p=getPrice(t);return{ticker:t,name:d.name,price:p.price||0,prev:p.prev_close||p.price};})
     .filter(x=>x.price>0)
-    .sort((a,b)=>b.price*a.price-(a.price*a.price));
+    .sort((a,b)=>(b.price-b.prev)*b.price-(a.price-a.prev)*a.price);
 
   // Show top 8 holdings
   sorted.slice(0,8).forEach(item=>{
@@ -3589,28 +3829,43 @@ function updateFamilyCards(){
   const yesterday=HISTORY_DATA[yesterdayKey];
   const totalToday=today?.Total||0;
   const totalYesterday=yesterday?.Total||totalToday;
+
   el.innerHTML=FAMILY_KEYS.map(m=>{
     const cls=FAMILY_CLASS[m];
     const avatar={'👨 爸爸':'👨','👩 太太':'👩','👦 兒子 (大)':'👦','👦 兒子 (小)':'👶'}[m];
-    const mv=today?.[m]||0;
-    const mvY=yesterday?.[m]||mv;
-    const chg=mv-mvY;
-    const pct=totalToday>0?(mv/totalToday*100):0;
-    const chgPct=mvY>0?(chg/mvY*100):0;
     const shortName={'👨 爸爸':'爸爸','👩 太太':'太太','👦 兒子 (大)':'兒子(大)','👦 兒子 (小)':'兒子(小)'}[m];
+
+    // Historical market value from HISTORY_DATA
+    const mvHist=today?.[m]||0;
+    const mvY=yesterday?.[m]||mvHist;
+
+    // Live calculation: recompute from current prices for today's P/L
     const mData=loadMemberPortfolio(m);
-    const cost2=mData.reduce((s,st)=>s+(st.cost>0?st.cost*st.shares:0),0);
-    const gain2=mv-cost2;
-    const gainPct2=cost2>0?(gain2/cost2*100):0;
+    let liveMV=0,livePrevMV=0,totalCost=0;
+    mData.forEach(st=>{
+      const p=getPrice(st.code);
+      const curPrice=p.price||0;
+      const prevPrice=p.prev_close||curPrice;
+      const shares=st.shares||0;
+      liveMV+=shares*curPrice;
+      livePrevMV+=shares*prevPrice;
+      if(st.cost>0)totalCost+=st.cost*shares;
+    });
+
+    const liveDayGain=liveMV-livePrevMV;
+    const liveDayPct=livePrevMV>0?(liveDayGain/livePrevMV*100):0;
+    const unrealizedGain=liveMV-totalCost;
+    const unrealizedPct=totalCost>0?(unrealizedGain/totalCost*100):0;
+    const pct=totalToday>0?(mvHist/totalToday*100):0;
+
     return `<div class="family-card ${cls}">
       <div class="family-card-avatar">${avatar}</div>
       <div class="family-card-name">${shortName}</div>
-      <div class="family-card-cost" style="font-size:0.58rem;color:var(--text3)">成本 ${fmtTWD(cost2||0)}</div>
-      <div class="family-card-amount">${fmtTWD(mv)}</div>
+      <div class="family-card-amount">${fmtTWD(liveMV)}</div>
       <div class="family-card-pct">佔比 <span>${pct.toFixed(1)}%</span></div>
-      <div class="family-card-change ${chgPct>=0?'up':'down'}">${chgPct>=0?'▲':'▼'} ${fmtPct(chgPct)}</div>
-      <div class="family-card-daily ${chg>=0?'text-green':'text-red'}">${chg>=0?'+':''}${fmtTWD(Math.abs(chg))}</div>
-      <div class="family-card-gain ${gain2>=0?'text-green':'text-red'}">(${gain2>=0?'+':''}${fmtPct(gainPct2)})</div>
+      <div class="family-card-change ${liveDayPct>=0?'up':'down'}">${liveDayPct>=0?'▲':'▼'} ${fmtPct(liveDayPct)}</div>
+      <div class="family-card-daily ${liveDayGain>=0?'text-green':'text-red'}">${liveDayGain>=0?'+':''}${fmtTWD(Math.abs(liveDayGain))}</div>
+      <div class="family-card-gain ${unrealizedGain>=0?'text-green':'text-red'}">成本 ${fmtTWDShort(totalCost)} (${unrealizedGain>=0?'+':''}${fmtPct(unrealizedPct)})</div>
     </div>`;
   }).join('');
 }
@@ -3746,7 +4001,71 @@ function buildDailyPLSummary(){
 }
 
 // ============================================================
-// TOP MOVERS (Overview chips)
+// OVERVIEW STRIP: Top Movers + Latest News
+// ============================================================
+function buildOverviewStrip(){
+  // Top 3 gainers
+  const allHoldings=getAllHoldings();
+  const items=Object.entries(allHoldings)
+    .map(([t,d])=>{
+      const p=getPrice(t);
+      const chgPct=p.prev_close?((p.price-p.prev_close)/p.prev_close*100):0;
+      return{ticker:t,name:d.name,chgPct,price:p.price,prevClose:p.prev_close};
+    })
+    .filter(d=>d.price>0)
+    .sort((a,b)=>b.chgPct-a.chgPct);
+
+  const topEl=document.getElementById('overviewTopMovers');
+  const botEl=document.getElementById('overviewBottomMovers');
+  const newsEl=document.getElementById('overviewLatestNews');
+
+  if(topEl){
+    topEl.innerHTML=items.slice(0,3).map(d=>{
+      const c=d.chgPct>=0?'var(--green)':'var(--red)';
+      const s=d.chgPct>=0?'+':'';
+      return `<div style="font-size:0.65rem;display:flex;justify-content:space-between;align-items:center;padding:2px 0">
+        <span style="color:var(--text2);max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.name}</span>
+        <span style="font-family:var(--font-mono);font-weight:700;color:${c}">${s}${d.chgPct.toFixed(1)}%</span>
+      </div>`;
+    }).join('');
+  }
+  if(botEl){
+    botEl.innerHTML=[...items].reverse().slice(0,3).map(d=>{
+      const c=d.chgPct>=0?'var(--green)':'var(--red)';
+      const s=d.chgPct>=0?'+':'';
+      return `<div style="font-size:0.65rem;display:flex;justify-content:space-between;align-items:center;padding:2px 0">
+        <span style="color:var(--text2);max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.name}</span>
+        <span style="font-family:var(--font-mono);font-weight:700;color:${c}">${s}${d.chgPct.toFixed(1)}%</span>
+      </div>`;
+    }).join('');
+  }
+  if(newsEl){
+    // Use live RSS news data when available, fall back to portfolio-relevant summaries
+    const liveNews = NEWS_DATA.slice(0, 3).filter(n => n && n.title);
+    if (liveNews.length > 0) {
+      newsEl.innerHTML = liveNews.map(n => {
+        const sentIcon = n.sentiment === 'pos' ? '🟢' : n.sentiment === 'neg' ? '🔴' : '⚪';
+        return `<div style="font-size:0.6rem;line-height:1.35;padding:2px 0;display:flex;align-items:flex-start;gap:4px">
+          <span style="color:var(--text3);flex-shrink:0">${sentIcon}</span>
+          <span style="color:var(--text2);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical" title="${n.title}">${n.title.length > 40 ? n.title.substring(0, 40) + '…' : n.title}</span>
+        </div>`;
+      }).join('');
+    } else {
+      // Fallback when no live news available
+      newsEl.innerHTML = [
+        {label:'台積電',text:'AI需求續旺，先進製程產能滿載'},
+        {label:'鴻海',text:'GB200出貨放量，Q2營收有望季增'},
+        {label:'國泰金',text:'升息尾聲，壽險避險成本下滑'},
+      ].map(n=>`<div style="font-size:0.6rem;line-height:1.35;padding:2px 0">
+        <span style="color:var(--amber);font-weight:700">[${n.label}]</span>
+        <span style="color:var(--text2)">${n.text}</span>
+      </div>`).join('');
+    }
+  }
+}
+
+// ============================================================
+// TOP MOVERS
 // ============================================================
 function buildTopMovers(){
   const el=document.getElementById('topMoversRow');
@@ -4025,13 +4344,14 @@ function buildPortfolioMetrics(){
   let totalCost=0,totalMV=0,winning=0,total=0,totalGain=0,totalLoss=0;
   let totalDivYield=0,totalPE=0,peCount=0;
   Object.entries(allHoldings).forEach(([t,d])=>{
-    const p=getPrice(t); if(p.price<=0)return;
+    const p=getPrice(t); if(!p||p.price<=0)return;
+    const f=getFundamental(t);
     const mv=d.shares*p.price;
-    const gain=mv-d.cost;
+    const gain=mv-(d.cost>0?d.cost*d.shares:0);
     totalMV+=mv;
-    if(d.cost>0){totalCost+=d.cost; total++; if(gain>0){winning++;totalGain+=gain;}else if(gain<0){totalLoss+=gain;}}
-    if(p.dividendYield>0){totalDivYield+=p.dividendYield*mv; peCount++;}
-    if(p.pe>0){totalPE+=p.pe*mv;}
+    if(d.cost>0){totalCost+=d.cost*d.shares; total++; if(gain>0){winning++;totalGain+=gain;}else if(gain<0){totalLoss+=gain;}}
+    if(f&&f.dividendYield&&f.dividendYield>0){totalDivYield+=f.dividendYield*mv; peCount++;}
+    if(f&&f.trailingPE&&f.trailingPE>0){totalPE+=f.trailingPE*mv; peCount++;}
   });
   const gainPct=totalCost>0?((totalMV-totalCost)/totalCost*100):0;
   const winRate=total>0?(winning/total*100):0;
@@ -5074,13 +5394,6 @@ function buildTodayGlance(){
     </div>`).join('');
 }
 
-function fmtTWDShort(val){
-  if(Math.abs(val)>=100000000)return(val/100000000).toFixed(1)+'億';
-  if(Math.abs(val)>=10000000)return(val/10000000).toFixed(1)+'千萬';
-  if(Math.abs(val)>=10000)return(val/10000).toFixed(0)+'萬';
-  return Math.round(val).toLocaleString('zh-TW');
-}
-
 // ============================================================
 // ALERTS (banner)
 // ============================================================
@@ -5802,6 +6115,123 @@ function filterSignals(btn,industry){
 }
 
 // ============================================================
+// ENHANCED NEWS: Market Breadth Card
+// ============================================================
+function buildMarketBreadth(){
+  const allHoldings = getAllHoldings();
+  let gainers = 0, losers = 0, unchanged = 0;
+  Object.entries(allHoldings).forEach(([t, d]) => {
+    const p = getPrice(t);
+    if(!p.price || !p.prev_close) return;
+    if(p.price > p.prev_close) gainers++;
+    else if(p.price < p.prev_close) losers++;
+    else unchanged++;
+  });
+  const total = gainers + losers + unchanged || 1;
+  const upPct = (gainers / total * 100).toFixed(0);
+  const downPct = (losers / total * 100).toFixed(0);
+  const ratio = losers > 0 ? (gainers / losers).toFixed(2) : gainers > 0 ? '∞' : '—';
+
+  const elUp = document.getElementById('breadthUp');
+  const elDown = document.getElementById('breadthDown');
+  const elBar = document.getElementById('breadthBar');
+  const elRatio = document.getElementById('breadthRatio');
+
+  if(elUp) elUp.textContent = gainers;
+  if(elDown) elDown.textContent = losers;
+  if(elBar) {
+    elBar.style.width = upPct + '%';
+    elBar.style.background = parseFloat(upPct) >= 50 ? 'var(--green)' : 'var(--red)';
+  }
+  if(elRatio) {
+    const r = parseFloat(ratio);
+    elRatio.textContent = ratio === '∞' ? '∞:1' : ratio + ':1';
+    elRatio.style.color = r >= 1 ? 'var(--green)' : r > 0 ? 'var(--amber)' : 'var(--text3)';
+  }
+}
+
+// ============================================================
+// ENHANCED NEWS: Portfolio vs TAIEX mini cards
+// ============================================================
+function buildPVBCards(){
+  const el = document.getElementById('pvbCards');
+  if(!el) return;
+  const allHoldings = getAllHoldings();
+  let totalMV = 0, totalPrevMV = 0, totalCost = 0;
+  Object.entries(allHoldings).forEach(([t, d]) => {
+    const p = getPrice(t);
+    if(!p.price) return;
+    totalMV += d.shares * p.price;
+    totalPrevMV += d.shares * (p.prev_close || p.price);
+    if(d.cost > 0) totalCost += d.shares * d.cost;
+  });
+  const dayChgPct = totalPrevMV > 0 ? ((totalMV - totalPrevMV) / totalPrevMV * 100) : 0;
+  const twii = MARKET_INDICES.find(i => i.ticker === '^TWII');
+  const twiiChg = twii ? twii.changePct : 0;
+  const alpha = dayChgPct - twiiChg;
+  const totalGain = totalMV - totalCost;
+  const totalGainPct = totalCost > 0 ? (totalGain / totalCost * 100) : 0;
+
+  const cards = [
+    { label:'日 α', value:(alpha >= 0 ? '+' : '') + alpha.toFixed(2) + '%', color: alpha >= 0 ? 'var(--green)' : 'var(--red)', sub:'vs 大盤' },
+    { label:'總報酬', value:(totalGainPct >= 0 ? '+' : '') + totalGainPct.toFixed(1) + '%', color: totalGainPct >= 0 ? 'var(--green)' : 'var(--red)', sub:'未實現' },
+    { label:'日報酬', value:(dayChgPct >= 0 ? '+' : '') + dayChgPct.toFixed(2) + '%', color: dayChgPct >= 0 ? 'var(--green)' : 'var(--red)', sub:'今日 P/L' },
+  ];
+
+  el.innerHTML = cards.map(c => `
+    <div style="background:var(--surface3);border:1px solid var(--border);border-radius:6px;padding:6px 8px;min-width:70px;flex:1">
+      <div style="font-size:0.58rem;color:var(--text3)">${c.label}</div>
+      <div style="font-family:var(--font-mono);font-size:0.78rem;font-weight:700;color:${c.color}">${c.value}</div>
+      <div style="font-size:0.55rem;color:var(--text3)">${c.sub}</div>
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// ENHANCED NEWS: Sector industry insight strip
+// ============================================================
+function buildSectorIndustryInsight(){
+  const el = document.getElementById('sectorInsightStrip');
+  if(!el) return;
+  const allHoldings = getAllHoldings();
+  const sectorData = {};
+  Object.entries(allHoldings).forEach(([t, d]) => {
+    const p = getPrice(t);
+    if(!p.price || !p.prev_close) return;
+    const mv = d.shares * p.price;
+    const chgPct = (p.price - p.prev_close) / p.prev_close * 100;
+    const sec = d.industry || '其他';
+    if(!sectorData[sec]) sectorData[sec] = { mv: 0, weightedChg: 0, count: 0 };
+    sectorData[sec].mv += mv;
+    sectorData[sec].weightedChg += chgPct * mv;
+    sectorData[sec].count++;
+  });
+
+  const sorted = Object.entries(sectorData)
+    .map(([sec, d]) => ({ sec, avgChg: d.mv > 0 ? d.weightedChg / d.mv : 0, mv: d.mv }))
+    .sort((a, b) => b.avgChg - a.avgChg);
+
+  const icons = {
+    '半導體':'🔲','電子':'📱','金融':'🏦','ETF':'📊',
+    '航空':'✈️','光學':'📷','電信':'📡','化工':'⚗️',
+    '營建':'🏗️','鋼鐵':'🔩','汽車':'🚗','其他':'📦'
+  };
+
+  el.innerHTML = sorted.slice(0, 6).map(s => {
+    const color = s.avgChg >= 0 ? 'var(--green)' : 'var(--red)';
+    const bg = s.avgChg >= 0 ? 'rgba(0,214,143,0.08)' : 'rgba(255,68,68,0.08)';
+    const border = s.avgChg >= 0 ? 'rgba(0,214,143,0.15)' : 'rgba(255,68,68,0.15)';
+    return `<div style="background:${bg};border:1px solid ${border};border-radius:6px;padding:6px 10px;display:flex;align-items:center;gap:6px">
+      <span style="font-size:0.8rem">${icons[s.sec]||'📦'}</span>
+      <div>
+        <div style="font-size:0.65rem;color:var(--text2);font-weight:600">${s.sec}</div>
+        <div style="font-family:var(--font-mono);font-size:0.72rem;font-weight:700;color:${color}">${s.avgChg >= 0 ? '+' : ''}${s.avgChg.toFixed(2)}%</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
 // NEWS SECTION
 // ============================================================
 let _currentNewsTag='all';
@@ -5917,7 +6347,7 @@ function filterNews(){
 }
 
 function filterNewsByTag(btn,tag){
-  document.querySelectorAll('[data-news]').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('[data-tag]').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   _currentNewsTag=tag;
   filterNews();
@@ -6050,6 +6480,9 @@ function refreshNews(){
   news.slice(0,12).forEach(n=>NEWS_DATA.push(n));
   if(btn){btn.textContent='✅';setTimeout(()=>{btn.textContent='🔄';btn.disabled=false;},2000);}
   showToast('新聞已刷新 ('+timeStr+')',2000);
+  buildMarketBreadth();
+  buildPVBCards();
+  buildSectorIndustryInsight();
   filterNews();
 }
 
@@ -6074,6 +6507,9 @@ function enhanceNewsWithPortfolio(){
 function buildNews(){
   buildNewsSentimentBanner();
   buildNewsSummary();
+  buildMarketBreadth();
+  buildPVBCards();
+  buildSectorIndustryInsight();
   enhanceNewsWithPortfolio();
   const updEl=document.getElementById('newsUpdated');
   const now=new Date();
@@ -6155,9 +6591,15 @@ function buildNewsSummaryBanner(){
 function buildTVSelector(){
   const sel=document.getElementById('tvSymbol');
   const allTickers = Object.values(PORTFOLIOS).flatMap(a=>a.map(s=>s.code.replace('.TW','')));
-  sel.innerHTML=allTickers.map(t=>{
+  // Deduplicate and sort: 2330 first, then others alphabetically
+  const unique = [...new Set(allTickers)].sort((a,b) => {
+    if(a==='2330') return -1;
+    if(b==='2330') return 1;
+    return a.localeCompare(b);
+  });
+  sel.innerHTML=unique.map(t=>{
     const name=getNameByCode(t);
-    return `<option value="TWSE:${t}">${t} ${name}</option>`;
+    return `<option value="TWSE:${t}"${t==='2330'?' selected':''}>${t} ${name}</option>`;
   }).join('');
 }
 
@@ -6400,7 +6842,7 @@ function loadTVWidget(){
           hide_volume: false,
           support_host: 'https://www.tradingview.com',
           withdateranges: true,
-          studies: ['RSI'],
+          studies: ['RSI@tv-basicstudies', 'MASimple@tv-basicstudies', 'MACD@tv-basicstudies'],
           container_id: 'tradingview-widget',
           autosize: true,
         });
@@ -6453,8 +6895,10 @@ async function loadTVFallback(tickerSym){
   const price=getPrice(code);
   if(!price||!price.price)return;
 
-  // Try iframe-based fallback first (most reliable, works everywhere)
-  const iframeUrl = `https://www.tradingview.com/chart/?symbol=TWSE%3A${tickerSym}&interval=D&theme=dark&style=1&locale=zh_TW`;
+  // Reliable iframe-based chart using TWSE widget embed format (no API key required)
+  const tickerRaw = tickerSym.replace('.TW','').replace('TSE:','').replace(/^TWSE:/,'');
+  const tvSym = `TWSE:${tickerRaw}`;
+  const iframeUrl = `https://www.tradingview.com/widgetembed/?symbol=${encodeURIComponent(tvSym)}&interval=D&theme=dark&style=1&locale=zh_TW&toolbar_bg=%231a1a1a&hide_top_toolbar=false&save_image=true&studies=MASimple%40tv-basicstudies%2CRSI%40tv-basicstudies%2CMACD%40tv-basicstudies&autosize=true`;
   container.innerHTML = `
     <div style="display:flex;flex-direction:column;height:100%">
       <iframe
@@ -7087,7 +7531,7 @@ function refreshData(){
   text.textContent='更新中...';
   btn.classList.add('refreshing');
   btn.disabled=true;
-  refreshCountdown = 30 * 60; // Reset countdown after manual refresh
+  _countdown = 30 * 60; // Reset countdown after manual refresh
   setTimeout(async ()=>{
     _holdingsCache=null;
     sectionsBuilt.clear();
@@ -7099,6 +7543,9 @@ function refreshData(){
     buildNews(); sectionsBuilt.add('news');
     buildAnalytics(); buildHeatmap(); buildMoversTable(); buildCompare(); buildRiskMeter(); buildPEDistribution(); buildMonthlyTable(); sectionsBuilt.add('analytics');
     buildPortfolioInsight();
+    buildDailyPLSummary();
+    buildOverviewStrip();
+    buildMarketBreadth();
     // Re-sync TV chart to current symbol if on chart tab
     const activeTab=document.querySelector('.tab.active')?.dataset?.tab;
     if(activeTab==='chart'){
@@ -7148,7 +7595,7 @@ document.querySelectorAll('.tab').forEach(tab=>{
     }
     if(tab.dataset.tab==='history'&&!sectionsBuilt.has('history')){buildHistoryCharts();sectionsBuilt.add('history');}
     if(tab.dataset.tab==='signals'&&!sectionsBuilt.has('signals')){buildSignals();sectionsBuilt.add('signals');}
-    if(tab.dataset.tab==='news'&&!sectionsBuilt.has('news')){buildNews();sectionsBuilt.add('news');}
+    if(tab.dataset.tab==='news'&&!sectionsBuilt.has('news')){buildNews();buildMarketBreadth();buildPVBCards();buildSectorIndustryInsight();sectionsBuilt.add('news');}
     if(tab.dataset.tab==='analytics'&&!sectionsBuilt.has('analytics')){setTimeout(()=>{buildAnalytics();buildHeatmap();buildMoversTable();buildCompare();},50);sectionsBuilt.add('analytics');}
     // Preload other sections lazily — removed duplicate calls
   });
@@ -7204,6 +7651,247 @@ function trackTVNav(sym){
   if(_tvHistoryIdx < _tvHistory.length-1){_tvHistory=_tvHistory.slice(0,_tvHistoryIdx+1);}
   if(_tvHistory[_tvHistory.length-1]!==sym){_tvHistory.push(sym);}
   _tvHistoryIdx=_tvHistory.length-1;
+}
+
+// ============================================================
+// ENHANCED: TV WIDGET RELOAD ON DEMAND
+// ============================================================
+function reloadTVWidget() {
+  const widget = document.getElementById('tradingview-widget');
+  const loading = document.getElementById('tvLoading');
+  if (widget) {
+    widget.innerHTML = '<div class="tv-loading-overlay" id="tvLoading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><div class="tv-loading-spinner"></div><div style="font-size:0.72rem;color:var(--text3)">載入圖表中...</div></div>';
+    if (loading) loading.style.display = 'flex';
+    setTimeout(() => loadTVWidget(), 100);
+  }
+}
+
+// ============================================================
+// ENHANCED: PORTFOLIO VS BENCHMARK CARD
+// ============================================================
+function buildPortfolioVsBenchmark() {
+  const el = document.getElementById('portfolioVsBench');
+  if (!el) return;
+  const allHoldings = getAllHoldings();
+  const t0050 = getPrice('0050');
+  let totalMV = 0, totalCost = 0, totalPrev = 0;
+  Object.entries(allHoldings).forEach(([t, d]) => {
+    const p = getPrice(t); if (!p.price) return;
+    totalMV += d.shares * p.price;
+    totalPrev += d.shares * (p.prev_close || p.price);
+    if (d.cost > 0) totalCost += d.shares * d.cost;
+  });
+  const dayChg = totalMV - totalPrev;
+  const dayPct = totalPrev > 0 ? (dayChg / totalPrev * 100) : 0;
+  const benchChg = t0050.prev_close ? ((t0050.price - t0050.prev_close) / t0050.prev_close * 100) : 0;
+  const alpha = dayPct - benchChg;
+  const totalGain = totalMV - totalCost;
+  const totalGainPct = totalCost > 0 ? (totalGain / totalCost * 100) : 0;
+  const tsmc = getPrice('2330');
+  const tsmcChg = tsmc.prev_close ? ((tsmc.price - tsmc.prev_close) / tsmc.prev_close * 100) : 0;
+
+  el.innerHTML = `
+    <div class="pvb-card">
+      <div class="pvb-label">日 α 超額</div>
+      <div class="pvb-value" style="color:var(--${alpha >= 0 ? 'green' : 'red'})">${alpha >= 0 ? '+' : ''}${alpha.toFixed(2)}%</div>
+      <div class="pvb-sub">vs ${benchChg >= 0 ? '+' : ''}${benchChg.toFixed(2)}% (0050)</div>
+    </div>
+    <div class="pvb-card">
+      <div class="pvb-label">總報酬率</div>
+      <div class="pvb-value" style="color:var(--${totalGainPct >= 0 ? 'green' : 'red'})">${totalGainPct >= 0 ? '+' : ''}${totalGainPct.toFixed(1)}%</div>
+      <div class="pvb-sub">${totalGain >= 0 ? '+' : ''}${fmtTWD(totalGain)}</div>
+    </div>
+    <div class="pvb-card">
+      <div class="pvb-label">台積電影響</div>
+      <div class="pvb-value" style="color:var(--${tsmcChg >= 0 ? 'green' : 'red'})">${tsmcChg >= 0 ? '+' : ''}${tsmcChg.toFixed(2)}%</div>
+      <div class="pvb-sub">${tsmc.price >= 1000 ? Math.round(tsmc.price).toLocaleString() : tsmc.price.toFixed(1)}</div>
+    </div>
+  `;
+}
+
+// ============================================================
+// ENHANCED: NEWS TAG FILTER (improved filter pills)
+// ============================================================
+const NEWS_TAGS = [
+  { id: 'all', label: '全部', color: '#9a9a9a' },
+  { id: 'semi', label: '半導體', color: '#60a5fa' },
+  { id: 'ai', label: 'AI/科技', color: '#b066ff' },
+  { id: 'finance', label: '金融', color: '#00d68f' },
+  { id: 'macro', label: '總經', color: '#ff4444' },
+  { id: 'etf', label: 'ETF', color: '#00c9d4' },
+  { id: 'aero', label: '航運', color: '#ffb020' }
+];
+
+function buildNewsTagFilter() {
+  const el = document.getElementById('newsTagFilter');
+  if (!el) return;
+  el.innerHTML = NEWS_TAGS.map(tag => `
+    <button class="news-filter-btn ${tag.id === 'all' ? 'active' : ''}"
+            onclick="filterNewsByTag(this, '${tag.id}')"
+            style="${tag.id !== 'all' ? `--tag-color:${tag.color}` : ''}"
+            data-tag="${tag.id}">
+      ${tag.label}
+    </button>
+  `).join('');
+}
+
+// ============================================================
+// ENHANCED: MARKET SESSION STATUS BADGE
+// ============================================================
+function getMarketSessionStatus() {
+  const now = new Date();
+  const taipeiTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+  const day = taipeiTime.getDay();
+  const hour = taipeiTime.getHours();
+  const minute = taipeiTime.getMinutes();
+  const timeInMinutes = hour * 60 + minute;
+  const isWeekend = day === 0 || day === 6;
+
+  if (isWeekend) return { status: 'weekend', label: '週末休市', class: 'holiday' };
+  if (timeInMinutes >= 540 && timeInMinutes < 870) return { status: 'open', label: '台股交易中', class: 'open' };
+  if (timeInMinutes >= 870) return { status: 'after-hours', label: '盤後', class: 'closed' };
+  return { status: 'pre-market', label: '開盤前', class: 'closed' };
+}
+
+function updateMarketSessionBadge() {
+  const el = document.getElementById('marketSessionBadge');
+  if (!el) return;
+  const { label, class: cls } = getMarketSessionStatus();
+  el.innerHTML = `<span class="session-pill ${cls}"><span class="session-market-dot ${cls === 'open' ? 'open' : 'closed'}"></span>${label}</span>`;
+}
+
+// ============================================================
+// ENHANCED: PORTFOLIO PEAK-TROUGH INDICATOR
+// ============================================================
+function buildPortfolioPeakTrough() {
+  const el = document.getElementById('peakTroughCard');
+  if (!el) return;
+  const dates = Object.keys(HISTORY_DATA).sort();
+  if (dates.length < 2) return;
+  const values = dates.map(d => HISTORY_DATA[d]?.Total || 0).filter(v => v > 0);
+  if (values.length === 0) return;
+  const peak = Math.max(...values);
+  const trough = Math.min(...values);
+  const current = values[values.length - 1];
+  const peakDate = dates[values.indexOf(peak)];
+  const troughDate = dates[values.indexOf(trough)];
+  const pctFromTrough = trough > 0 ? ((current - trough) / trough * 100) : 0;
+  const pctFromPeak = peak > 0 ? ((current - peak) / peak * 100) : 0;
+  const position = peak > trough ? ((current - trough) / (peak - trough) * 100) : 50;
+
+  el.innerHTML = `
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <div style="flex:1;min-width:120px">
+        <div style="font-size:0.6rem;color:var(--text3);margin-bottom:4px">歷史區間定位</div>
+        <div class="peak-trough-bar">
+          <div class="peak-trough-peak"></div>
+          <div class="peak-trough-trough"></div>
+          <div class="peak-trough-current" style="left:${Math.max(0,Math.min(92,position))}%;background:${current >= peak * 0.95 ? 'var(--green)' : current <= trough * 1.05 ? 'var(--red)' : 'var(--blue)'}"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.55rem;color:var(--text3);margin-top:2px">
+          <span>低 ${fmtTWDShort(trough)}</span>
+          <span>高 ${fmtTWDShort(peak)}</span>
+        </div>
+      </div>
+      <div style="text-align:center;min-width:60px">
+        <div style="font-size:0.58rem;color:var(--text3)">距高點</div>
+        <div style="font-family:var(--font-mono);font-size:0.8rem;font-weight:700;color:var(--${pctFromPeak >= -5 ? 'green' : 'amber'})">${pctFromPeak >= 0 ? '+' : ''}${pctFromPeak.toFixed(1)}%</div>
+      </div>
+      <div style="text-align:center;min-width:60px">
+        <div style="font-size:0.58rem;color:var(--text3)">距低點</div>
+        <div style="font-family:var(--font-mono);font-size:0.8rem;font-weight:700;color:var(--green)">+${pctFromTrough.toFixed(1)}%</div>
+      </div>
+    </div>
+  `;
+}
+
+// ============================================================
+// ENHANCED: DIVIDEND YIELD TRACKER
+// ============================================================
+function buildDividendTracker() {
+  const el = document.getElementById('dividendTracker');
+  if (!el) return;
+  const allHoldings = getAllHoldings();
+  const withDividend = Object.entries(allHoldings)
+    .map(([t, d]) => {
+      const p = getPrice(t); const f = getFundamental(t);
+      const mv = d.shares * (p.price || 0);
+      const divYield = f?.dividendYield || 0;
+      const annualDiv = mv * divYield / 100;
+      return { ticker: t, name: d.name, mv, divYield, annualDiv };
+    })
+    .filter(d => d.mv > 0 && d.divYield > 0)
+    .sort((a, b) => b.divYield - a.divYield)
+    .slice(0, 8);
+
+  const maxYield = withDividend[0]?.divYield || 1;
+  const totalAnnualDiv = withDividend.reduce((s, d) => s + d.annualDiv, 0);
+  const totalMV = withDividend.reduce((s, d) => s + d.mv, 0);
+  const avgYield = totalMV > 0 ? (totalAnnualDiv / totalMV * 100) : 0;
+
+  el.innerHTML = `
+    <div style="margin-bottom:8px;display:flex;gap:8px;flex-wrap:wrap">
+      <div class="dp-item" style="flex:1;min-width:80px">
+        <div class="dp-label">估算年配息</div>
+        <div class="dp-value" style="font-size:0.95rem">${fmtTWDShort(totalAnnualDiv)}</div>
+        <div class="dp-sub">${avgYield.toFixed(2)}% 平均殖利率</div>
+      </div>
+    </div>
+    ${withDividend.map(d => `
+      <div class="dividend-ticker-row">
+        <div class="dividend-ticker">${d.ticker}</div>
+        <div class="dividend-yield-bar" title="${d.name}">
+          <div class="dividend-yield-fill" style="width:${(d.divYield / maxYield * 100).toFixed(0)}%;background:${d.divYield >= 5 ? 'var(--green)' : d.divYield >= 3 ? 'var(--blue)' : 'var(--amber)'}"></div>
+        </div>
+        <div class="dividend-yield-val" style="color:${d.divYield >= 5 ? 'var(--green)' : d.divYield >= 3 ? 'var(--blue)' : 'var(--amber)'}">${d.divYield.toFixed(2)}%</div>
+      </div>
+    `).join('')}
+  `;
+}
+
+// ============================================================
+// ENHANCED: IMPROVED SIGNAL CARDS with 52W bars
+// ============================================================
+function buildEnhancedSignalRow() {
+  const el = document.getElementById('enhancedSignalRow');
+  if (!el) return;
+  const allHoldings = getAllHoldings();
+  const sortedSignals = Object.entries(allHoldings)
+    .map(([t, d]) => {
+      const p = getPrice(t);
+      const mv = d.shares * (p.price || 0);
+      const w52pct = p.year_low && p.year_high ? ((p.price - p.year_low) / (p.year_high - p.year_low) * 100) : 50;
+      const chg = p.prev_close ? ((p.price - p.prev_close) / p.prev_close * 100) : 0;
+      return { ticker: t, name: d.name, mv, w52pct, chg, price: p.price };
+    })
+    .filter(d => d.mv > 0)
+    .sort((a, b) => b.mv - a.mv)
+    .slice(0, 6);
+
+  el.innerHTML = sortedSignals.map(s => {
+    const w52Color = s.w52pct >= 80 ? 'var(--green)' : s.w52pct <= 20 ? 'var(--red)' : 'var(--blue)';
+    const cls = s.chg >= 0 ? 'up' : 'down';
+    const priceVal = s.price >= 1000 ? Math.round(s.price).toLocaleString('zh-TW') : s.price.toFixed(2);
+    return `
+      <div class="signal-card" style="cursor:pointer" onclick="jumpToChart('${s.ticker}')">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+          <span style="font-weight:700;font-family:var(--font-mono);font-size:0.78rem;color:var(--blue)">${s.ticker}</span>
+          <span style="font-size:0.62rem;color:var(--text3)">${s.name.slice(0, 4)}</span>
+          <span class="${cls}" style="margin-left:auto;font-family:var(--font-mono);font-weight:700;font-size:0.78rem">${fmtPct(s.chg)}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span style="font-size:0.65rem;font-family:var(--font-mono)">$${priceVal}</span>
+          <div class="signal-52w-wrap" style="flex:1">
+            <span class="signal-52w-label">52W</span>
+            <div class="signal-52w-bar">
+              <div class="signal-52w-fill" style="width:${s.w52pct.toFixed(0)}%;background:${w52Color}"></div>
+            </div>
+            <span class="signal-52w-pct" style="color:${w52Color}">${s.w52pct.toFixed(0)}%</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 // ============================================================
@@ -7830,6 +8518,8 @@ async function init() {
   initMarketPulseRibbon();
   buildMarketContextBanner();
   buildPortfolioInsight();
+  buildDailyPLSummary();
+  buildOverviewStrip();
   updateHeader();
   buildPortfolioAlertBanner();
   updateGlobalSummary();
@@ -7855,7 +8545,6 @@ async function init() {
   buildDividendSummary();
   buildNewsTicker(); // Animated ticker with top movers + market data
   buildPortfolioGauge();
-  buildDailyPLCard();
   buildRebalancingSuggestions();
   buildQuickStatsStrip();
   buildTAIEXMiniSparkline();
@@ -7864,9 +8553,18 @@ async function init() {
   updateMarketMood();
   buildMoverCards();
   buildTopMovers();
-  buildNewsSummary(); // News sentiment + sector impact
+  buildNews(); // News sentiment + sector impact
   buildPortfolioNewsDigest(); // Portfolio-specific news digest
   buildPerformanceScoreCard(); // Performance score card
+  buildMarketBreadth(); // Market breadth indicator
+  buildPVBCards(); // Portfolio vs benchmark mini cards
+  buildSectorIndustryInsight(); // Sector performance strip
+  buildEnhancedSignalRow(); // New enhanced functions
+  buildPortfolioVsBenchmark();
+  buildNewsTagFilter();
+  updateMarketSessionBadge();
+  buildPortfolioPeakTrough();
+  buildDividendTracker();
   startRefreshTimer(); // Auto-refresh countdown
 
   // Preload TradingView widget script in background for faster chart loading
@@ -7890,10 +8588,40 @@ async function init() {
 
 // Auto-refresh every 30 minutes
 // Refresh data from JSON every 30 min, then re-init
-setInterval(async () => {
-  await loadData();
-  refreshData();
-}, 30*60*1000);
+let _refreshInterval = null;
+function scheduleAutoRefresh() {
+  if (_refreshInterval) clearInterval(_refreshInterval);
+  _refreshInterval = setInterval(async () => {
+    await loadData();
+    refreshData();
+    // Show toast notification
+    const toastEl = document.getElementById('toastContainer') || (function() {
+      const c = document.createElement('div'); c.id = 'toastContainer'; c.className = 'toast-container'; document.body.appendChild(c); return c;
+    })();
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.style.background = 'rgba(0,214,143,0.12)';
+    t.style.borderColor = 'rgba(0,214,143,0.3)';
+    t.style.color = 'var(--green)';
+    t.textContent = `✅ 自動更新完成 — ${new Date().toLocaleTimeString('zh-TW')}`;
+    toastEl.appendChild(t);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 4000);
+  }, 30 * 60 * 1000);
+}
+scheduleAutoRefresh();
+
+// Countdown badge in navbar showing next refresh
+let _countdown = 30 * 60;
+setInterval(() => {
+  _countdown--;
+  const el = document.getElementById('refreshCountdown');
+  if (el) {
+    const m = Math.floor(_countdown / 60);
+    const s = _countdown % 60;
+    el.textContent = `⏱ ${m}:${s.toString().padStart(2,'0')}`;
+    if (_countdown <= 0) _countdown = 30 * 60;
+  }
+}, 1000);
 
 // Live update portfolio insight every 5 minutes (lighter-weight refresh)
 setInterval(() => {
@@ -7901,13 +8629,22 @@ setInterval(() => {
   if (typeof updateMarketContextBanner === 'function') updateMarketContextBanner();
   if (typeof updateMarketStatus === 'function') updateMarketStatus();
 }, 5*60*1000);
-// Footer time update
+// Footer time + market session update
 function updateFooterTime(){
   const el=document.getElementById('footerTime');
   if(el){el.textContent=new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});}
+  // Update market session in footer
+  const msfEl=document.getElementById('marketSessionFooter');
+  if(msfEl){
+    const {label} = getMarketSessionStatus();
+    msfEl.textContent=label;
+  }
 }
 updateFooterTime();
 setInterval(updateFooterTime,60000);
+
+// Keyboard shortcut: R to refresh
+document.addEventListener('keydown',e=>{if(e.key==='r'&&!e.ctrlKey&&!e.metaKey&&document.activeElement.tagName!=='INPUT'){loadData().then(()=>refreshData());}});
 
 // Scroll to top button
 window.addEventListener('scroll',()=>{
@@ -7920,11 +8657,13 @@ document.addEventListener('DOMContentLoaded', async () => { await loadData(); in
 
 <!-- FOOTER -->
 <footer class="dashboard-footer">
-  <span>📊 廖家投資看板 v2.2</span>
+  <span>📊 廖家投資看板 v2.6</span>
   <span class="footer-sep">·</span>
   <span>自動更新於 <span id="footerTime">--</span></span>
   <span class="footer-sep">·</span>
   <span>📡 每 30 分鐘自動刷新</span>
+  <span class="footer-sep">·</span>
+  <span class="footer-live-indicator"><span class="footer-live-dot"></span><span id="marketSessionFooter"></span></span>
   <span class="footer-sep">·</span>
   <span>技術訊號僅供參考，不構成投資建議</span>
   <span class="footer-sep">·</span>
