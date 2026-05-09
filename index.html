@@ -3127,23 +3127,26 @@ function detectRelatedTickers(text) {
 async function loadLiveRSS() {
   try {
     const all = await Promise.allSettled(RSS_FEEDS.map(f => fetchRSS(f.url)));
-  const liveNews = all.filter(r => r.status === 'fulfilled' && r.value).flatMap(r => r.value);
-  if (liveNews.length === 0) return;
-  // Show LIVE badge
-  const badge = document.getElementById('rssLiveBadge');
-  if (badge) badge.style.display = 'inline';
-  // Merge with existing NEWS_DATA, avoid duplicates by title
-  const existingTitles = new Set(NEWS_DATA.map(n => n.title.slice(0, 30)));
-  const newItems = liveNews.filter(n => !existingTitles.has(n.title.slice(0, 30)));
-  newItems.slice(0, 15).forEach(n => NEWS_DATA.unshift(n));
-  if (typeof filterNews === 'function') filterNews();
-  updateNewsTicker();
-  updateNewsSummaryInOverview();
-  // Rebuild news-dependent UI components immediately
-  if (typeof buildOverviewStrip === 'function') buildOverviewStrip();
-  if (typeof buildPortfolioNewsDigest === 'function') buildPortfolioNewsDigest();
-  if (typeof buildNews === 'function') buildNews();
-  if (typeof buildMarketBreadth === 'function') buildMarketBreadth();
+    const liveNews = all.filter(r => r.status === 'fulfilled' && r.value).flatMap(r => r.value);
+    if (liveNews.length === 0) return;
+    // Show LIVE badge
+    const badge = document.getElementById('rssLiveBadge');
+    if (badge) badge.style.display = 'inline';
+    // Merge with existing NEWS_DATA, avoid duplicates by title
+    const existingTitles = new Set(NEWS_DATA.map(n => n.title.slice(0, 30)));
+    const newItems = liveNews.filter(n => !existingTitles.has(n.title.slice(0, 30)));
+    newItems.slice(0, 15).forEach(n => NEWS_DATA.unshift(n));
+    if (typeof filterNews === 'function') filterNews();
+    updateNewsTicker();
+    updateNewsSummaryInOverview();
+    // Rebuild news-dependent UI components immediately
+    if (typeof buildOverviewStrip === 'function') buildOverviewStrip();
+    if (typeof buildPortfolioNewsDigest === 'function') buildPortfolioNewsDigest();
+    if (typeof buildNews === 'function') buildNews();
+    if (typeof buildMarketBreadth === 'function') buildMarketBreadth();
+  } catch (e) {
+    console.warn('[loadLiveRSS] RSS load failed:', e);
+  }
 }
 
 function updateNewsSummaryInOverview() {
