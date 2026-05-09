@@ -8460,26 +8460,35 @@ async function loadData() {
     });
   }
 
-  // Fetch data.json (price + fundamentals + indices)
+  // ── Load live price data ────────────────────────────────────────
+  // data.js (loaded via <script> tag) already contains complete PRICE_DATA,
+  // FUNDAMENTALS, HISTORY_DATA, MARKET_INDICES. We MERGE live updates from
+  // data.json on top — but ONLY if data.json is at least as complete as what
+  // we already have (guarded by a minimum ticker-count threshold).
+  // This prevents a sparse / failed fetch from wiping out data.js content.
   try {
     const text = await fetchText('data.json');
     const d = JSON.parse(text);
-    if (d.prices) {
-      Object.assign(PRICE_DATA, d.prices);
+    const fetchedTickers = d.prices ? Object.keys(d.prices).length : 0;
+    const existingTickers = Object.keys(PRICE_DATA).length;
+
+    if (fetchedTickers > 0 && fetchedTickers >= existingTickers) {
+      // data.json is at least as complete — safe to merge
+      if (d.prices) Object.assign(PRICE_DATA, d.prices);
+      if (d.fundamentals) Object.assign(FUNDAMENTALS, d.fundamentals);
+      if (d.indices && d.indices.length > 0) {
+        MARKET_INDICES.splice(0, MARKET_INDICES.length, ...d.indices);
+      }
+      const updated = d.updated || new Date().toISOString();
+      const el = document.getElementById('lastUpdated');
+      if (el) el.textContent = updated;
+      console.log(`[loadData] Merged ${fetchedTickers} tickers from live data.json`);
+    } else {
+      console.warn(`[loadData] data.json has only ${fetchedTickers} tickers (data.js has ${existingTickers}) — keeping data.js content`);
     }
-    if (d.fundamentals) {
-      Object.assign(FUNDAMENTALS, d.fundamentals);
-    }
-    if (d.indices && d.indices.length > 0) {
-      MARKET_INDICES.splice(0, MARKET_INDICES.length, ...d.indices);
-    }
-    // Update the last-updated indicator if present
-    const updated = d.updated || new Date().toISOString();
-    const el = document.getElementById('lastUpdated');
-    if (el) el.textContent = updated;
   } catch (e) {
-    console.warn('[loadData] data.json load failed, trying inline FUNDAMENTALS:', e.message);
-    // Fallback: read FUNDAMENTALS from the JSON script tag
+    console.warn('[loadData] data.json fetch/parse failed, using data.js content:', e.message);
+    // Fallback: read FUNDAMENTALS from the inline script tag if available
     const fundEl = document.getElementById('fundamentals-data');
     if (fundEl) {
       try {
