@@ -1,5 +1,5 @@
 {
-  "updated": "2026-05-11T20:19:19.051408+08:00",
+  "updated": "2026-05-11T22:09:19.380832+08:00",
   "prices": {
     "0050": {
       "price": 96.9,
@@ -1708,23 +1708,23 @@
     {
       "sym": "S&P 500",
       "ticker": "^GSPC",
-      "price": 7398.93,
-      "change": 61.82,
-      "changePct": 0.84
+      "price": 7409.19,
+      "change": 10.26,
+      "changePct": 0.14
     },
     {
       "sym": "NASDAQ",
       "ticker": "^IXIC",
-      "price": 26247.08,
-      "change": 440.88,
-      "changePct": 1.71
+      "price": 26252.27,
+      "change": 5.19,
+      "changePct": 0.02
     },
     {
       "sym": "道　瓊",
       "ticker": "^DJI",
-      "price": 49609.16,
-      "change": 12.19,
-      "changePct": 0.02
+      "price": 49598.81,
+      "change": -10.35,
+      "changePct": -0.02
     },
     {
       "sym": "日　經",
