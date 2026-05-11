@@ -9832,7 +9832,7 @@ document.addEventListener('DOMContentLoaded', async () => { try { await loadData
 // and calling init(). Also logs diagnostic info to console for debugging.
 (function() {
   var attempts = 0;
-  var maxAttempts = 4;
+  var maxAttempts = 20;
   function doEval() {
     attempts++;
     // Check if init() is already available (main script loaded successfully)
@@ -9878,7 +9878,7 @@ document.addEventListener('DOMContentLoaded', async () => { try { await loadData
         return;
       }
       console.log('[init-recovery] MARKET_INDICES loaded (' + MARKET_INDICES.length + ' entries) but init() missing. Retrying in 800ms...');
-      setTimeout(doEval, 800);
+      setTimeout(doEval, 300);
     } else {
       // data.js didn't load — very broken
       console.error('[init-recovery] FATAL: data.js did not load (MARKET_INDICES missing). Try: force-refresh with Ctrl+Shift+R, or check browser console.');
