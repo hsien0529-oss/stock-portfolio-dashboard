@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>廖家投資看板 — NT$26,460,965 · 05/11</title>
+<title>廖家投資看板 — NT$26,347,767 · 05/11</title>
 <script>
 (function(){
   var timer=null;
@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="dns-prefetch" href="https://s.tradingview.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="data.js?v=202605111236&r=77500"></script>
+<script src="data.js?v=202605111916&r=26347"></script>
 <script src="trip_data.js"></script>
 <!-- TradingView widget: load eagerly via onload to avoid async-defer race conditions -->
 <script>
@@ -407,34 +407,31 @@ body{
 
 /* === TICKER STRIP === */
 .ticker-strip{
-  background:#000;border-bottom:1px solid var(--border);padding:0;
-  display:flex;overflow:hidden;height:36px;align-items:center;
+  background:#000;border-bottom:1px solid var(--border);
+  overflow:hidden;height:36px;align-items:center;
   box-shadow:0 1px 3px rgba(0,0,0,0.6);position:relative;
 }
-/* Smooth infinite ticker — wrapper clips overflow, content scrolls */
-.ticker-strip{position:relative;overflow:hidden}
+/* Smooth infinite ticker: ticker-wrapper clips ticker-inner via overflow:hidden */
 .ticker-strip::before,.ticker-strip::after{
   content:'';position:absolute;top:0;bottom:0;width:50px;z-index:2;pointer-events:none;
 }
 .ticker-strip::before{left:0;background:linear-gradient(90deg,#000,transparent)}
 .ticker-strip::after{right:0;background:linear-gradient(-90deg,#000,transparent)}
 .ticker-wrapper{
-  display:flex;width:max-content;
-  animation:ticker-scroll 50s linear infinite;
-  will-change:transform;
+  display:flex;overflow:hidden;height:100%;
 }
-/* Ticker inner content for scroll animation */
+/* Ticker inner scrolls — translateX(-50%) moves from start to half (end of doubled content) */
 .ticker-inner{
-  animation:ticker-scroll 40s linear infinite;
+  display:flex;white-space:nowrap;align-items:center;
+  animation:ticker-scroll 45s linear infinite;
   will-change:transform;
 }
-.ticker-inner:hover{animation-play-state:paused}
-.ticker-wrapper:hover{animation-play-state:paused}
+.ticker-inner:hover,.ticker-wrapper:hover{animation-play-state:paused}
 @keyframes ticker-scroll{
   0%{transform:translateX(0)}
   100%{transform:translateX(-50%)}
 }
-.ticker-strip:hover{animation-play-state:paused}
+.ticker-strip:hover .ticker-inner{animation-play-state:paused}
 .ticker-item{
   display:flex;align-items:center;gap:6px;padding:0 18px;
   border-right:1px solid var(--border);white-space:nowrap;font-size:0.78rem;
@@ -496,6 +493,22 @@ body{
 .market-badge.closed{background:var(--surface3);color:var(--text3);border:1px solid var(--border)}
 .market-badge.weekend{background:rgba(255,176,32,0.1);color:var(--amber);border:1px solid rgba(255,176,32,0.2)}
 .navbar-market{display:flex;align-items:center;gap:6px}
+/* Navbar market index chips */
+.navbar-market-indices{display:flex;align-items:center;gap:4px;overflow:hidden}
+.index-chip{
+  display:flex;flex-direction:column;align-items:center;
+  padding:2px 8px;border-radius:6px;
+  background:var(--surface2);border:1px solid var(--border);
+  font-size:0.6rem;min-width:50px;text-align:center;
+  flex-shrink:0;cursor:default;
+}
+.index-chip:hover{background:var(--surface3);border-color:var(--border2)}
+.index-label{font-size:0.52rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em;white-space:nowrap}
+.index-price{font-family:var(--font-mono);font-size:0.72rem;font-weight:700;color:var(--text);white-space:nowrap;line-height:1.2}
+.index-chg{font-family:var(--font-mono);font-size:0.6rem;font-weight:600;margin-top:1px}
+.index-chg.up{color:var(--green)}.index-chg.down{color:var(--red)}.index-chg.neu{color:var(--text3)}
+
+@media(max-width:1100px){.navbar-market-indices{display:none!important}}
 
 /* === STATUS BANNER === */
 .status-banner{
@@ -2100,7 +2113,7 @@ input[type=file]{display:none}
     <button class="refresh-btn" onclick="refreshData()" title="重新整理 (R)" id="refreshBtn"><span id="refreshSpinner" class="spinner" style="display:none"></span><span id="refreshText">🔄 更新</span><span id="refreshCountdown" style="font-size:0.6rem;color:var(--text3);margin-left:4px"></span></button>
     <div class="navbar-stat">
       <div class="navbar-stat-label">總市值</div>
-      <div class="navbar-stat-value" id="totalValue">NT$26,460,965</div>
+      <div class="navbar-stat-value" id="totalValue">NT$26,200,445</div>
       <div class="navbar-stat-change" id="totalChange">--</div>
     </div>
     <div class="navbar-market">
@@ -9630,7 +9643,6 @@ async function init() {
   buildSectorRiskBar();
   buildPortfolioDividendProjection();
   buildPEDistribution();
-  buildPortfolioNewsDigest();
   updateNewsTabBadges();
   // Taiwan news feed
   setTimeout(() => { loadTaiwanStockNews(); }, 1500);
@@ -9730,8 +9742,8 @@ window.addEventListener('scroll',()=>{
 });
 document.addEventListener('DOMContentLoaded', async () => { try { await loadData(); if (typeof init === 'function') init(); else console.warn('[init] not found, checking via eval...'); } catch(e) { console.error('[init] error:', e); } });
 
-// CRITICAL FALLBACK for file:// mode: init() may silently fail due to HTML parser issues
-// This ensures init() is always called after a brief delay
+// CRITICAL FALLBACK: init() may not be defined when the main script fails to parse
+// completely due to CDN blocking or slow networks. Keep retrying until it succeeds.
 (function() {
   let attempts = 0;
   const tryInit = () => {
@@ -9739,7 +9751,8 @@ document.addEventListener('DOMContentLoaded', async () => { try { await loadData
     if (typeof init === 'function') {
       console.log('[init-fallback] init() found after', attempts, 'attempt(s)');
       try { init(); } catch(e) { console.error('[init-fallback] error:', e); }
-    } else if (attempts < 20) {
+    } else if (attempts < 60) {
+      // Retry up to 60 times (~15 seconds) — enough for slow CDN/GitHub Pages
       setTimeout(tryInit, 250);
     } else {
       console.warn('[init-fallback] Giving up after', attempts, 'attempts');
@@ -9761,7 +9774,7 @@ document.addEventListener('DOMContentLoaded', async () => { try { await loadData
   }
 })();
 
-// CRITICAL FIX for v2.13.0: Main script block may silently fail to parse in file:// mode
+// CRITICAL FIX for v2.14.0: Main script block may silently fail to parse in file:// mode
 // When init() is undefined but PRICE_DATA is loaded, re-evaluate the main inline script
 (function initFix() {
   function doEval() {
@@ -9790,7 +9803,7 @@ document.addEventListener('DOMContentLoaded', async () => { try { await loadData
 
 <!-- FOOTER -->
 <footer class="dashboard-footer">
-  <span>📊 廖家投資看板 v2.13.0</span>
+  <span>📊 廖家投資看板 v2.14.0</span>
   <span class="footer-sep">·</span>
   <span>自動更新於 <span id="footerTime">--</span></span>
   <span class="footer-sep">·</span>
@@ -9812,11 +9825,75 @@ document.addEventListener('DOMContentLoaded', async () => { try { await loadData
   <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;color:var(--text3);cursor:pointer;padding:0;font-size:0.65rem;line-height:1" title="關閉提示">✕</button>
 </div>
 <script>
+// === ROBUST INIT RECOVERY IIFE ===
+// The main inline JS (~9,600 lines) may silently fail in file:// mode due to
+// HTML parsing edge cases (e.g. <\/script> in string literals). This IIFE ensures
+// init() runs regardless — by finding the broken script, re-evaluating it,
+// and calling init(). Also logs diagnostic info to console for debugging.
+(function() {
+  var attempts = 0;
+  var maxAttempts = 4;
+  function doEval() {
+    attempts++;
+    // Check if init() is already available (main script loaded successfully)
+    if (typeof init === 'function') {
+      console.log('[init-recovery] init() already available, no fix needed (attempt ' + attempts + ')');
+      try { init(); } catch(e) { console.error('[init-recovery] init() error:', e); }
+      return;
+    }
+    // Main script may have been partially parsed (data.js loaded but init() missing)
+    // Try to recover by finding the broken script block and eval'ing its content
+    var scripts = document.querySelectorAll('script');
+    for (var i = 0; i < scripts.length; i++) {
+      var s = scripts[i];
+      if (s.src) continue; // skip external scripts
+      var txt = s.textContent || '';
+      // Script is broken if it has data.js globals but NOT init()
+      var hasData = (typeof MARKET_INDICES !== 'undefined' && MARKET_INDICES && MARKET_INDICES.length > 0);
+      var hasInit = (typeof init === 'function');
+      if (hasData && !hasInit && txt.includes('async function init()')) {
+        // Script was truncated — re-evaluate full content
+        try {
+          // Backup existing MARKET_INDICES so eval doesn't overwrite
+          var _bakMI = JSON.parse(JSON.stringify(window.MARKET_INDICES));
+          eval(txt);
+          // Restore in case eval overwrote
+          window.MARKET_INDICES = _bakMI;
+        } catch(e) {
+          console.error('[init-recovery] eval error (attempt ' + attempts + '):', e);
+        }
+        if (typeof init === 'function') {
+          console.log('[init-recovery] init() recovered! (attempt ' + attempts + ')');
+          try { init(); } catch(e) { console.error('[init-recovery] init() error:', e); }
+          return;
+        }
+      }
+      break; // only check first non-external script
+    }
+    // Fallback: if MARKET_INDICES loaded but init missing, load from data.js inline
+    if (typeof MARKET_INDICES !== 'undefined' && MARKET_INDICES && MARKET_INDICES.length > 0) {
+      if (attempts >= maxAttempts) {
+        console.warn('[init-recovery] max attempts reached. MARKET_INDICES loaded: ' + MARKET_INDICES.length + ' stocks. init() still missing — dashboard may be partially broken. Reloading page...');
+        // Don't auto-reload — user may be reading
+        return;
+      }
+      console.log('[init-recovery] MARKET_INDICES loaded (' + MARKET_INDICES.length + ' entries) but init() missing. Retrying in 800ms...');
+      setTimeout(doEval, 800);
+    } else {
+      // data.js didn't load — very broken
+      console.error('[init-recovery] FATAL: data.js did not load (MARKET_INDICES missing). Try: force-refresh with Ctrl+Shift+R, or check browser console.');
+    }
+  }
+  // Give data.js time to load first
+  setTimeout(doEval, 300);
+})();
 // Fade out hint bar after 15 seconds
-setTimeout(() => {
-  const bar = document.getElementById('kbdHintBar');
-  if (bar) { bar.style.opacity = '0'; setTimeout(() => { if(bar) bar.style.display='none'; }, 1000); }
-}, 15000);
+(function() {
+  setTimeout(function() {
+    var bar = document.getElementById('kbdHintBar');
+    if (bar) { bar.style.opacity = '0'; setTimeout(function() { if(bar) bar.style.display='none'; }, 1000); }
+  }, 15000);
+})();
 </script>
 
 <!-- SCROLL TO TOP -->
