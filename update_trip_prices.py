@@ -33,16 +33,38 @@ def load_data():
 
     content = open(TRIP_FILE, encoding="utf-8").read()
 
-    # 找 const TRIP_DATA = { ... };
-    m = re.search(r"const TRIP_DATA\s*=\s*(\{.*?\});?\s*$", content, re.DOTALL)
-    if not m:
-        print("⚠ 無法解析 TRIP_DATA，請檢查格式")
+    # 移除真正的 // 行註釋（行首的 //，不是 URL 裡的 //）
+    clean = re.sub(r"^\s*//.*$", "", content, flags=re.MULTILINE)
+
+    # 用括號深度法找出最外層 { ... }
+    start = clean.find("const TRIP_DATA")
+    if start == -1:
+        print("⚠ 找不到 const TRIP_DATA")
+        return None
+
+    brace_start = clean.find("{", start)
+    if brace_start == -1:
+        print("⚠ 找不到開括號")
+        return None
+
+    depth = 0
+    i = brace_start
+    while i < len(clean):
+        c = clean[i]
+        if c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+            if depth == 0:
+                json_str = clean[brace_start + 1:i]
+                break
+        i += 1
+    else:
+        print("⚠ 找不到配對的閉括號")
         return None
 
     try:
-        # 先去除 // 註釋行和行內註釋，再解析
-        json_text = re.sub(r"//.*$", "", m.group(1), flags=re.MULTILINE)
-        return json.loads(json_text)
+        return json.loads("{" + json_str + "}")
     except json.JSONDecodeError as e:
         print(f"⚠ JSON 解析失敗: {e}")
         return None

@@ -120,11 +120,14 @@ def fetch_prices(tickers: list[str], log: logging.Logger) -> dict:
                 log.warning(f"  ⚠ {code}: 單日變動 {pct_change:.1f}% 過大，可能是錯誤資料，跳過")
                 continue
 
+            # Store last 60 closes for client-side RSI computation
+            hist_closes = series.iloc[-61:].round(4).tolist()
             prices[code] = {
                 "price":      price,
                 "prev_close": prev_close,
                 "year_high":  round(float(series.max()), 2),
                 "year_low":   round(float(series.min()), 2),
+                "_hist":      hist_closes,
             }
             log.info(f"  ✔ {code:8s}  現價 {price:>10.2f}  漲跌 {price - prev_close:+.2f}")
         except Exception as e:
@@ -283,6 +286,7 @@ def update_data_js(log: logging.Logger):
             "year_high": year_high,
             "year_low": year_low,
             "prev_close": v.get("prev_close"),
+            "_hist": v.get("_hist"),
         }
         lines.append(f'  "{code}":{json.dumps(entry)},')
     lines.append("}")

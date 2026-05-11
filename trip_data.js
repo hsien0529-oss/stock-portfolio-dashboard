@@ -4,21 +4,29 @@
 // ================================================================
 
 const TRIP_DATA = {
-    "updated": "2026-05-08",
+    "updated": "2026-05-10",
     "flights": {
     "TPE_CTS": {
     "route": "TPE → CTS",
     "dep": "2027-01-28",
     "ret": "2027-02-04",
-    "airline": "長榮",
-    "bestPrice": 22800.0,
-    "bestPriceDate": "2026-05-08",
-    "bestPriceUrl": "https://skyscanner.com",
-    "avgPrice": 22800,
+    "airline": "泰國亞洲航空",
+    "bestPrice": 9256.0,
+    "bestPriceDate": "2026-05-10",
+    "bestPriceUrl": "https://www.google.com/travel/flights?q=TPE+to+CTS&hl=zh-TW&curr=TWD&dt=2027-01-28&dti=8",
+    "avgPrice": 9256,
     "records": [
     {
-    "date": "2026-05-08",
-    "price": 22800.0
+    "date": "2026-05-10",
+    "price": 9256.0
+    },
+    {
+    "date": "2026-05-10",
+    "price": 9256.0
+    },
+    {
+    "date": "2026-05-10",
+    "price": 9256.0
     }
     ]
     },
@@ -26,23 +34,49 @@ const TRIP_DATA = {
     "route": "TPE → KIX",
     "dep": "2027-02-14",
     "ret": "2027-02-17",
-    "airline": "虎航",
-    "bestPrice": null,
-    "bestPriceDate": null,
-    "bestPriceUrl": "",
-    "avgPrice": null,
-    "records": []
+    "airline": "捷星日本航空",
+    "bestPrice": 6405.0,
+    "bestPriceDate": "2026-05-10",
+    "bestPriceUrl": "https://www.google.com/travel/flights?q=TPE+to+KIX&hl=zh-TW&curr=TWD&dt=2027-02-14&dti=4",
+    "avgPrice": 6405,
+    "records": [
+    {
+    "date": "2026-05-10",
+    "price": 6405.0
+    },
+    {
+    "date": "2026-05-10",
+    "price": 6405.0
+    },
+    {
+    "date": "2026-05-10",
+    "price": 6405.0
+    }
+    ]
     },
     "TPE_HND": {
     "route": "TPE → HND",
     "dep": "2027-01-29",
     "ret": "2027-02-04",
-    "airline": "國泰",
-    "bestPrice": null,
-    "bestPriceDate": null,
-    "bestPriceUrl": "",
-    "avgPrice": null,
-    "records": []
+    "airline": "樂桃航空",
+    "bestPrice": 7552.0,
+    "bestPriceDate": "2026-05-10",
+    "bestPriceUrl": "https://www.google.com/travel/flights?q=TPE+to+HND&hl=zh-TW&curr=TWD&dt=2027-01-29&dti=7",
+    "avgPrice": 7552,
+    "records": [
+    {
+    "date": "2026-05-10",
+    "price": 7552.0
+    },
+    {
+    "date": "2026-05-10",
+    "price": 7552.0
+    },
+    {
+    "date": "2026-05-10",
+    "price": 7552.0
+    }
+    ]
     }
     },
     "hotels": {

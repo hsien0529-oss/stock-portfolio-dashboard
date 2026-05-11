@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>廖家投資看板 — NT$26,460,965 · 05/11</title>
+<title>廖家投資看板 — NT$26,313,269 · 2026-05-10</title>
+<!-- Dynamic title updater -->
 <script>
 (function(){
   var timer=null;
   function updateTitle(){
-    var t=document.getElementById('totalValue');
-    var today=new Date().toLocaleDateString('zh-TW',{timeZone:'Asia/Taipei',month:'2-digit',day:'2-digit'});
-    if(t){document.title='廖家投資看板 — '+t.textContent+' · '+today;}
+    var t=document.getElementById('qsTotal');
+    if(t) document.title='廖家投資看板 — NT$'+t.textContent.replace(/,/g,'')+' · 2026-05-10';
   }
   timer=setInterval(updateTitle,30000);
   document.addEventListener('DOMContentLoaded',updateTitle);
@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="dns-prefetch" href="https://s.tradingview.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="data.js?v=202605111236&r=77500"></script>
+<script src="data.js?v=202605112000"></script>
 <script src="trip_data.js"></script>
 <!-- TradingView widget: load eagerly via onload to avoid async-defer race conditions -->
 <script>
@@ -1476,6 +1476,15 @@ input[type=file]{display:none}
   display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;
 }
 .footer-sep{color:var(--border2)}
+.scroll-top-btn{
+  position:fixed;bottom:20px;right:20px;width:40px;height:40px;
+  background:var(--surface2);border:1px solid var(--border2);
+  color:var(--text2);border-radius:50%;cursor:pointer;font-size:1.2rem;
+  display:none;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-md);transition:all 0.2s;z-index:999;
+}
+.scroll-top-btn:hover{background:var(--surface3);color:var(--text);transform:scale(1.1)}
+.scroll-top-btn.visible{display:flex}
 
 /* === NEW COMPONENTS === */
 #marketPulseBadge{flex-shrink:0}
@@ -2100,8 +2109,8 @@ input[type=file]{display:none}
     <button class="refresh-btn" onclick="refreshData()" title="重新整理 (R)" id="refreshBtn"><span id="refreshSpinner" class="spinner" style="display:none"></span><span id="refreshText">🔄 更新</span><span id="refreshCountdown" style="font-size:0.6rem;color:var(--text3);margin-left:4px"></span></button>
     <div class="navbar-stat">
       <div class="navbar-stat-label">總市值</div>
-      <div class="navbar-stat-value" id="totalValue">NT$26,460,965</div>
-      <div class="navbar-stat-change" id="totalChange">--</div>
+      <div class="navbar-stat-value" id="totalValue">NT$26,313,269</div>
+      <div class="navbar-stat-change" id="totalChange">▲ +1.35%</div>
     </div>
     <div class="navbar-market">
       <div class="live-dot"></div>
@@ -2158,20 +2167,20 @@ input[type=file]{display:none}
   </div>
   <div style="display:flex;align-items:center;gap:12px;margin-left:auto;flex-wrap:wrap">
     <div style="display:flex;align-items:center;gap:5px">
-      <span style="color:var(--green);font-weight:700" id="gainersCount">13</span>
+      <span style="color:var(--green);font-weight:700" id="gainersCount">15</span>
       <span style="color:var(--text3)">漲</span>
     </div>
     <div style="width:1px;height:14px;background:var(--border)"></div>
     <div style="display:flex;align-items:center;gap:5px">
-      <span style="color:var(--red);font-weight:700" id="losersCount">10</span>
+      <span style="color:var(--red);font-weight:700" id="losersCount">9</span>
       <span style="color:var(--text3)">跌</span>
     </div>
   </div>
 
 <div class="quick-summary-strip" id="quickSummaryStrip">
-  <div class="qs-item"><span class="qs-label">總市值</span><span class="qs-value" id="qsTotal">NT$2646.1萬</span></div>
+  <div class="qs-item"><span class="qs-label">總市值</span><span class="qs-value" id="qsTotal">NT$2631.3萬</span></div>
   <div class="qs-divider"></div>
-  <div class="qs-item"><span class="qs-label">日報酬</span><span class="qs-value" id="qsDay">+0.12%</span></div>
+  <div class="qs-item"><span class="qs-label">日報酬</span><span class="qs-value down" id="qsDay">-0.32%</span></div>
   <div class="qs-divider"></div>
   <div class="qs-item"><span class="qs-label">總報酬</span><span class="qs-value up" id="qsGain">+37.7%</span></div>
   <div class="qs-divider"></div>
@@ -2181,9 +2190,9 @@ input[type=file]{display:none}
   <div class="qs-divider"></div>
   <div class="qs-item"><span class="qs-label">最大產業</span><span class="qs-value" id="qsTopSectorA">金融</span></div>
   <div class="qs-divider"></div>
-    <div class="qs-item"><span class="qs-label">台積電</span><span class="qs-value down" id="qsTSMCA">2255.0 ▼1.53%</span></div>
+    <div class="qs-item"><span class="qs-label">台積電</span><span class="qs-value down" id="qsTSMCA">2290.0 ▼0.87%</span></div>
   <div class="qs-divider"></div>
-  <div class="qs-item"><span class="qs-label">加權</span><span class="qs-value up" id="qsTWIIA">41989 ▲0.92%</span></div>
+  <div class="qs-item"><span class="qs-label">加權</span><span class="qs-value down" id="qsTWIIA">23400 ▼0.96%</span></div>
     <div class="qs-divider"></div>
     <div class="qs-item" id="lastTradingDayNote" style="font-size:0.6rem;color:var(--text3);min-width:max-content;white-space:nowrap"></div>
     <div class="qs-divider"></div>
@@ -2315,10 +2324,6 @@ input[type=file]{display:none}
           </div>
         </div>
         <div style="text-align:center;flex-shrink:0">
-          <div style="font-size:0.6rem;color:var(--text3)">YTD報酬</div>
-          <div style="font-size:0.95rem;font-weight:700;font-family:var(--font-mono)" id="gaugeYTD">--</div>
-        </div>
-        <div style="text-align:center;flex-shrink:0">
           <div style="font-size:0.6rem;color:var(--text3)">組合情緒</div>
           <div style="font-size:1.2rem;font-weight:700" id="gaugeMood">--</div>
         </div>
@@ -2331,31 +2336,30 @@ input[type=file]{display:none}
         <div style="flex:1;min-width:180px">
           <div style="font-size:0.62rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">📈 今日強勢股</div>
           <div id="overviewTopMovers" style="display:flex;flex-direction:column;gap:3px">
-            <!-- Dynamically populated by buildTodayGlance() -->
+            <div class="holding-row" style="cursor:pointer" onclick="jumpToChart('2881')"><span style="font-weight:700;font-family:var(--font-mono);color:var(--green);min-width:42px">2881</span><span style="font-size:0.72rem;color:var(--text2);flex:1">富邦金</span><span style="font-family:var(--font-mono);color:var(--green)">▲+2.33%</span></div>
+            <div class="holding-row" style="cursor:pointer" onclick="jumpToChart('2886')"><span style="font-weight:700;font-family:var(--font-mono);color:var(--green);min-width:42px">2886</span><span style="font-size:0.72rem;color:var(--text2);flex:1">兆豐金</span><span style="font-family:var(--font-mono);color:var(--green)">▲+1.39%</span></div>
+            <div class="holding-row" style="cursor:pointer" onclick="jumpToChart('2882')"><span style="font-weight:700;font-family:var(--font-mono);color:var(--green);min-width:42px">2882</span><span style="font-size:0.72rem;color:var(--text2);flex:1">國泰金</span><span style="font-family:var(--font-mono);color:var(--green)">▲+1.27%</span></div>
           </div>
         </div>
         <div style="width:1px;background:var(--border)"></div>
         <div style="flex:1;min-width:180px">
           <div style="font-size:0.62rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">📰 最新頭條</div>
           <div id="overviewLatestNews" style="display:flex;flex-direction:column;gap:4px">
-            <div class="news-compact" id="ovNews1"><span class="news-compact-title" style="color:var(--text3)">📡 載入台股快訊中...</span></div>
-            <div class="news-compact" id="ovNews2"><span class="news-compact-title" style="color:var(--text3)">　</span></div>
-            <div class="news-compact" id="ovNews3"><span class="news-compact-title" style="color:var(--text3)">　</span></div>
+            <div class="news-compact"><span class="news-compact-title">台積電法說會釋出正面展望</span><span class="news-compact-time" style="color:var(--green)">利多</span></div>
+            <div class="news-compact"><span class="news-compact-title">AI 需求持續強勁帶動半導體</span><span class="news-compact-time" style="color:var(--blue)">產業</span></div>
+            <div class="news-compact"><span class="news-compact-title">金融股殖利率具吸引力</span><span class="news-compact-time" style="color:var(--green)">利多</span></div>
           </div>
         </div>
         <div style="width:1px;background:var(--border)"></div>
         <div style="flex:1;min-width:160px">
           <div style="font-size:0.62rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">📉 今日弱勢股</div>
           <div id="overviewBottomMovers" style="display:flex;flex-direction:column;gap:3px">
-            <!-- Dynamically populated by buildTodayGlance() -->
+            <div class="holding-row" style="cursor:pointer" onclick="jumpToChart('2308')"><span style="font-weight:700;font-family:var(--font-mono);color:var(--red);min-width:42px">2308</span><span style="font-size:0.72rem;color:var(--text2);flex:1">台達電</span><span style="font-family:var(--font-mono);color:var(--red)">▼-3.51%</span></div>
+            <div class="holding-row" style="cursor:pointer" onclick="jumpToChart('1301')"><span style="font-weight:700;font-family:var(--font-mono);color:var(--red);min-width:42px">1301</span><span style="font-size:0.72rem;color:var(--text2);flex:1">台塑</span><span style="font-family:var(--font-mono);color:var(--red)">▼-2.02%</span></div>
+            <div class="holding-row" style="cursor:pointer" onclick="jumpToChart('2317')"><span style="font-weight:700;font-family:var(--font-mono);color:var(--red);min-width:42px">2317</span><span style="font-size:0.72rem;color:var(--text2);flex:1">鴻海</span><span style="font-family:var(--font-mono);color:var(--red)">▼-1.38%</span></div>
           </div>
         </div>
       </div>
-    </div>
-
-    <!-- Portfolio Quick Stats Strip (YTD, win/loss, benchmark) -->
-    <div id="overviewPortfolioStats" class="card mb8" style="padding:7px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:linear-gradient(135deg,var(--surface2),var(--bg))">
-      <!-- Populated by buildOverviewStrip() -->
     </div>
 
     <!-- Portfolio Quick Insight Card -->
@@ -2375,7 +2379,7 @@ input[type=file]{display:none}
     <div id="portfolioVsBench" class="card mb8" style="padding:8px 14px">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
         <div style="font-size:0.65rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em">📊 組合績效 vs 標竿</div>
-        <span style="font-size:0.62rem;color:var(--text3)" id="pvDateLabel">--</span>
+        <span style="font-size:0.62rem;color:var(--text3)">2026-05-10</span>
       </div>
       <div class="portfolio-vs-benchmark"></div>
     </div>
@@ -3107,19 +3111,6 @@ input[type=file]{display:none}
 </div>
 
 <script>
-// START marker for main script
-console.log('[MAIN SCRIPT] Starting at line 3110...');
-// GLOBAL ERROR HANDLER
-window.__mainScriptErrors = [];
-window.onerror = function(msg, src, line, col, err) {
-  window.__mainScriptErrors.push({ msg, line, col, err: err ? err.message : null });
-  console.error('[MAIN SCRIPT ERROR at line', line + ']', msg, err ? err.message : '');
-  return false;
-};
-window.addEventListener('unhandledrejection', function(e) {
-  window.__mainScriptErrors.push({ type: 'unhandledrejection', msg: String(e.reason) });
-  console.error('[MAIN SCRIPT unhandled rejection]', e.reason);
-});
 // ============================================================
 // PORTFOLIO DATA — 家庭持股明細
 // ============================================================
@@ -3821,9 +3812,7 @@ function updateHeader(){
   if(chg<0)chgEl.classList.add('down','glow');else chgEl.classList.remove('down','glow');
 
   const lu=document.getElementById('lastUpdated');
-  const now=new Date();
-  lu.textContent=now.toLocaleString('zh-TW',{timeZone:'Asia/Taipei',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  lu.dataset.ts=now.toISOString(); // Store timestamp for relative time
+  lu.textContent=new Date().toLocaleString('zh-TW',{timeZone:'Asia/Taipei',month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
 
   // Update browser tab title date
   const titleEl=document.getElementById('docTitleDate');
@@ -3860,7 +3849,7 @@ function updateHeader(){
       if(pe)pe.textContent=def.fmt(idx.price);
       if(ce){
         const up=idx.changePct>=0;
-        ce.textContent=(up?'▲ ':'▼ ')+Math.abs(idx.changePct).toFixed(2)+'%';
+        ce.textContent=(up?'+':'')+idx.changePct.toFixed(2)+'%';
         ce.className='index-chg '+(up?'up':'down');
       }
     }
@@ -4273,149 +4262,59 @@ function buildDailyPLHistory(){
 // OVERVIEW STRIP: Top Movers + Latest News
 // ============================================================
 function buildOverviewStrip(){
-  // ── Helpers ────────────────────────────────────────────────────────
-  function calcRSI14(ticker) {
-    try {
-      const p = PRICE_DATA[ticker];
-      if (!p || !p._hist) return null;
-      const h = p._hist;
-      if (h.length < 15) return null;
-      const closes = h.map(r => typeof r === 'object' ? (r.Close || r.close) : r);
-      const last = closes.slice(-14);
-      let gain = 0, loss = 0;
-      for (let i = 1; i < last.length; i++) {
-        const d = last[i] - last[i-1];
-        if (d > 0) gain += d; else loss -= d;
-      }
-      const avgGain = gain / 14, avgLoss = loss / 14;
-      if (avgLoss === 0) return 100;
-      const rs = avgGain / avgLoss;
-      return Math.round((100 - 100 / (1 + rs)) * 10) / 10;
-    } catch(e) { return null; }
-  }
-
-  // ── Precompute RSI for all holdings ──────────────────────────────
-  const rsiCache = {};
-  Object.keys(PRICE_DATA).forEach(t => { rsiCache[t] = calcRSI14(t); });
-
-  function rsiLabel(rsi) {
-    if (rsi === null) return '';
-    if (rsi >= 70) return '<span style="font-size:0.55rem;color:var(--red);margin-left:3px">🟥</span>';
-    if (rsi <= 30) return '<span style="font-size:0.55rem;color:var(--green);margin-left:3px">🟩</span>';
-    if (rsi >= 60) return '<span style="font-size:0.55rem;color:var(--amber);margin-left:3px">🟨</span>';
-    return '';
-  }
-
-  // ── Precompute YTD return from HISTORY_DATA ──────────────────────
-  const dates = Object.keys(HISTORY_DATA).sort();
-  const ytdStartMV = dates.length > 0 ? HISTORY_DATA[dates[0]]?.Total || 0 : 0;
-  const latestMV = dates.length > 0 ? HISTORY_DATA[dates[dates.length-1]]?.Total || 0 : 0;
-  const ytdPct = ytdStartMV > 0 ? ((latestMV - ytdStartMV) / ytdStartMV * 100) : 0;
-
-  // ── Precompute win/loss count ─────────────────────────────────────
-  const allHoldings = getAllHoldings();
-  let winCount = 0, lossCount = 0;
-  Object.entries(allHoldings).forEach(([t, d]) => {
-    const p = getPrice(t);
-    if (!p.price) return;
-    if (p.price > p.prev_close) winCount++;
-    else if (p.price < p.prev_close) lossCount++;
-  });
-
-  // ── 52W position helper ───────────────────────────────────────────
-  function w52Badge(code) {
-    const p = PRICE_DATA[code];
-    if (!p) return '';
-    const { price, year_high, year_low } = p;
-    if (!price || !year_high || !year_low) return '';
-    const range = year_high - year_low;
-    if (range <= 0) return '';
-    const pos = (price - year_low) / range; // 0=low, 1=high
-    if (pos >= 0.95) return '<span style="font-size:0.55rem;color:var(--amber);margin-left:2px" title="近52週高點">✨</span>';
-    if (pos <= 0.05) return '<span style="font-size:0.55rem;color:var(--blue);margin-left:2px" title="近52週低點">💎</span>';
-    return '';
-  }
-
-  const items = Object.entries(allHoldings)
-    .map(([t, d]) => {
-      const p = getPrice(t);
-      const chgPct = p.prev_close ? ((p.price - p.prev_close) / p.prev_close * 100) : 0;
-      return { ticker: t, name: d.name, chgPct, price: p.price, prevClose: p.prev_close };
+  // Top 3 gainers
+  const allHoldings=getAllHoldings();
+  const items=Object.entries(allHoldings)
+    .map(([t,d])=>{
+      const p=getPrice(t);
+      const chgPct=p.prev_close?((p.price-p.prev_close)/p.prev_close*100):0;
+      return{ticker:t,name:d.name,chgPct,price:p.price,prevClose:p.prev_close};
     })
-    .filter(d => d.price > 0)
-    .sort((a, b) => b.chgPct - a.chgPct);
+    .filter(d=>d.price>0)
+    .sort((a,b)=>b.chgPct-a.chgPct);
 
-  const topEl = document.getElementById('overviewTopMovers');
-  const botEl = document.getElementById('overviewBottomMovers');
-  const newsEl = document.getElementById('overviewLatestNews');
+  const topEl=document.getElementById('overviewTopMovers');
+  const botEl=document.getElementById('overviewBottomMovers');
+  const newsEl=document.getElementById('overviewLatestNews');
 
-  // ── Top movers: gainers ───────────────────────────────────────────
-  if (topEl) {
-    topEl.innerHTML = items.slice(0, 3).map(d => {
-      const c = d.chgPct >= 0 ? 'var(--green)' : 'var(--red)';
-      const s = d.chgPct >= 0 ? '+' : '';
-      const rsi = rsiCache[d.ticker];
-      const badge = w52Badge(d.ticker);
+  if(topEl){
+    topEl.innerHTML=items.slice(0,3).map(d=>{
+      const c=d.chgPct>=0?'var(--green)':'var(--red)';
+      const s=d.chgPct>=0?'+':'';
       return `<div style="font-size:0.65rem;display:flex;justify-content:space-between;align-items:center;padding:2px 0">
-        <span style="color:var(--text2);max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${d.name}">${d.name}</span>
-        <span style="font-family:var(--font-mono);font-weight:700;color:${c}">${s}${d.chgPct.toFixed(1)}%${rsiLabel(rsi)}${badge}</span>
+        <span style="color:var(--text2);max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.name}</span>
+        <span style="font-family:var(--font-mono);font-weight:700;color:${c}">${s}${d.chgPct.toFixed(1)}%</span>
       </div>`;
     }).join('');
   }
-
-  // ── Bottom movers: losers ─────────────────────────────────────────
-  if (botEl) {
-    botEl.innerHTML = [...items].reverse().slice(0, 3).map(d => {
-      const c = d.chgPct >= 0 ? 'var(--green)' : 'var(--red)';
-      const s = d.chgPct >= 0 ? '+' : '';
-      const rsi = rsiCache[d.ticker];
-      const badge = w52Badge(d.ticker);
+  if(botEl){
+    botEl.innerHTML=[...items].reverse().slice(0,3).map(d=>{
+      const c=d.chgPct>=0?'var(--green)':'var(--red)';
+      const s=d.chgPct>=0?'+':'';
       return `<div style="font-size:0.65rem;display:flex;justify-content:space-between;align-items:center;padding:2px 0">
-        <span style="color:var(--text2);max-width:60px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${d.name}">${d.name}</span>
-        <span style="font-family:var(--font-mono);font-weight:700;color:${c}">${s}${d.chgPct.toFixed(1)}%${rsiLabel(rsi)}${badge}</span>
+        <span style="color:var(--text2);max-width:70px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.name}</span>
+        <span style="font-family:var(--font-mono);font-weight:700;color:${c}">${s}${d.chgPct.toFixed(1)}%</span>
       </div>`;
     }).join('');
   }
-
-  // ── Portfolio stats strip ─────────────────────────────────────────
-  const statsEl = document.getElementById('overviewPortfolioStats');
-  if (statsEl) {
-    const twii = MARKET_INDICES.find(i => i.ticker === '^TWII') || {};
-    const ytdColor = ytdPct >= 0 ? 'var(--green)' : 'var(--red)';
-    const ytdIcon = ytdPct >= 0 ? '▲' : '▼';
-    statsEl.innerHTML = `
-      <span style="font-size:0.6rem;color:var(--text3)">YTD</span>
-      <span style="font-family:var(--font-mono);font-size:0.7rem;font-weight:700;color:${ytdColor}">${ytdIcon} ${Math.abs(ytdPct).toFixed(1)}%</span>
-      <span style="font-size:0.7rem;color:var(--border2)">|</span>
-      <span style="font-size:0.6rem;color:var(--text3)">勝/敗</span>
-      <span style="font-family:var(--font-mono);font-size:0.7rem;font-weight:700;color:var(--green)">${winCount}↑</span>
-      <span style="font-family:var(--font-mono);font-size:0.7rem;font-weight:700;color:var(--text3)">/</span>
-      <span style="font-family:var(--font-mono);font-size:0.7rem;font-weight:700;color:var(--red)">${lossCount}↓</span>
-      <span style="font-size:0.7rem;color:var(--border2)">|</span>
-      <span style="font-size:0.6rem;color:var(--text3)">加權</span>
-      <span style="font-family:var(--font-mono);font-size:0.7rem;font-weight:700;color:${(twii.changePct||0)>=0?'var(--green)':'var(--red)'}">${(twii.changePct||0)>=0?'▲':'▼'} ${Math.abs(twii.changePct||0).toFixed(2)}%</span>
-    `;
-  }
-
-  // ── News section ──────────────────────────────────────────────────
-  if (newsEl) {
+  if(newsEl){
+    // Use live RSS news data when available, fall back to portfolio-relevant summaries
     const liveNews = NEWS_DATA.slice(0, 3).filter(n => n && n.title);
     if (liveNews.length > 0) {
       newsEl.innerHTML = liveNews.map(n => {
         const sentIcon = n.sentiment === 'pos' ? '🟢' : n.sentiment === 'neg' ? '🔴' : '⚪';
-        const tlen = n.title.length > 45 ? n.title.substring(0, 45) + '…' : n.title;
         return `<div style="font-size:0.6rem;line-height:1.35;padding:2px 0;display:flex;align-items:flex-start;gap:4px">
           <span style="color:var(--text3);flex-shrink:0">${sentIcon}</span>
-          <span style="color:var(--text2);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical" title="${n.title}">${tlen}</span>
+          <span style="color:var(--text2);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical" title="${n.title}">${n.title.length > 40 ? n.title.substring(0, 40) + '…' : n.title}</span>
         </div>`;
       }).join('');
     } else {
-      const fallback = [
-        { label: '台積電', text: 'AI需求續旺，先進製程產能滿載' },
-        { label: '鴻海', text: 'GB200出貨放量，Q2營收有望季增' },
-        { label: '國泰金', text: '升息尾聲，壽險避險成本下滑' },
-      ];
-      newsEl.innerHTML = fallback.map(n => `<div style="font-size:0.6rem;line-height:1.35;padding:2px 0">
+      // Fallback when no live news available
+      newsEl.innerHTML = [
+        {label:'台積電',text:'AI需求續旺，先進製程產能滿載'},
+        {label:'鴻海',text:'GB200出貨放量，Q2營收有望季增'},
+        {label:'國泰金',text:'升息尾聲，壽險避險成本下滑'},
+      ].map(n=>`<div style="font-size:0.6rem;line-height:1.35;padding:2px 0">
         <span style="color:var(--amber);font-weight:700">[${n.label}]</span>
         <span style="color:var(--text2)">${n.text}</span>
       </div>`).join('');
@@ -4424,7 +4323,6 @@ function buildOverviewStrip(){
 }
 
 // ============================================================
-// TOP MOVERS
 // TOP MOVERS
 // ============================================================
 function buildTopMovers(){
@@ -5228,12 +5126,6 @@ function buildPortfolioGauge(){
   const twiiChg=twii?.changePct||0;
   const alpha=dayChg-twiiChg;
 
-  // ── YTD from HISTORY_DATA ────────────────────────────────────────
-  const histDates = Object.keys(HISTORY_DATA).sort();
-  const ytdStartMV = histDates.length > 0 ? HISTORY_DATA[histDates[0]]?.Total || 0 : 0;
-  const latestMV2  = histDates.length > 0 ? HISTORY_DATA[histDates[histDates.length-1]]?.Total || 0 : 0;
-  const ytdPct = ytdStartMV > 0 ? ((latestMV2 - ytdStartMV) / ytdStartMV * 100) : 0;
-
   // Update gauge values
   const el=document.getElementById('gaugeMV');
   if(el){el.textContent=fmtTWDShort(totalMV);el.className=dayChg>=0?'up':'down';}
@@ -5251,12 +5143,6 @@ function buildPortfolioGauge(){
   if(winEl){
     winEl.textContent=winRate.toFixed(0)+'%';
     winEl.style.color=winRate>=50?'var(--green)':'var(--red)';
-  }
-  // ── YTD gauge value ────────────────────────────────────────────
-  const ytdEl=document.getElementById('gaugeYTD');
-  if(ytdEl){
-    ytdEl.textContent=(ytdPct>=0?'+':'')+ytdPct.toFixed(1)+'%';
-    ytdEl.style.color=ytdPct>=0?'var(--green)':'var(--red)';
   }
   const moodEl=document.getElementById('gaugeMood');
   if(moodEl){
@@ -6546,14 +6432,12 @@ function buildTickerStrip(){
 // ============================================================
 function buildIndicesGrid(){
   const el=document.getElementById('indicesGrid');
-  if (!el) return;
   el.innerHTML=MARKET_INDICES.map(idx=>{
-    const cls=idx.changePct>=0?'up':'down';
-    const chg=idx.changePct;
+    const cls=idx.change>=0?'up':'down';
     return `<div class="index-item">
       <div class="index-name">${idx.sym}</div>
-      <div class="index-value">${idx.price>=10000?Math.round(idx.price).toLocaleString('zh-TW'):idx.price.toFixed(2)}</div>
-      <div class="index-change ${cls}">${idx.changePct>=0?'▲':'▼'} ${Math.abs(idx.change).toFixed(2)} (${fmtPct(chg)})</div>
+      <div class="index-value">${idx.price.toLocaleString('zh-TW',{maximumFractionDigits:2})}</div>
+      <div class="index-change ${cls}">${idx.change>=0?'▲':'▼'} ${Math.abs(idx.change).toFixed(2)} (${fmtPct(idx.changePct)})</div>
     </div>`;
   }).join('');
 }
@@ -8700,28 +8584,6 @@ function updateQuickSummary(){
   if(winEl){winEl.textContent=winRate.toFixed(0)+'%';winEl.parentElement.className='quick-stat-chip '+(winRate>=50?'up':'down');}
   const countEl=document.getElementById('qsCount2');
   if(countEl){countEl.textContent=Object.keys(allHoldings).filter(t=>getPrice(t).price>0).length+' 檔';}
-  
-  // Update pvDateLabel with dynamic date
-  const pvDateEl=document.getElementById('pvDateLabel');
-  if(pvDateEl){
-    const now=new Date();
-    pvDateEl.textContent=now.toLocaleDateString('zh-TW',{timeZone:'Asia/Taipei',month:'2-digit',day:'2-digit'});
-  }
-  
-  // Update overview news slots from NEWS_DATA
-  if(typeof NEWS_DATA!=='undefined' && NEWS_DATA.length>0){
-    const liveItems=NEWS_DATA.slice(0,3);
-    liveItems.forEach((item,i)=>{
-      const el=document.getElementById('ovNews'+(i+1));
-      if(el){
-        const title=item.title||'';
-        const shortTitle=title.length>28?title.substring(0,28)+'…':title;
-        const sentIcon=item.sentiment==='pos'?'🟢':item.sentiment==='neg'?'🔴':'⚪';
-        const sentColor=item.sentiment==='pos'?'var(--green)':item.sentiment==='neg'?'var(--red)':'var(--blue)';
-        el.innerHTML=`<span class="news-compact-title" style="overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical" title="${title}">${sentIcon} ${shortTitle}</span><span class="news-compact-time" style="color:${sentColor}">${item.sentiment==='pos'?'利多':item.sentiment==='neg'?'利空':'中性'}</span>`;
-      }
-    });
-  }
   const sectorEl=document.getElementById('qsTopSector2');
   if(sectorEl){sectorEl.textContent=topSector?.[0]||'--';}
 
@@ -9356,10 +9218,7 @@ async function loadData() {
       }
       const updated = d.updated || new Date().toISOString();
       const el = document.getElementById('lastUpdated');
-      if (el) {
-        el.textContent = new Date(updated).toLocaleString('zh-TW', {timeZone:'Asia/Taipei', month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'});
-        el.dataset.ts = updated;
-      }
+      if (el) el.textContent = updated;
       console.log(`[loadData] Merged ${fetchedTickers} tickers from live data.json`);
     } else {
       console.warn(`[loadData] data.json has only ${fetchedTickers} tickers (data.js has ${existingTickers}) — keeping data.js content`);
@@ -9669,20 +9528,9 @@ function scheduleAutoRefresh() {
     t.style.background = 'rgba(0,214,143,0.12)';
     t.style.borderColor = 'rgba(0,214,143,0.3)';
     t.style.color = 'var(--green)';
-    t.style.opacity = '0';
-    t.style.transform = 'translateY(16px)';
-    t.style.transition = 'opacity 0.25s, transform 0.25s';
     t.textContent = `✅ 自動更新完成 — ${new Date().toLocaleTimeString('zh-TW')}`;
     toastEl.appendChild(t);
-    requestAnimationFrame(() => {
-      t.style.opacity = '1';
-      t.style.transform = 'translateY(0)';
-    });
-    setTimeout(() => {
-      t.style.opacity = '0';
-      t.style.transform = 'translateY(-8px)';
-      setTimeout(() => t.remove(), 300);
-    }, 4000);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 300); }, 4000);
   }, 30 * 60 * 1000);
 }
 scheduleAutoRefresh();
@@ -9728,69 +9576,13 @@ window.addEventListener('scroll',()=>{
   const btn=document.getElementById('scrollTopBtn');
   if(btn){btn.classList.toggle('visible',window.scrollY>200);}
 });
-document.addEventListener('DOMContentLoaded', async () => { try { await loadData(); if (typeof init === 'function') init(); else console.warn('[init] not found, checking via eval...'); } catch(e) { console.error('[init] error:', e); } });
-
-// CRITICAL FALLBACK for file:// mode: init() may silently fail due to HTML parser issues
-// This ensures init() is always called after a brief delay
-(function() {
-  let attempts = 0;
-  const tryInit = () => {
-    attempts++;
-    if (typeof init === 'function') {
-      console.log('[init-fallback] init() found after', attempts, 'attempt(s)');
-      try { init(); } catch(e) { console.error('[init-fallback] error:', e); }
-    } else if (attempts < 20) {
-      setTimeout(tryInit, 250);
-    } else {
-      console.warn('[init-fallback] Giving up after', attempts, 'attempts');
-      // Last resort: try to eval the init function from inline script
-      const scripts = document.querySelectorAll('script');
-      for (const s of scripts) {
-        if (!s.src && s.textContent.includes('async function init()')) {
-          try { eval(s.textContent); if (typeof init === 'function') init(); } catch(e2) { console.error('[init-eval] error:', e2); }
-          break;
-        }
-      }
-    }
-  };
-  // Start trying after DOM is mostly ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => setTimeout(tryInit, 100));
-  } else {
-    setTimeout(tryInit, 100);
-  }
-})();
-
-// CRITICAL FIX for v2.13.0: Main script block may silently fail to parse in file:// mode
-// When init() is undefined but PRICE_DATA is loaded, re-evaluate the main inline script
-(function initFix() {
-  function doEval() {
-    if (typeof init === 'function') return; // Already working
-    const scripts = document.querySelectorAll('script');
-    for (const s of scripts) {
-      if (!s.src && s.textContent.includes('async function init()')) {
-        try {
-          eval(s.textContent);
-          if (typeof init === 'function') {
-            console.log('[init-fix] Successfully recovered init() via eval');
-            try { init(); } catch(e) { console.error('[init-fix] init() error:', e); }
-            return;
-          }
-        } catch(e) { console.error('[init-fix] eval error:', e); }
-        break;
-      }
-    }
-    // Retry after delay
-    if (typeof init !== 'function') setTimeout(doEval, 500);
-  }
-  setTimeout(doEval, 500);
-})();
+document.addEventListener('DOMContentLoaded', async () => { await loadData(); init(); });
 </script>
 
 
 <!-- FOOTER -->
 <footer class="dashboard-footer">
-  <span>📊 廖家投資看板 v2.13.0</span>
+  <span>📊 廖家投資看板 v2.9.1</span>
   <span class="footer-sep">·</span>
   <span>自動更新於 <span id="footerTime">--</span></span>
   <span class="footer-sep">·</span>
