@@ -4,7 +4,7 @@
 // ================================================================
 
 const TRIP_DATA = {
-    "updated": "2026-05-10",
+    "updated": "2026-05-12",
     "flights": {
     "TPE_CTS": {
     "route": "TPE → CTS",
@@ -16,6 +16,11 @@ const TRIP_DATA = {
     "bestPriceUrl": "https://www.google.com/travel/flights?q=TPE+to+CTS&hl=zh-TW&curr=TWD&dt=2027-01-28&dti=8",
     "avgPrice": 9256,
     "records": [
+    {
+    "date": "2026-05-12",
+    "price": 9256.0,
+    "note": "Google Flights 2027春節票價尚未開放查詢（距今8-9個月）"
+    },
     {
     "date": "2026-05-10",
     "price": 9256.0
@@ -41,6 +46,11 @@ const TRIP_DATA = {
     "avgPrice": 6405,
     "records": [
     {
+    "date": "2026-05-12",
+    "price": 6405.0,
+    "note": "Google Flights 2027春節票價尚未開放查詢（距今8-9個月）"
+    },
+    {
     "date": "2026-05-10",
     "price": 6405.0
     },
@@ -64,6 +74,11 @@ const TRIP_DATA = {
     "bestPriceUrl": "https://www.google.com/travel/flights?q=TPE+to+HND&hl=zh-TW&curr=TWD&dt=2027-01-29&dti=7",
     "avgPrice": 7552,
     "records": [
+    {
+    "date": "2026-05-12",
+    "price": 7552.0,
+    "note": "Google Flights 2027春節票價尚未開放查詢（距今8-9個月）"
+    },
     {
     "date": "2026-05-10",
     "price": 7552.0
