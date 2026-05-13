@@ -4,18 +4,23 @@
 // ================================================================
 
 const TRIP_DATA = {
-    "updated": "2026-05-12",
+    "updated": "2026-05-13",
     "flights": {
     "TPE_CTS": {
     "route": "TPE → CTS",
     "dep": "2027-01-28",
     "ret": "2027-02-04",
-    "airline": "泰國亞洲航空",
+    "airline": "台灣虎航",
     "bestPrice": 9256.0,
     "bestPriceDate": "2026-05-10",
     "bestPriceUrl": "https://www.google.com/travel/flights?q=TPE+to+CTS&hl=zh-TW&curr=TWD&dt=2027-01-28&dti=8",
-    "avgPrice": 9256,
+    "avgPrice": 9305,
     "records": [
+    {
+    "date": "2026-05-13",
+    "price": 9503.0,
+    "note": "Google Flights 当前显示 2026年11月航班；2027年1月春节航班尚未开放预订"
+    },
     {
     "date": "2026-05-12",
     "price": 9256.0,
@@ -43,8 +48,13 @@ const TRIP_DATA = {
     "bestPrice": 6405.0,
     "bestPriceDate": "2026-05-10",
     "bestPriceUrl": "https://www.google.com/travel/flights?q=TPE+to+KIX&hl=zh-TW&curr=TWD&dt=2027-02-14&dti=4",
-    "avgPrice": 6405,
+    "avgPrice": 6465,
     "records": [
+    {
+    "date": "2026-05-13",
+    "price": 6705.0,
+    "note": "Google Flights 当前显示 2026年9月航班；2027年2月航班尚未开放预订"
+    },
     {
     "date": "2026-05-12",
     "price": 6405.0,
@@ -72,8 +82,13 @@ const TRIP_DATA = {
     "bestPrice": 7552.0,
     "bestPriceDate": "2026-05-10",
     "bestPriceUrl": "https://www.google.com/travel/flights?q=TPE+to+HND&hl=zh-TW&curr=TWD&dt=2027-01-29&dti=7",
-    "avgPrice": 7552,
+    "avgPrice": 7554,
     "records": [
+    {
+    "date": "2026-05-13",
+    "price": 7560.0,
+    "note": "Google Flights 当前显示 2026年9月航班；2027年1月春节航班尚未开放预订"
+    },
     {
     "date": "2026-05-12",
     "price": 7552.0,
