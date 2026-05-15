@@ -44,19 +44,20 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0d0d0d;--bg2:#141414;--surface:#1a1a1a;--surface2:#222222;
-  --surface3:#2a2a2a;--surface4:#333333;--border:#2e2e2e;--border2:#3a3a3a;
-  --text:#e8e8e8;--text2:#9a9a9a;--text3:#666666;
-  --red:#ff4444;--red-dim:#cc3333;--green:#00d68f;--green-dim:#00a36e;
-  --blue:#4d9fff;--amber:#ffb020;--purple:#b066ff;--cyan:#00c9d4;
-  --shadow-sm:0 1px 3px rgba(0,0,0,0.4);--shadow-md:0 4px 12px rgba(0,0,0,0.5);
-  --shadow-lg:0 8px 30px rgba(0,0,0,0.6);
+  --bg:#ffffff;--bg2:#f7f7f7;--bg3:#f0f0f0;
+  --surface:#ffffff;--surface2:#f5f5f5;--surface3:#ebebeb;--surface4:#e0e0e0;
+  --border:#d0d0d0;--border2:#c0c0c0;
+  --text:#1a1a1a;--text2:#555555;--text3:#666666;
+  --red:#d32f2f;--red-dim:#b71c1c;--green:#00845a;--green-dim:#006644;
+  --blue:#1565c0;--amber:#e08a00;--purple:#7b3fc4;--cyan:#00838a;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.08);--shadow-md:0 4px 12px rgba(0,0,0,0.12);
+  --shadow-lg:0 8px 30px rgba(0,0,0,0.15);
   --radius-sm:4px;--radius-md:8px;--radius-lg:12px;
   --font-mono:'JetBrains Mono','Fira Code','Consolas',monospace;
 /* === MARKET PULSE RIBBON === */
 .market-pulse-ribbon{
   display:flex;align-items:center;gap:0;
-  background:var(--bg);border-bottom:1px solid var(--border);
+  background:var(--bg2);border-bottom:1px solid var(--border);
   padding:0;overflow:hidden;height:42px;
 }
 .market-pulse-item{
@@ -87,7 +88,7 @@
 .news-card:hover{transform:translateY(-1px);border-color:var(--border2);box-shadow:var(--shadow-md)}
 
 /* === SMOOTH SCROLL + SELECTION === */
-::selection{background:rgba(77,159,255,0.25);color:var(--text)}
+::selection{background:rgba(77,159,255,0.2);color:var(--text)}
 html{scroll-behavior:smooth}
 
 /* === IMPROVED PAGE LOADING STATES === */
@@ -174,7 +175,7 @@ body{
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:var(--bg)}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:#555}
+::-webkit-scrollbar-thumb:hover{background:#999}
 
 /* === SECTOR MINI BADGE === */
 .sector-mini{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:12px;font-size:0.62rem;font-weight:600;background:var(--surface2);border:1px solid var(--border)}
@@ -454,11 +455,11 @@ body{
 .navbar{
   background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;
   height:56px;display:flex;align-items:center;justify-content:space-between;
-  position:sticky;top:36px;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.4);
+  position:sticky;top:36px;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,0.08);
 }
 .navbar-brand{display:flex;align-items:center;gap:12px}
 .navbar-brand-icon{
-  width:34px;height:34px;background:linear-gradient(135deg,#1a1a1a,#2a2a2a);
+  width:34px;height:34px;background:linear-gradient(135deg,#e8e8e8,#d0d0d0);
   border:1px solid var(--border2);border-radius:8px;
   display:flex;align-items:center;justify-content:center;font-size:1.1rem;
 }
@@ -555,8 +556,8 @@ body{
 }
 .tab.active .tab-count{background:rgba(0,214,143,0.15);color:var(--green)}
 .tab .kbd{
-  font-size:0.58rem;color:var(--text3);background:var(--surface4);
-  border:1px solid var(--border2);border-radius:3px;padding:0 4px;
+  font-size:0.58rem;color:var(--text2);background:var(--border2);
+  border:1px solid var(--border);border-radius:3px;padding:0 4px;
   font-family:var(--font-mono);margin-left:2px;
 }
 
@@ -2226,188 +2227,91 @@ input[type=file]{display:none}
 <!-- SECTION: OVERVIEW -->
 <div class="section active" id="sec-overview">
   <div class="page">
-    <div class="card mb8" id="marketContextCard" style="padding:10px 14px;background:linear-gradient(135deg,var(--surface2) 0%,var(--bg) 100%;border:1px solid rgba(255,68,68,0.15)">
+    <!-- 市況警示橫幅 -->
+    <div class="card mb8" id="marketContextCard" style="padding:8px 14px;border:1px solid rgba(255,68,68,0.15)">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-        <div style="font-size:0.65rem;font-weight:700;color:var(--red);background:rgba(255,68,68,0.08);padding:3px 8px;border-radius:10px;border:1px solid rgba(255,68,68,0.2)">⚠️ 台股回調</div>
-        <div style="flex:1;display:flex;gap:6px;flex-wrap:wrap">
-          <div id="mcTWII" style="font-size:0.7rem;color:var(--text2)">加權 <span class="down">▼ 0.96%</span></div>
-          <div style="font-size:0.7rem;color:var(--text3)">|</div>
-          <div id="mcSOX" style="font-size:0.7rem;color:var(--text2)">費半 <span class="down">▼ 1.2%</span></div>
-          <div style="font-size:0.7rem;color:var(--text3)">|</div>
-          <div id="mcUS" style="font-size:0.7rem;color:var(--text2)">美股 <span class="up">▲ 0.55%</span></div>
-          <div style="font-size:0.7rem;color:var(--text3)">|</div>
-          <div id="mcTheme" style="font-size:0.7rem;color:var(--text)">AI/半導體承壓</div>
+        <div style="font-size:0.62rem;font-weight:700;color:var(--red);background:rgba(255,68,68,0.08);padding:2px 7px;border-radius:8px;border:1px solid rgba(255,68,68,0.2)">⚠️</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div id="mcTWII" style="font-size:0.72rem;color:var(--text2)">加權 <span class="down">▼ 0.96%</span></div>
+          <div style="font-size:0.72rem;color:var(--text3)">|</div>
+          <div id="mcSOX" style="font-size:0.72rem;color:var(--text2)">費半 <span class="down">▼ 1.2%</span></div>
+          <div style="font-size:0.72rem;color:var(--text3)">|</div>
+          <div id="mcUS" style="font-size:0.72rem;color:var(--text2)">美股 <span class="up">▲ 0.55%</span></div>
+          <div style="font-size:0.72rem;color:var(--text3)">|</div>
+          <div id="mcTheme" style="font-size:0.72rem;color:var(--text)">AI/半導體承壓</div>
         </div>
-        <div style="font-size:0.62rem;color:var(--text3)" id="mcTime">14:07 更新</div>
+        <div style="margin-left:auto;font-size:0.6rem;color:var(--text3)" id="mcTime">14:07</div>
       </div>
     </div>
-    <div class="card mb8" id="dailyPLSummaryOld" style="padding:8px 14px;background:linear-gradient(135deg,var(--surface2) 0%,var(--bg) 100%)"></div>
 
-    <!-- Today at a Glance — quick portfolio snapshot -->
-    <div class="card mb8" id="todayGlanceCard" style="padding:10px 14px">
-      <div style="font-size:0.65rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">📌 今日概況</div>
-      <div id="todayGlanceContent" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px">
-        <div class="daily-pl-card" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center">
-          <div style="font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em">總市值</div>
-          <div style="font-size:1.1rem;font-weight:800;font-family:var(--font-mono);color:var(--text)">NT$26,313,269</div>
-          <div style="font-size:0.65rem;color:var(--amber)">2631.3萬</div>
+    <!-- 核心數字：總市值 + 日報酬 + 總報酬 -->
+    <div id="todayGlanceCard" class="card mb8" style="padding:16px 18px">
+      <div id="todayGlanceContent" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0">
+        <div style="text-align:center;padding:8px 0">
+          <div style="font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">總市值</div>
+          <div style="font-size:1.6rem;font-weight:800;font-family:var(--font-mono);color:var(--text)">--</div>
+          <div style="font-size:0.72rem;color:var(--amber)" id="glanceMV">--</div>
         </div>
-        <div class="daily-pl-card" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center">
-          <div style="font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em">日報酬</div>
-          <div style="font-size:1.1rem;font-weight:800;font-family:var(--font-mono);color:var(--red)">-0.32%</div>
-          <div style="font-size:0.65rem;color:var(--red)">▼ -NT$85,000</div>
+        <div style="text-align:center;border-left:1px solid var(--border);padding:8px 0">
+          <div style="font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">日報酬</div>
+          <div style="font-size:1.6rem;font-weight:800;font-family:var(--font-mono)" id="glanceDay">--</div>
+          <div style="font-size:0.72rem" id="glanceDayAbs">--</div>
         </div>
-        <div class="daily-pl-card" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center">
-          <div style="font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em">總報酬</div>
-          <div style="font-size:1.1rem;font-weight:800;font-family:var(--font-mono);color:var(--green)">+37.7%</div>
-          <div style="font-size:0.65rem;color:var(--green)">▲ +NT$7.2M</div>
-        </div>
-        <div class="daily-pl-card" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center">
-          <div style="font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em">台積電影響</div>
-          <div style="font-size:1.1rem;font-weight:800;font-family:var(--font-mono);color:var(--red)">▼ -0.87%</div>
-          <div style="font-size:0.65rem;color:var(--text3)">2290.0 ▼20</div>
+        <div style="text-align:center;border-left:1px solid var(--border);padding:8px 0">
+          <div style="font-size:0.58rem;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px">總報酬</div>
+          <div style="font-size:1.6rem;font-weight:800;font-family:var(--font-mono);color:var(--green)" id="glanceTotal">--</div>
+          <div style="font-size:0.72rem;color:var(--green)" id="glanceTotalAbs">--</div>
         </div>
       </div>
     </div>
 
-    <!-- Quick Stats Strip -->
-    <div id="quickStatsStrip" class="card mb8" style="padding:8px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <div class="quick-stat-chip" id="qsWinRateChip" style="background:rgba(0,214,143,0.08);border-color:rgba(0,214,143,0.2)">
-        <span>勝率</span>
-        <span class="val" id="qsWinRate2" style="color:var(--green)">63%</span>
-      </div>
-      <div class="quick-stat-chip" id="qsCountChip">
-        <span>持股</span>
-        <span class="val" id="qsCount2">24檔</span>
-      </div>
-      <div class="quick-stat-chip" id="qsSectorChip">
-        <span>最大產業</span>
-        <span class="val" id="qsTopSector2">金融</span>
-      </div>
-      <div class="quick-stat-chip" id="qsTwiiChip" style="background:rgba(255,68,68,0.08);border-color:rgba(255,68,68,0.2)">
-        <span>加權</span>
-        <span class="val" id="qsTWII2" style="color:var(--red)">▼0.96%</span>
-      </div>
-      <div class="quick-stat-chip" id="qsTsmcChip" style="background:rgba(255,68,68,0.08);border-color:rgba(255,68,68,0.2)">
-        <span>台積電</span>
-        <span class="val" id="qsTSMC2" style="color:var(--red)">2290 ▼0.87%</span>
-      </div>
-      <div style="margin-left:auto;display:flex;align-items:center;gap:6px">
-        <div id="autoRefreshBadge" style="display:flex;align-items:center;gap:4px;font-size:0.62rem;color:var(--text3);background:var(--surface2);padding:3px 8px;border-radius:10px;border:1px solid var(--border)">
-          <div id="liveDot" style="width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse-dot 2s infinite"></div>
+    <!-- 快速晶片：勝率、持股、最大產業、加權、台積電 -->
+    <div id="quickStatsStrip" class="card mb8" style="padding:8px 14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+      <div class="quick-stat-chip" style="background:rgba(0,214,143,0.08);border-color:rgba(0,214,143,0.2)"><span>勝率</span><span class="val" id="qsWinRate2" style="color:var(--green)">--</span></div>
+      <div class="quick-stat-chip"><span>持股</span><span class="val" id="qsCount2">--</span></div>
+      <div class="quick-stat-chip"><span>最大產業</span><span class="val" id="qsTopSector2">--</span></div>
+      <div class="quick-stat-chip" style="background:rgba(255,68,68,0.08);border-color:rgba(255,68,68,0.2)"><span>加權</span><span class="val" id="qsTWII2" style="color:var(--red)">--</span></div>
+      <div class="quick-stat-chip" style="background:rgba(255,68,68,0.08);border-color:rgba(255,68,68,0.2)"><span>台積電</span><span class="val" id="qsTSMC2" style="color:var(--red)">--</span></div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:4px">
+        <div id="autoRefreshBadge" style="display:flex;align-items:center;gap:4px;font-size:0.62rem;color:var(--text3);padding:3px 8px;border-radius:8px;border:1px solid var(--border)">
+          <div id="liveDot" style="width:5px;height:5px;border-radius:50%;background:var(--green);animation:pulse-dot 2s infinite"></div>
           <span id="refreshTimer">--:--</span>
         </div>
       </div>
     </div>
 
-    <!-- Portfolio Gauge Summary -->
-    <div id="portfolioGaugeRow" class="card mb8" style="padding:10px 14px">
-      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-        <div id="gaugeCanvas" style="width:80px;height:58px;flex-shrink:0">
-          <canvas id="gaugeChart" width="160" height="116" style="width:80px;height:58px"></canvas>
+    <!-- 強勢股 / 最新頭條 / 弱勢股 -->
+    <div class="card mb8" style="padding:10px 14px">
+      <div style="display:flex;gap:0;flex-wrap:wrap">
+        <div style="flex:1;min-width:160px;padding:4px 0">
+          <div style="font-size:0.62rem;font-weight:700;color:var(--green);margin-bottom:6px">📈 強勢股</div>
+          <div id="overviewTopMovers" style="display:flex;flex-direction:column;gap:2px"></div>
         </div>
-        <div style="flex:1;min-width:200px">
-          <div style="font-size:0.65rem;color:var(--text3);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.06em">📊 組合概況</div>
-          <div style="display:flex;gap:12px;flex-wrap:wrap">
-            <div style="text-align:center">
-              <div style="font-size:0.6rem;color:var(--text3)">總市值</div>
-              <div style="font-size:1.0rem;font-weight:700;font-family:var(--font-mono)" id="gaugeMV">--</div>
-            </div>
-            <div style="text-align:center">
-              <div style="font-size:0.6rem;color:var(--text3)">日報酬</div>
-              <div style="font-size:1.0rem;font-weight:700;font-family:var(--font-mono)" id="gaugeDay">--</div>
-            </div>
-            <div style="text-align:center">
-              <div style="font-size:0.6rem;color:var(--text3)">α 超額</div>
-              <div style="font-size:1.0rem;font-weight:700;font-family:var(--font-mono)" id="gaugeAlpha">--</div>
-            </div>
-            <div style="text-align:center">
-              <div style="font-size:0.6rem;color:var(--text3)">勝率</div>
-              <div style="font-size:1.0rem;font-weight:700;font-family:var(--font-mono)" id="gaugeWin">--</div>
-            </div>
+        <div style="width:1px;background:var(--border);margin:0 12px"></div>
+        <div style="flex:1;min-width:160px;padding:4px 0">
+          <div style="font-size:0.62rem;font-weight:700;color:var(--blue);margin-bottom:6px">📰 台股快訊</div>
+          <div id="overviewLatestNews" style="display:flex;flex-direction:column;gap:3px">
+            <div class="news-compact" id="ovNews1"><span class="news-compact-title" style="color:var(--text3);font-size:0.7rem">載入中...</span></div>
+            <div class="news-compact" id="ovNews2"><span class="news-compact-title" style="color:var(--text3);font-size:0.7rem">　</span></div>
+            <div class="news-compact" id="ovNews3"><span class="news-compact-title" style="color:var(--text3);font-size:0.7rem">　</span></div>
           </div>
         </div>
-        <div style="text-align:center;flex-shrink:0">
-          <div style="font-size:0.6rem;color:var(--text3)">YTD報酬</div>
-          <div style="font-size:0.95rem;font-weight:700;font-family:var(--font-mono)" id="gaugeYTD">--</div>
-        </div>
-        <div style="text-align:center;flex-shrink:0">
-          <div style="font-size:0.6rem;color:var(--text3)">組合情緒</div>
-          <div style="font-size:1.2rem;font-weight:700" id="gaugeMood">--</div>
+        <div style="width:1px;background:var(--border);margin:0 12px"></div>
+        <div style="flex:1;min-width:160px;padding:4px 0">
+          <div style="font-size:0.62rem;font-weight:700;color:var(--red);margin-bottom:6px">📉 弱勢股</div>
+          <div id="overviewBottomMovers" style="display:flex;flex-direction:column;gap:2px"></div>
         </div>
       </div>
     </div>
 
-    <!-- Top Movers + News Headlines Strip -->
-    <div class="card mb8" id="overviewNewsStrip" style="padding:10px 14px">
-      <div style="display:flex;gap:16px;flex-wrap:wrap">
-        <div style="flex:1;min-width:180px">
-          <div style="font-size:0.62rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">📈 今日強勢股</div>
-          <div id="overviewTopMovers" style="display:flex;flex-direction:column;gap:3px">
-            <!-- Dynamically populated by buildTodayGlance() -->
-          </div>
-        </div>
-        <div style="width:1px;background:var(--border)"></div>
-        <div style="flex:1;min-width:180px">
-          <div style="font-size:0.62rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">📰 最新頭條</div>
-          <div id="overviewLatestNews" style="display:flex;flex-direction:column;gap:4px">
-            <div class="news-compact" id="ovNews1"><span class="news-compact-title" style="color:var(--text3)">📡 載入台股快訊中...</span></div>
-            <div class="news-compact" id="ovNews2"><span class="news-compact-title" style="color:var(--text3)">　</span></div>
-            <div class="news-compact" id="ovNews3"><span class="news-compact-title" style="color:var(--text3)">　</span></div>
-          </div>
-        </div>
-        <div style="width:1px;background:var(--border)"></div>
-        <div style="flex:1;min-width:160px">
-          <div style="font-size:0.62rem;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px">📉 今日弱勢股</div>
-          <div id="overviewBottomMovers" style="display:flex;flex-direction:column;gap:3px">
-            <!-- Dynamically populated by buildTodayGlance() -->
-          </div>
-        </div>
+    <!-- 持股概況 Top 5 -->
+    <div class="card mb8">
+      <div class="card-header">
+        <div class="card-title">📌 持股概況</div>
+        <div class="text-xs" style="color:var(--text3);font-size:0.62rem">Top 5</div>
       </div>
-    </div>
-
-    <!-- Portfolio Quick Stats Strip (YTD, win/loss, benchmark) -->
-    <div id="overviewPortfolioStats" class="card mb8" style="padding:7px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:linear-gradient(135deg,var(--surface2),var(--bg))">
-      <!-- Populated by buildOverviewStrip() -->
-    </div>
-
-    <!-- Portfolio Quick Insight Card -->
-    <div id="portfolioInsightCard" class="card mb8" style="padding:10px 14px"></div>
-
-    <!-- Daily P/L Summary Card -->
-    <div id="dailyPLCard" class="card mb8" style="padding:0;overflow:hidden">
-      <div style="background:var(--surface);border-bottom:1px solid var(--border);padding:6px 14px;display:flex;align-items:center;gap:8px">
-        <span style="font-size:0.8rem">💹</span>
-        <span style="font-size:0.68rem;font-weight:700;color:var(--text2)">今日組合損益</span>
-      </div>
-      <div id="dailyPLContent" style="display:flex;gap:0;flex-wrap:wrap;padding:10px 14px;background:linear-gradient(135deg,var(--surface2) 0%,var(--bg) 100%)"></div>
-      <div id="dailyPLHistory" style="padding:6px 14px 10px;border-top:1px solid var(--border)"></div>
-    </div>
-
-    <!-- Portfolio vs Benchmark Card -->
-    <div id="portfolioVsBench" class="card mb8" style="padding:8px 14px">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
-        <div style="font-size:0.65rem;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em">📊 組合績效 vs 標竿</div>
-        <span style="font-size:0.62rem;color:var(--text3)" id="pvDateLabel">--</span>
-      </div>
-      <div class="portfolio-vs-benchmark"></div>
-    </div>
-
-    <!-- Portfolio Peak-Trough Card -->
-    <div id="peakTroughCard" class="card mb8" style="padding:8px 14px"></div>
-
-    <!-- Taiwan Stock Market News Feed -->
-    <div class="card mb8" style="padding:0;overflow:hidden">
-      <div class="card-header" style="padding:8px 14px;display:flex;align-items:center;justify-content:space-between">
-        <div class="card-title"><span>📰</span><span>台股快訊</span></div>
-        <div style="display:flex;align-items:center;gap:6px">
-          <span id="twNewsUpdatedBadge" style="font-size:0.58rem;color:var(--text3);padding:1px 6px;background:var(--surface3);border-radius:8px;border:1px solid var(--border)">--:--</span>
-          <span class="live-dot" style="width:6px;height:6px"></span>
-          <a href="https://tw.stock.yahoo.com/news/" target="_blank" class="btn btn-sm" style="font-size:0.62rem;padding:2px 8px">更多 →</a>
-        </div>
-      </div>
-      <div id="twStockNewsFeed" style="padding:4px 14px 8px;max-height:160px;overflow-y:auto">
-        <div style="font-size:0.72rem;color:var(--text3);text-align:center;padding:12px">📡 載入中...</div>
+      <div class="card-body">
+        <div id="holdingSummary" style="display:flex;flex-direction:column;gap:0"></div>
       </div>
     </div>
 

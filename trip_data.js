@@ -4,18 +4,22 @@
 // ================================================================
 
 const TRIP_DATA = {
-    "updated": "2026-05-14",
+    "updated": "2026-05-15",
     "flights": {
     "TPE_CTS": {
     "route": "TPE → CTS",
     "dep": "2027-01-28",
     "ret": "2027-02-04",
-    "airline": "真航空",
+    "airline": "台灣虎航",
     "bestPrice": 8599.0,
     "bestPriceDate": "2026-05-14",
-    "bestPriceUrl": "https://www.google.com/travel/flights?q=TPE+to+CTS&hl=zh-TW&curr=TWD&dt=2027-01-28&dti=8",
-    "avgPrice": 9188,
+    "bestPriceUrl": "https://www.google.com/travel/flights?q=TPE+to+CTS+2027-01-28+to+2027-02-04&hl=zh-TW&curr=TWD&gl=tw",
+    "avgPrice": 11118,
     "records": [
+    {
+    "date": "2026-05-15",
+    "price": 22703.0
+    },
     {
     "date": "2026-05-14",
     "price": 8599.0
@@ -48,12 +52,16 @@ const TRIP_DATA = {
     "route": "TPE → KIX",
     "dep": "2027-02-14",
     "ret": "2027-02-17",
-    "airline": "捷星日本航空",
+    "airline": "台灣虎航",
     "bestPrice": 6405.0,
     "bestPriceDate": "2026-05-10",
-    "bestPriceUrl": "https://www.google.com/travel/flights?q=TPE+to+KIX&hl=zh-TW&curr=TWD&dt=2027-02-14&dti=4",
-    "avgPrice": 6506,
+    "bestPriceUrl": "https://www.google.com/travel/flights?q=TPE+to+KIX+2027-02-14+to+2027-02-17&hl=zh-TW&curr=TWD&gl=tw",
+    "avgPrice": 6648,
     "records": [
+    {
+    "date": "2026-05-15",
+    "price": 7501.0
+    },
     {
     "date": "2026-05-14",
     "price": 6708.0
@@ -86,12 +94,16 @@ const TRIP_DATA = {
     "route": "TPE → HND",
     "dep": "2027-01-29",
     "ret": "2027-02-04",
-    "airline": "樂桃航空",
+    "airline": "台灣虎航",
     "bestPrice": 7552.0,
     "bestPriceDate": "2026-05-10",
-    "bestPriceUrl": "https://www.google.com/travel/flights?q=TPE+to+HND&hl=zh-TW&curr=TWD&dt=2027-01-29&dti=7",
-    "avgPrice": 7554,
+    "bestPriceUrl": "https://www.google.com/travel/flights?q=TPE+to+HND+2027-01-29+to+2027-02-04&hl=zh-TW&curr=TWD&gl=tw",
+    "avgPrice": 8034,
     "records": [
+    {
+    "date": "2026-05-15",
+    "price": 10914.0
+    },
     {
     "date": "2026-05-14",
     "price": 7555.0
@@ -124,29 +136,37 @@ const TRIP_DATA = {
     "route": "TPE_AOJ",
     "records": [
     {
+    "date": "2026-05-15",
+    "price": 16210.0
+    },
+    {
     "date": "2026-05-14",
     "price": 16802.0
     }
     ],
-    "bestPrice": 16802.0,
-    "bestPriceDate": "2026-05-14",
-    "airline": "大韓航空",
+    "bestPrice": 16210.0,
+    "bestPriceDate": "2026-05-15",
+    "airline": "長榮航空",
     "bestPriceUrl": "https://www.google.com/travel/flights?q=TPE+to+AOJ&hl=zh-TW&curr=TWD",
-    "avgPrice": 16802
+    "avgPrice": 16506
     },
     "SDJ_TPE": {
     "route": "SDJ_TPE",
     "records": [
     {
+    "date": "2026-05-15",
+    "price": 9296.0
+    },
+    {
     "date": "2026-05-14",
     "price": 9309.0
     }
     ],
-    "bestPrice": 9309.0,
-    "bestPriceDate": "2026-05-14",
+    "bestPrice": 9296.0,
+    "bestPriceDate": "2026-05-15",
     "airline": "台灣虎航",
     "bestPriceUrl": "https://www.google.com/travel/flights?q=SDJ+to+TPE&hl=zh-TW&curr=TWD",
-    "avgPrice": 9309
+    "avgPrice": 9302
     }
     },
     "hotels": {

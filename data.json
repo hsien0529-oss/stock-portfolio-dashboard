@@ -1,9 +1,17 @@
 {
-  "updated": "2026-05-13T19:34:40.547606+08:00",
+<<<<<<< Updated upstream
+  "updated": "2026-05-15T08:01:52.092910+08:00",
   "prices": {
     "0050": {
       "price": 95.5,
       "prev_close": 96.85,
+=======
+  "updated": "2026-05-11T19:16:25.634960+08:00",
+  "prices": {
+    "0050": {
+      "price": 96.9,
+      "prev_close": 97.0,
+>>>>>>> Stashed changes
       "year_high": 97.7,
       "year_low": 43.06,
       "_hist": [
@@ -65,9 +73,13 @@
         95.75,
         97.7,
         97.0,
+<<<<<<< Updated upstream
         96.9,
         96.85,
         95.5
+=======
+        96.9
+>>>>>>> Stashed changes
       ]
     },
     "00646": {
@@ -140,8 +152,13 @@
       ]
     },
     "00878": {
+<<<<<<< Updated upstream
       "price": 27.95,
       "prev_close": 28.13,
+=======
+      "price": 28.28,
+      "prev_close": 27.82,
+>>>>>>> Stashed changes
       "year_high": 28.28,
       "year_low": 18.96,
       "_hist": [
@@ -203,9 +220,13 @@
         27.33,
         27.89,
         27.82,
+<<<<<<< Updated upstream
         28.28,
         28.13,
         27.95
+=======
+        28.28
+>>>>>>> Stashed changes
       ]
     },
     "00881": {
@@ -278,12 +299,17 @@
       ]
     },
     "00981A": {
-      "price": 29.28,
-      "prev_close": 29.97,
+<<<<<<< Updated upstream
+      "price": 29.44,
+      "prev_close": 29.28,
       "year_high": 29.97,
+=======
+      "price": 29.69,
+      "prev_close": 28.91,
+      "year_high": 29.69,
+>>>>>>> Stashed changes
       "year_low": 9.69,
       "_hist": [
-        16.4112,
         16.4798,
         16.4896,
         16.568,
@@ -341,18 +367,27 @@
         29.3,
         29.58,
         28.91,
+<<<<<<< Updated upstream
         29.69,
         29.97,
-        29.28
+        29.28,
+        29.44
       ]
     },
     "1301": {
-      "price": 46.9,
-      "prev_close": 47.65,
+      "price": 46.1,
+      "prev_close": 46.9,
+=======
+        29.69
+      ]
+    },
+    "1301": {
+      "price": 49.25,
+      "prev_close": 48.55,
+>>>>>>> Stashed changes
       "year_high": 54.5,
       "year_low": 32.74,
       "_hist": [
-        44.95,
         46.85,
         47.2,
         45.75,
@@ -410,18 +445,27 @@
         50.7,
         49.55,
         48.55,
+<<<<<<< Updated upstream
         49.25,
         47.65,
-        46.9
+        46.9,
+        46.1
       ]
     },
     "2034": {
-      "price": 20.0,
-      "prev_close": 20.3,
+      "price": 19.95,
+      "prev_close": 20.0,
+=======
+        49.25
+      ]
+    },
+    "2034": {
+      "price": 21.05,
+      "prev_close": 21.2,
+>>>>>>> Stashed changes
       "year_high": 23.21,
       "year_low": 18.65,
       "_hist": [
-        21.9,
         22.15,
         21.95,
         21.3,
@@ -479,18 +523,27 @@
         21.4,
         21.55,
         21.2,
+<<<<<<< Updated upstream
         21.05,
         20.3,
-        20.0
+        20.0,
+        19.95
       ]
     },
     "2308": {
-      "price": 2165.0,
-      "prev_close": 2195.0,
+      "price": 2155.0,
+      "prev_close": 2165.0,
+=======
+        21.05
+      ]
+    },
+    "2308": {
+      "price": 2245.0,
+      "prev_close": 2200.0,
+>>>>>>> Stashed changes
       "year_high": 2280.0,
       "year_low": 356.66,
       "_hist": [
-        1215.0,
         1210.0,
         1150.0,
         1160.0,
@@ -548,18 +601,22 @@
         2210.0,
         2280.0,
         2200.0,
+<<<<<<< Updated upstream
         2245.0,
         2195.0,
-        2165.0
+        2165.0,
+        2155.0
+=======
+        2245.0
+>>>>>>> Stashed changes
       ]
     },
     "2317": {
-      "price": 251.0,
-      "prev_close": 250.0,
+      "price": 244.5,
+      "prev_close": 251.0,
       "year_high": 262.0,
       "year_low": 146.19,
       "_hist": [
-        216.5,
         219.0,
         215.5,
         215.0,
@@ -619,16 +676,21 @@
         250.0,
         252.0,
         250.0,
-        251.0
+        251.0,
+        244.5
       ]
     },
     "2330": {
-      "price": 2220.0,
-      "prev_close": 2255.0,
+<<<<<<< Updated upstream
+      "price": 2270.0,
+      "prev_close": 2220.0,
+=======
+      "price": 2235.0,
+      "prev_close": 2290.0,
+>>>>>>> Stashed changes
       "year_high": 2310.0,
       "year_low": 932.09,
       "_hist": [
-        1794.1464,
         1779.1951,
         1759.2601,
         1774.2114,
@@ -686,18 +748,26 @@
         2250.0,
         2310.0,
         2290.0,
+<<<<<<< Updated upstream
         2235.0,
         2255.0,
-        2220.0
+        2220.0,
+        2270.0
       ]
     },
     "2382": {
-      "price": 340.5,
-      "prev_close": 340.0,
+      "price": 334.5,
+=======
+        2235.0
+      ]
+    },
+    "2382": {
+      "price": 343.5,
+>>>>>>> Stashed changes
+      "prev_close": 340.5,
       "year_high": 346.5,
-      "year_low": 250.07,
+      "year_low": 251.98,
       "_hist": [
-        276.5,
         278.0,
         273.0,
         279.5,
@@ -755,18 +825,28 @@
         346.5,
         344.0,
         340.5,
+<<<<<<< Updated upstream
         343.5,
         340.0,
-        340.5
+        340.5,
+        334.5
       ]
     },
     "2618": {
-      "price": 34.45,
-      "prev_close": 35.1,
+      "price": 35.0,
+      "prev_close": 34.45,
+      "year_high": 40.81,
+=======
+        343.5
+      ]
+    },
+    "2618": {
+      "price": 35.85,
+      "prev_close": 35.65,
       "year_high": 41.13,
+>>>>>>> Stashed changes
       "year_low": 32.5,
       "_hist": [
-        38.05,
         38.4,
         38.45,
         38.6,
@@ -824,18 +904,27 @@
         33.95,
         35.4,
         35.65,
+<<<<<<< Updated upstream
         35.85,
         35.1,
-        34.45
+        34.45,
+        35.0
       ]
     },
     "2880": {
-      "price": 32.75,
-      "prev_close": 32.55,
+      "price": 32.6,
+      "prev_close": 32.75,
+=======
+        35.85
+      ]
+    },
+    "2880": {
+      "price": 33.25,
+      "prev_close": 33.3,
+>>>>>>> Stashed changes
       "year_high": 38.1,
       "year_low": 24.73,
       "_hist": [
-        33.1,
         33.15,
         33.6,
         33.85,
@@ -893,18 +982,27 @@
         32.7,
         33.3,
         33.3,
+<<<<<<< Updated upstream
         33.25,
         32.55,
-        32.75
+        32.75,
+        32.6
       ]
     },
     "2881": {
-      "price": 94.7,
-      "prev_close": 93.7,
+      "price": 94.6,
+      "prev_close": 94.7,
+=======
+        33.25
+      ]
+    },
+    "2881": {
+      "price": 95.5,
+      "prev_close": 96.7,
+>>>>>>> Stashed changes
       "year_high": 98.2,
-      "year_low": 73.32,
+      "year_low": 73.79,
       "_hist": [
-        91.8,
         92.7,
         93.5,
         92.4,
@@ -962,18 +1060,27 @@
         92.8,
         94.5,
         96.7,
+<<<<<<< Updated upstream
         95.5,
         93.7,
-        94.7
+        94.7,
+        94.6
       ]
     },
     "2882": {
-      "price": 77.3,
-      "prev_close": 76.4,
+      "price": 76.7,
+      "prev_close": 77.3,
+=======
+        95.5
+      ]
+    },
+    "2882": {
+      "price": 78.4,
+      "prev_close": 80.0,
+>>>>>>> Stashed changes
       "year_high": 80.0,
-      "year_low": 54.92,
+      "year_low": 55.77,
       "_hist": [
-        74.7,
         76.2,
         76.0,
         75.7,
@@ -1031,18 +1138,27 @@
         78.7,
         79.0,
         80.0,
+<<<<<<< Updated upstream
         78.4,
         76.4,
-        77.3
+        77.3,
+        76.7
       ]
     },
     "2884": {
-      "price": 31.9,
-      "prev_close": 31.8,
+      "price": 31.85,
+      "prev_close": 31.9,
+=======
+        78.4
+      ]
+    },
+    "2884": {
+      "price": 32.3,
+      "prev_close": 32.5,
+>>>>>>> Stashed changes
       "year_high": 35.1,
-      "year_low": 28.17,
+      "year_low": 28.36,
       "_hist": [
-        33.4,
         33.7,
         33.95,
         34.0,
@@ -1100,18 +1216,22 @@
         31.85,
         32.1,
         32.5,
+<<<<<<< Updated upstream
         32.3,
         31.8,
-        31.9
+        31.9,
+        31.85
+=======
+        32.3
+>>>>>>> Stashed changes
       ]
     },
     "2885": {
-      "price": 55.8,
-      "prev_close": 54.6,
+      "price": 55.5,
+      "prev_close": 55.8,
       "year_high": 56.5,
       "year_low": 29.06,
       "_hist": [
-        42.0,
         42.4,
         42.75,
         42.65,
@@ -1171,16 +1291,21 @@
         56.5,
         56.5,
         54.6,
-        55.8
+        55.8,
+        55.5
       ]
     },
     "2886": {
-      "price": 39.55,
-      "prev_close": 39.2,
+<<<<<<< Updated upstream
+      "price": 39.3,
+      "prev_close": 39.55,
+=======
+      "price": 40.1,
+      "prev_close": 40.2,
+>>>>>>> Stashed changes
       "year_high": 42.8,
       "year_low": 37.65,
       "_hist": [
-        38.9,
         39.15,
         39.7,
         39.8,
@@ -1238,18 +1363,27 @@
         39.55,
         39.65,
         40.2,
+<<<<<<< Updated upstream
         40.1,
         39.2,
-        39.55
+        39.55,
+        39.3
       ]
     },
     "2887": {
-      "price": 23.15,
-      "prev_close": 23.0,
+      "price": 23.1,
+      "prev_close": 23.15,
+=======
+        40.1
+      ]
+    },
+    "2887": {
+      "price": 23.45,
+      "prev_close": 23.8,
+>>>>>>> Stashed changes
       "year_high": 25.6,
       "year_low": 14.89,
       "_hist": [
-        22.75,
         23.05,
         23.1,
         23.35,
@@ -1307,18 +1441,28 @@
         23.95,
         24.0,
         23.8,
+<<<<<<< Updated upstream
         23.45,
         23.0,
-        23.15
+        23.15,
+        23.1
       ]
     },
     "3008": {
-      "price": 2850.0,
-      "prev_close": 2795.0,
-      "year_high": 2850.0,
+      "price": 3135.0,
+      "prev_close": 2850.0,
+      "year_high": 3135.0,
+=======
+        23.45
+      ]
+    },
+    "3008": {
+      "price": 2545.0,
+      "prev_close": 2570.0,
+      "year_high": 2820.0,
+>>>>>>> Stashed changes
       "year_low": 1981.84,
       "_hist": [
-        2299.918,
         2314.5984,
         2250.9836,
         2280.3442,
@@ -1376,18 +1520,22 @@
         2520.0,
         2575.0,
         2570.0,
+<<<<<<< Updated upstream
         2545.0,
         2795.0,
-        2850.0
+        2850.0,
+        3135.0
+=======
+        2545.0
+>>>>>>> Stashed changes
       ]
     },
     "3045": {
-      "price": 112.0,
-      "prev_close": 110.0,
-      "year_high": 113.78,
+      "price": 115.0,
+      "prev_close": 112.0,
+      "year_high": 115.0,
       "year_low": 104.5,
       "_hist": [
-        105.0,
         104.5,
         105.0,
         105.5,
@@ -1447,16 +1595,21 @@
         110.0,
         110.0,
         110.0,
-        112.0
+        112.0,
+        115.0
       ]
     },
     "3703": {
-      "price": 20.3,
-      "prev_close": 20.5,
+<<<<<<< Updated upstream
+      "price": 20.15,
+      "prev_close": 20.3,
+=======
+      "price": 20.75,
+      "prev_close": 20.7,
+>>>>>>> Stashed changes
       "year_high": 24.4,
-      "year_low": 20.3,
+      "year_low": 20.15,
       "_hist": [
-        22.4,
         22.75,
         22.85,
         22.6,
@@ -1514,18 +1667,22 @@
         20.55,
         20.9,
         20.7,
+<<<<<<< Updated upstream
         20.75,
         20.5,
-        20.3
+        20.3,
+        20.15
+=======
+        20.75
+>>>>>>> Stashed changes
       ]
     },
     "5880": {
-      "price": 22.85,
-      "prev_close": 22.8,
+      "price": 22.75,
+      "prev_close": 22.85,
       "year_high": 24.87,
       "year_low": 22.55,
       "_hist": [
-        23.5,
         23.55,
         23.75,
         23.65,
@@ -1585,160 +1742,267 @@
         23.05,
         23.0,
         22.8,
-        22.85
+        22.85,
+        22.75
       ]
     }
   },
   "fundamentals": {
     "0050": {
-      "trailingPE": 31.249344,
+<<<<<<< Updated upstream
+      "trailingPE": 31.429316,
       "dividendYield": 1.52
+=======
+      "trailingPE": 31.70745,
+      "dividendYield": 1.89
+>>>>>>> Stashed changes
     },
     "00646": {
-      "trailingPE": 27.953072,
+      "trailingPE": 28.086182,
       "dividendYield": null
     },
     "00878": {
-      "trailingPE": 19.471643,
+<<<<<<< Updated upstream
+      "trailingPE": 19.590075,
       "dividendYield": 6.65
+=======
+      "trailingPE": 19.70154,
+      "dividendYield": 7.8
+>>>>>>> Stashed changes
     },
     "00881": {
-      "trailingPE": 36.971123,
+      "trailingPE": 37.081924,
       "dividendYield": 6.89
     },
     "00981A": {
-      "trailingPE": 60.902763,
+<<<<<<< Updated upstream
+      "trailingPE": 61.235565,
+=======
+      "trailingPE": 61.755566,
+>>>>>>> Stashed changes
       "dividendYield": null
     },
     "1301": {
       "trailingPE": null,
-      "dividendYield": 1.05
+      "dividendYield": 1.07
     },
     "2034": {
-      "trailingPE": 100.0,
-      "dividendYield": 4.93
+<<<<<<< Updated upstream
+      "trailingPE": 99.75,
+      "dividendYield": 5.01
     },
     "2308": {
-      "trailingPE": 93.92625,
+      "trailingPE": 93.451866,
       "dividendYield": 0.32
     },
     "2317": {
-      "trailingPE": 18.731344,
-      "dividendYield": 2.32
+      "trailingPE": 18.24627,
+      "dividendYield": 2.37
     },
     "2330": {
-      "trailingPE": 30.199972,
+      "trailingPE": 30.863358,
       "dividendYield": 1.06
     },
     "2382": {
-      "trailingPE": 18.015873,
+      "trailingPE": 17.698414,
+      "dividendYield": 3.89
+    },
+    "2618": {
+      "trailingPE": 7.2916665,
+      "dividendYield": 6.86
+    },
+    "2880": {
+      "trailingPE": 17.157894,
+      "dividendYield": 3.83
+    },
+    "2881": {
+      "trailingPE": 11.30227,
+=======
+      "trailingPE": 105.24999,
+      "dividendYield": 4.72
+    },
+    "2308": {
+      "trailingPE": 97.18614,
+      "dividendYield": 0.32
+    },
+    "2317": {
+      "trailingPE": 18.805971,
+      "dividendYield": 2.32
+    },
+    "2330": {
+      "trailingPE": 30.404026,
+      "dividendYield": 1.05
+    },
+    "2382": {
+      "trailingPE": 18.174604,
       "dividendYield": 3.82
     },
     "2618": {
-      "trailingPE": 7.177083,
-      "dividendYield": 6.84
+      "trailingPE": 7.4687495,
+      "dividendYield": 6.73
     },
     "2880": {
-      "trailingPE": 17.236843,
-      "dividendYield": 3.84
+      "trailingPE": 17.5,
+      "dividendYield": 3.75
     },
     "2881": {
-      "trailingPE": 11.314218,
-      "dividendYield": 4.43
+      "trailingPE": 11.409797,
+      "dividendYield": 4.29
     },
     "2882": {
-      "trailingPE": 10.949009,
-      "dividendYield": 4.58
+      "trailingPE": 11.104816,
+>>>>>>> Stashed changes
+      "dividendYield": 4.38
+    },
+    "2882": {
+      "trailingPE": 10.864022,
+      "dividendYield": 4.56
     },
     "2884": {
-      "trailingPE": 15.047171,
-      "dividendYield": 3.77
+<<<<<<< Updated upstream
+      "trailingPE": 15.023586,
+      "dividendYield": 3.76
     },
     "2885": {
-      "trailingPE": 20.364964,
-      "dividendYield": 2.76
+      "trailingPE": 20.255474,
+      "dividendYield": 2.71
     },
     "2886": {
-      "trailingPE": 16.758474,
-      "dividendYield": 4.08
+      "trailingPE": 16.652542,
+      "dividendYield": 4.07
     },
     "2887": {
-      "trailingPE": 12.120419,
-      "dividendYield": 3.91
+      "trailingPE": 12.094241,
+      "dividendYield": 3.9
     },
     "3008": {
-      "trailingPE": 18.143621,
-      "dividendYield": 2.86
+      "trailingPE": 18.116152,
+      "dividendYield": 2.55
+=======
+      "trailingPE": 15.235849,
+      "dividendYield": 3.69
+    },
+    "2885": {
+      "trailingPE": 20.620438,
+      "dividendYield": 2.66
+    },
+    "2886": {
+      "trailingPE": 16.991526,
+      "dividendYield": 3.98
+    },
+    "2887": {
+      "trailingPE": 12.277488,
+      "dividendYield": 3.78
+    },
+    "3008": {
+      "trailingPE": 16.181334,
+      "dividendYield": 3.11
+>>>>>>> Stashed changes
     },
     "3045": {
-      "trailingPE": 23.829788,
-      "dividendYield": 4.09
+      "trailingPE": 24.468086,
+      "dividendYield": 3.91
     },
     "3703": {
-      "trailingPE": 11.277778,
+<<<<<<< Updated upstream
+      "trailingPE": 11.194445,
       "dividendYield": 5.06
+=======
+      "trailingPE": 11.527778,
+      "dividendYield": 5.07
+>>>>>>> Stashed changes
     },
     "5880": {
-      "trailingPE": 16.80147,
-      "dividendYield": 3.07
+      "trailingPE": 16.727942,
+      "dividendYield": 3.08
     }
   },
   "indices": [
     {
       "sym": "加權指數",
       "ticker": "^TWII",
+<<<<<<< Updated upstream
       "price": 41374.5,
       "change": -523.82,
       "changePct": -1.25
+=======
+      "price": 41790.06,
+      "change": 186.12,
+      "changePct": 0.45
+>>>>>>> Stashed changes
     },
     {
       "sym": "台積電",
       "ticker": "2330.TW",
-      "price": 2220.0,
-      "change": -35.0,
-      "changePct": -1.55
+<<<<<<< Updated upstream
+      "price": 2270.0,
+      "change": 50.0,
+      "changePct": 2.25
+=======
+      "price": 2235.0,
+      "change": -55.0,
+      "changePct": -2.4
+>>>>>>> Stashed changes
     },
     {
       "sym": "鴻　海",
       "ticker": "2317.TW",
-      "price": 251.0,
-      "change": 1.0,
-      "changePct": 0.4
+<<<<<<< Updated upstream
+      "price": 244.5,
+      "change": -6.5,
+      "changePct": -2.59
+=======
+      "price": 252.0,
+      "change": 2.0,
+      "changePct": 0.8
+>>>>>>> Stashed changes
     },
     {
       "sym": "S&P 500",
       "ticker": "^GSPC",
-      "price": 7400.96,
-      "change": -11.88,
-      "changePct": -0.16
+      "price": 7501.24,
+      "change": 56.99,
+      "changePct": 0.77
     },
     {
       "sym": "NASDAQ",
       "ticker": "^IXIC",
-      "price": 26088.2,
-      "change": -185.93,
-      "changePct": -0.71
+      "price": 26635.22,
+      "change": 232.88,
+      "changePct": 0.88
     },
     {
       "sym": "道　瓊",
       "ticker": "^DJI",
-      "price": 49760.56,
-      "change": 56.09,
-      "changePct": 0.11
+      "price": 50063.46,
+      "change": 370.26,
+      "changePct": 0.75
     },
     {
       "sym": "日　經",
       "ticker": "^N225",
+<<<<<<< Updated upstream
       "price": 63272.11,
       "change": 529.54,
       "changePct": 0.84
+=======
+      "price": 62417.88,
+      "change": -295.77,
+      "changePct": -0.47
+>>>>>>> Stashed changes
     },
     {
       "sym": "香　港",
       "ticker": "^HSI",
+<<<<<<< Updated upstream
       "price": 26388.44,
       "change": 40.53,
       "changePct": 0.15
+=======
+      "price": 26406.84,
+      "change": 13.13,
+      "changePct": 0.05
+>>>>>>> Stashed changes
     }
   ]
 }
